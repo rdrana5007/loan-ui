@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+.ant-pagination-options .ant-select-selection-search {
+  display: none !important;
+}
+
+.ant-pagination-options .ant-select-selection-search-input {
+  display: none !important;
+}
+.ant-pagination-options .ant-select-selection-search {
+  display: none !important;
+}
