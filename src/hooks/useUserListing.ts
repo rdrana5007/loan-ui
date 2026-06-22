@@ -11,7 +11,7 @@ export const useUserListing = () => {
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search, 500);
   const [roleFilter, setRoleFilter] = useState<string>("all users");
-  // const [statusFilter, setStatusFilter] = useState<string>("all users");
+  const [statusFilter, setStatusFilter] = useState<string>("all users");
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 
@@ -28,13 +28,13 @@ export const useUserListing = () => {
     if (roleFilter === "isCollector") {
       params.isCollector = true;
     }
-    // if (statusFilter === "active" || statusFilter === "deactive") {
-    //   params.status = statusFilter;
-    // }
+    if (statusFilter === "active" || statusFilter === "inactive") {
+      params.status = statusFilter;
+    }
     params.page = page;
     params.pageSize = rowsPerPage;
     return params;
-  }, [trimmedSearch, page, rowsPerPage, roleFilter]);
+  }, [trimmedSearch, page, rowsPerPage, roleFilter, statusFilter]);
 
   const { data: queryData, isLoading } = useUsersQuery(listParams);
   const { mutateAsync: deleteUser, isPending: isDeleting } = useDeleteUserMutation();
@@ -52,7 +52,7 @@ export const useUserListing = () => {
     [pageInfo, page, rowsPerPage, data],
   );
 
-  const handleTableChange: TableProps<UserRow>["onChange"] = useCallback((pagination: any) => {
+  const handleTableChange: TableProps<UserRow>["onChange"] = useCallback((pagination) => {
     setPage(pagination.current ?? DEFAULT_PAGE);
     setRowsPerPage(pagination.pageSize ?? DEFAULT_PAGE_SIZE);
   }, []);
@@ -65,6 +65,10 @@ export const useUserListing = () => {
       }
       if (name === "role" && typeof value === "string") {
         setRoleFilter(value);
+        setPage(DEFAULT_PAGE);
+      }
+      if (name === "status" && typeof value === "string") {
+        setStatusFilter(value);
         setPage(DEFAULT_PAGE);
       }
     },
@@ -100,6 +104,7 @@ export const useUserListing = () => {
     pagination,
     searchValue: search,
     roleFilter,
+    statusFilter,
     handleFilterChange,
     handleTableChange,
     handleDelete,

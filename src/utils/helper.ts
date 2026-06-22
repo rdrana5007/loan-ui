@@ -11,7 +11,7 @@ export const formatDateTime = (value: string | number | Date): string => {
     .replace(",", "");
 };
 
-export const resolveNumericJobId = (param?: string): number | null => {
+export const resolveNumericId = (param?: string): number | null => {
   if (!param) return null;
   const parsed = Number(param);
   if (!Number.isNaN(parsed) && Number.isFinite(parsed)) return parsed;

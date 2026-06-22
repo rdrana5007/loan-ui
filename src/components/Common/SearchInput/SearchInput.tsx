@@ -1,6 +1,6 @@
 "use client";
 import { Input } from "antd";
-import { FC, ReactNode } from "react";
+import { ReactNode } from "react";
 
 interface SearchInputProps {
   prefixIcon: ReactNode;
@@ -9,7 +9,7 @@ interface SearchInputProps {
   onSearch: (value: string) => void;
 }
 
-export const SearchInput: FC<SearchInputProps> = ({ prefixIcon, value, className = "", onSearch }) => {
+export const SearchInput = ({ prefixIcon, value, className = "", onSearch }: SearchInputProps) => {
   return (
     <Input
       placeholder="Search here..."

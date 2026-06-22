@@ -1,6 +1,5 @@
 "use client";
 import { Form, Select } from "antd";
-import { FC } from "react";
 
 interface SelectInputProps {
   name: string;
@@ -11,10 +10,10 @@ interface SelectInputProps {
   placeholder: string;
   options: { label: string | number; value: string | number }[];
   disabled?: boolean;
-  className: string;
+  className?: string;
 }
 
-export const SelectInput: FC<SelectInputProps> = ({
+export const SelectInput = ({
   name,
   label,
   defaultValue,
@@ -24,7 +23,7 @@ export const SelectInput: FC<SelectInputProps> = ({
   options,
   disabled = false,
   className = "",
-}) => {
+}: SelectInputProps) => {
   return (
     <Form.Item
       name={name}
@@ -36,7 +35,7 @@ export const SelectInput: FC<SelectInputProps> = ({
         placeholder={placeholder}
         options={options}
         disabled={disabled}
-        className={className ? className : ""}
+        className={className ? className : "w-full! h-10! md:h-8 lg:h-10"}
       />
     </Form.Item>
   );

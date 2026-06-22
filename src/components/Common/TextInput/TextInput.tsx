@@ -1,6 +1,5 @@
 "use client";
 import { Form, Input } from "antd";
-import { FC } from "react";
 
 interface TextInputProps {
   name: string;
@@ -13,11 +12,11 @@ interface TextInputProps {
   typeMsg?: string | undefined;
   patternMsg?: string;
   placeholder: string;
-  className: string;
+  className?: string;
   isPassword?: boolean;
 }
 
-export const TextInput: FC<TextInputProps> = ({
+export const TextInput = ({
   name,
   label,
   defaultValue,
@@ -30,7 +29,7 @@ export const TextInput: FC<TextInputProps> = ({
   placeholder,
   className = "",
   isPassword = false,
-}) => {
+}: TextInputProps) => {
   return (
     <Form.Item
       name={name}
@@ -45,12 +44,12 @@ export const TextInput: FC<TextInputProps> = ({
       {isPassword ? (
         <Input.Password
           placeholder={placeholder}
-          className={className ? className : ""}
+          className={className ? className : "w-full! h-10! md:h-8 lg:h-10"}
         />
       ) : (
         <Input
           placeholder={placeholder}
-          className={className ? className : ""}
+          className={className ? className : "w-full! h-10! md:h-8 lg:h-10"}
         />
       )}
     </Form.Item>

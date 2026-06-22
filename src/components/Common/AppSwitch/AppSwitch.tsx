@@ -1,21 +1,22 @@
 "use client";
 import { Form, Switch } from "antd";
-import { FC } from "react";
 
 interface AppSwitchProps {
-  name: string;
-  label: string;
+  name?: string;
+  label?: string;
   defaultValue?: boolean;
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
 }
 
-export const AppSwitch: FC<AppSwitchProps> = ({ name, label, defaultValue = false }) => {
+export const AppSwitch = ({ name, label, defaultValue = false, checked, onChange }: AppSwitchProps) => {
   return (
     <Form.Item
       name={name}
       label={label}
-      initialValue={defaultValue}
+      // initialValue={defaultValue}
     >
-      <Switch />
+      <Switch checked={checked} onChange={onChange} />
     </Form.Item>
   );
 };

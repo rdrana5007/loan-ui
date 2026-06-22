@@ -1,12 +1,13 @@
 "use client";
 import {
   AppButton,
+  AppSwitch,
   AppTable,
   DeleteModal,
   FilterInput,
   SearchInput,
 } from "@/components/Common";
-import { roleList, userRole } from "@/constants";
+import { roleList, userRole, userStatus } from "@/constants";
 import { usePageBreadcrumbs, useUserListing } from "@/hooks";
 import { UserRow } from "@/types";
 import { formatDateTime } from "@/utils";
@@ -16,7 +17,6 @@ import {
   PlusOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { Switch } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import { FC, useCallback, useMemo } from "react";
@@ -24,7 +24,7 @@ import { FC, useCallback, useMemo } from "react";
 const renderValue = (value: unknown) => value || "--";
 const renderDate = (value?: string) => (value ? formatDateTime(value) : "--");
 
-const ROLE_MAP = Object.fromEntries(
+const ROLE_MAP: Record<number, string> = Object.fromEntries(
   roleList.map((role) => [role.value, role.label]),
 );
 
@@ -43,6 +43,7 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
     pagination,
     searchValue,
     roleFilter,
+    statusFilter,
     handleFilterChange,
     handleTableChange,
     handleDelete,
@@ -57,11 +58,11 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
   );
 
   const openDeleteModal = useCallback(
-    (row: UserRow) => {
+    ({ id, fullName }: UserRow) => {
       DeleteModal({
         title: "User",
-        entityName: row.fullName,
-        onDelete: () => handleDelete(row.id),
+        entityName: fullName,
+        onDelete: () => handleDelete(id),
       });
     },
     [handleDelete],
@@ -69,7 +70,7 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
 
   const renderActive = useCallback(
     (val: boolean, row: UserRow) => (
-      <Switch
+      <AppSwitch
         checked={val}
         onChange={(checked) => handleToggle(row.id, checked)}
       />
@@ -91,7 +92,7 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
         />
       </div>
     ),
-    [openDeleteModal, isDeleting],
+    [router, isDeleting, openDeleteModal],
   );
 
   const columns = useMemo<ColumnsType<UserRow>>(
@@ -174,6 +175,16 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
                   filterKey="role"
                   value={roleFilter}
                   options={userRole}
+                  className="w-full h-10!"
+                  onChange={handleFilterChange}
+                />
+              </div>
+              <div className="w-full sm:w-40">
+                <FilterInput
+                  placeholder="All Users"
+                  filterKey="status"
+                  value={statusFilter}
+                  options={userStatus}
                   className="w-full h-10!"
                   onChange={handleFilterChange}
                 />

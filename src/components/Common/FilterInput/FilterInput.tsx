@@ -1,6 +1,5 @@
 "use client";
 import { Select } from "antd";
-import { FC } from "react";
 
 interface FilterInputProps {
   placeholder: string;
@@ -11,14 +10,14 @@ interface FilterInputProps {
   onChange: (name: string, value: string | undefined) => void;
 }
 
-export const FilterInput: FC<FilterInputProps> = ({
+export const FilterInput = ({
   placeholder,
   filterKey,
   value,
   options,
   className = "",
   onChange,
-}) => {
+}: FilterInputProps) => {
   return (
     <Select
       placeholder={placeholder}

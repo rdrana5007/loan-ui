@@ -63,7 +63,7 @@ export default class AuthService {
   login(data: LoginPayload) {
     return client.api({
       method: "POST",
-      url: "/api/auth/login",
+      url: "/auth/login",
       headers: {
         "Content-Type": "application/json",
       },

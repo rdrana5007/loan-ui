@@ -68,7 +68,6 @@ export const Login = () => {
               requiredMsg="Email is required"
               typeMsg="Invalid email"
               placeholder="Enter email"
-              className="w-full! h-10! md:h-8 lg:h-10"
             />
             <TextInput
               name="password"
@@ -77,7 +76,6 @@ export const Login = () => {
               required={true}
               requiredMsg="Password is required"
               placeholder="Enter password"
-              className="w-full! h-10! md:h-8 lg:h-10"
             />
             <Form.Item>
               <div className="flex justify-end">

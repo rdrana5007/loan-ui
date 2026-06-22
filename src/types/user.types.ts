@@ -28,6 +28,7 @@ export interface UserPaginatedResponse {
 export interface UserListParams extends ListParams {
   isManager?: boolean;
   isCollector?: boolean;
+  status?: string;
 };
 
 export type UserRow = {

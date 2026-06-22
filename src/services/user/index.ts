@@ -17,7 +17,7 @@ export default class UserService {
   getUsers(params?: ListParams) {
     return client.api({
       method: "GET",
-      url: "/api/users",
+      url: "/users",
       headers: this.getAuthHeaders(),
       params,
     });
@@ -26,7 +26,7 @@ export default class UserService {
   getUser(id: number) {
     return client.api({
       method: "GET",
-      url: `/api/users/${id}`,
+      url: `/users/${id}`,
       headers: this.getAuthHeaders(),
     });
   }
@@ -34,7 +34,7 @@ export default class UserService {
   createUser(payload: UserPayload) {
     return client.api({
       method: "POST",
-      url: "/api/users",
+      url: "/users",
       headers: this.getAuthHeaders(),
       data: payload
     });
@@ -43,7 +43,7 @@ export default class UserService {
   updateUser(id: number, payload: Partial<UserPayload>) {
     return client.api({
       method: "PATCH",
-      url: `/api/users/${id}`,
+      url: `/users/${id}`,
       headers: this.getAuthHeaders(),
       data: payload,
     });
@@ -52,7 +52,7 @@ export default class UserService {
   deleteUser(id: number) {
     return client.api({
       method: "DELETE",
-      url: `/api/users/${id}`,
+      url: `/users/${id}`,
       headers: this.getAuthHeaders(),
     });
   }

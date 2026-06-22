@@ -8,13 +8,14 @@ import {
   AppButton,
   AppSwitch,
   AppToast,
+  FormSkeleton,
   SelectInput,
   TextInput,
 } from "@/components/Common";
 import { roleList } from "@/constants";
 import { usePageBreadcrumbs } from "@/hooks";
 import { UserFormValues, UserRow } from "@/types";
-import { resolveNumericJobId } from "@/utils";
+import { resolveNumericId } from "@/utils";
 import { Col, Form, Row } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import { FC, useEffect, useMemo } from "react";
@@ -47,30 +48,25 @@ export const UserForm: FC<UserFormProps> = ({ title, breadcrumbs }) => {
   usePageBreadcrumbs(title, breadcrumbs);
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const [userForm] = Form.useForm();
+  const [form] = Form.useForm();
 
   const id: string = params?.id;
-  const numericJobId = useMemo(() => resolveNumericJobId(id), [id]);
+  const numericId = useMemo(() => resolveNumericId(id), [id]);
+  const isEdit: boolean = !!numericId;
 
-  const { data } = useUserQuery(numericJobId!);
+  const { data, isLoading } = useUserQuery(numericId!);
   const { mutateAsync: createUser, isPending: isCreating } =
     useCreateUserMutation();
   const { mutateAsync: updateUser, isPending: isUpdating } =
     useUpdateUserMutation();
 
-  const defaultValues = useMemo(
-    () => toFormValues(data),
-    [data, numericJobId],
-  );
+  const isSubmitting: boolean = isCreating || isUpdating;
 
   useEffect(() => {
     if (data) {
-      userForm.setFieldsValue(toFormValues(data));
+      form.setFieldsValue(toFormValues(data));
     }
-  }, [data]);
-
-  const isSubmitting: boolean = isCreating || isUpdating;
-  const isEdit: boolean = Boolean(numericJobId);
+  }, [data, form]);
 
   const handleSubmit = async (values: UserFormValues) => {
     const payload = toApiPayload(values);
@@ -92,28 +88,34 @@ export const UserForm: FC<UserFormProps> = ({ title, breadcrumbs }) => {
         }
       }
       router.replace("/users");
-      return;
     } catch (error: any) {
       AppToast.error(error?.response?.data?.message ?? "Failed to save user");
     }
   };
+
+  if (isEdit && isLoading) {
+    return <FormSkeleton fields={6} />;
+  }
 
   return (
     <div className="w-full">
       <h2 className="text-lg md:text-xl font-semibold mb-6">
         {isEdit ? "Update User" : "Create User"}
       </h2>
-      <Form form={userForm} layout="vertical" onFinish={handleSubmit}>
+      <Form
+        form={form}
+        layout="vertical"
+        initialValues={toFormValues(data)}
+        onFinish={handleSubmit}
+      >
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={12}>
             <TextInput
               name="userName"
               label="User name"
-              defaultValue={defaultValues?.userName}
               required={true}
               requiredMsg="User name is required"
               placeholder="Enter user name"
-              className="w-full! h-10! md:h-8 lg:h-10"
             />
           </Col>
           {!isEdit && (
@@ -129,7 +131,6 @@ export const UserForm: FC<UserFormProps> = ({ title, breadcrumbs }) => {
                 requiredMsg="Password is required"
                 patternMsg="Password must be 6–12 chars, start uppercase, include special char + number."
                 placeholder="Enter password"
-                className="w-full! h-10! md:h-8 lg:h-10"
               />
             </Col>
           )}
@@ -137,59 +138,47 @@ export const UserForm: FC<UserFormProps> = ({ title, breadcrumbs }) => {
             <TextInput
               name="fullName"
               label="Full name"
-              defaultValue={defaultValues?.fullName}
               required={true}
               requiredMsg="Full name is required"
               placeholder="Enter full name"
-              className="w-full! h-10! md:h-8 lg:h-10"
             />
           </Col>
           <Col xs={24} sm={12}>
             <TextInput
               name="email"
               label="Email"
-              defaultValue={defaultValues?.email}
               required={true}
               type="email"
               requiredMsg="Email is required"
               typeMsg="Invalid email"
               placeholder="Enter email"
-              className="w-full! h-10! md:h-8 lg:h-10"
             />
           </Col>
           <Col xs={24} sm={12}>
             <TextInput
               name="phone"
               label="Mobile Number"
-              defaultValue={defaultValues?.phone}
               required={true}
               pattern={/^[0-9]{10,15}$/}
               requiredMsg="Mobile Number is required"
               patternMsg="Phone number must be between 10 and 15 digits."
               placeholder="Enter mobile number"
-              className="w-full! h-10! md:h-8 lg:h-10"
             />
           </Col>
           <Col xs={24} sm={12}>
             <SelectInput
               name="roleId"
               label="Role"
-              defaultValue={defaultValues?.roleId}
               required={true}
               requiredMsg="Role is required"
               placeholder="Select role"
               options={roleList || []}
               disabled={isEdit}
-              className="w-full! h-10! md:h-8 lg:h-10"
             />
           </Col>
           {isEdit && (
             <Col xs={24} sm={12}>
-              <AppSwitch
-                name="isActive"
-                label="Status"
-                defaultValue={defaultValues?.isActive}
-              />
+              <AppSwitch name="isActive" label="Status" />
             </Col>
           )}
         </Row>
@@ -198,7 +187,7 @@ export const UserForm: FC<UserFormProps> = ({ title, breadcrumbs }) => {
             <AppButton
               block
               label="Reset"
-              onClick={() => userForm.resetFields()}
+              onClick={() => form.resetFields()}
               className="w-full! h-10! md:h-8 lg:h-10"
             />
           </Col>

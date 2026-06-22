@@ -13,7 +13,7 @@ export class Client {
   api: AxiosInstance;
 
   constructor() {
-    axios.defaults.baseURL = `${baseURL}`;
+    axios.defaults.baseURL = `${baseURL}/api`;
     axios.defaults.xsrfHeaderName = "X-CSRFToken";
     axios.defaults.responseEncoding = "utf8";
 

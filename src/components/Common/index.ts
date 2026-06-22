@@ -4,6 +4,7 @@ export * from "./SearchInput";
 export * from "./FilterInput";
 export * from "./AppButton";
 export * from "./AppTable";
+export * from "./FormSkeleton";
 export * from "./AppSwitch";
 export * from "./AppToast";
 export * from "./DeleteModal";

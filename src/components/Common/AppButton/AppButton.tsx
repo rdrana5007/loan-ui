@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "antd";
-import { FC, ReactNode } from "react";
+import { ReactNode } from "react";
 
 interface AppButtonProps {
   type?: "primary" | "dashed" | "link" | "text" | "default";
@@ -15,7 +15,7 @@ interface AppButtonProps {
   onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
-export const AppButton: FC<AppButtonProps> = ({
+export const AppButton = ({
   icon,
   type,
   size,
@@ -26,7 +26,7 @@ export const AppButton: FC<AppButtonProps> = ({
   loading,
   className = "",
   onClick,
-}) => {
+}: AppButtonProps) => {
   return (
     <Button
       icon={icon}
