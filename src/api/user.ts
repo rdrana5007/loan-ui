@@ -1,11 +1,11 @@
 import { USER_KEYS } from "@/constants";
 import { UserService } from "@/services";
-import { ListParams, UserApiRecord, UserPaginatedResponse, UserPayload } from "@/types";
+import { UserApiRecord, UserFormValues, UserListParams, UserPaginatedResponse } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const userService = new UserService();
 
-export const useUsersQuery = (params?: ListParams) => {
+export const useUsersQuery = (params?: UserListParams) => {
   return useQuery<UserPaginatedResponse>({
     queryKey: [...USER_KEYS.all, JSON.stringify(params)],
     placeholderData: (previousData) => previousData,
@@ -47,7 +47,7 @@ export const useCreateUserMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: UserPayload) => userService.createUser(payload),
+    mutationFn: (payload: UserFormValues) => userService.createUser(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: USER_KEYS.all });
     },
@@ -63,7 +63,7 @@ export const useUpdateUserMutation = () => {
       payload,
     }: {
       id: number;
-      payload: Partial<UserPayload>;
+      payload: Partial<UserFormValues>;
     }) => userService.updateUser(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: USER_KEYS.all });

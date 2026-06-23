@@ -7,9 +7,9 @@ import {
   FilterInput,
   SearchInput,
 } from "@/components/Common";
-import { roleList, userRole, userStatus } from "@/constants";
-import { usePageBreadcrumbs, useUserListing } from "@/hooks";
-import { UserRow } from "@/types";
+import { customerVerificationStatus, userStatus } from "@/constants";
+import { useCustomerListing, usePageBreadcrumbs } from "@/hooks";
+import { CustomerRow } from "@/types";
 import { formatDateTime } from "@/utils";
 import {
   DeleteOutlined,
@@ -27,16 +27,15 @@ const { useBreakpoint } = Grid;
 const renderValue = (value: unknown) => value || "--";
 const renderDate = (value?: string) => (value ? formatDateTime(value) : "--");
 
-const ROLE_MAP: Record<number, string> = Object.fromEntries(
-  roleList.map((role) => [role.value, role.label]),
-);
-
-interface UserListingProps {
+interface CustomerListingProps {
   title: string;
   breadcrumbs?: string[];
 }
 
-export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
+export const CustomerListing: FC<CustomerListingProps> = ({
+  title,
+  breadcrumbs,
+}) => {
   const router = useRouter();
   const screens = useBreakpoint();
   usePageBreadcrumbs(title, breadcrumbs);
@@ -46,13 +45,13 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
     isDeleting,
     pagination,
     searchValue,
-    roleFilter,
+    verificationFilter,
     statusFilter,
     handleFilterChange,
     handleTableChange,
     handleDelete,
     handleToggle,
-  } = useUserListing();
+  } = useCustomerListing();
 
   const handleSearch = useCallback(
     (value: string) => {
@@ -62,10 +61,10 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
   );
 
   const openDeleteModal = useCallback(
-    ({ id, fullName }: UserRow) => {
+    ({ id, firstName }: CustomerRow) => {
       DeleteModal({
-        title: "User",
-        entityName: fullName,
+        title: "Customer",
+        entityName: firstName,
         onDelete: () => handleDelete(id),
       });
     },
@@ -73,7 +72,7 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
   );
 
   const renderActive = useCallback(
-    (val: boolean, row: UserRow) => (
+    (val: boolean, row: CustomerRow) => (
       <AppSwitch
         checked={val}
         onChange={(checked) => handleToggle(row.id, checked)}
@@ -83,10 +82,10 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
   );
 
   const renderActions = useCallback(
-    (_: unknown, row: UserRow) => (
+    (_: unknown, row: CustomerRow) => (
       <div className="flex items-center justify-center">
         <EditOutlined
-          onClick={() => router.push(`/users/${row.id}`)}
+          onClick={() => router.push(`/customers/${row.id}`)}
           className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
         />
         <DeleteOutlined
@@ -99,13 +98,20 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
     [router, isDeleting, openDeleteModal],
   );
 
-  const columns = useMemo<ColumnsType<UserRow>>(
+  const columns = useMemo<ColumnsType<CustomerRow>>(
     () => [
+      {
+        title: "Code",
+        dataIndex: "customerCode",
+        key: "customerCode",
+        fixed: screens.md ? "left" : undefined,
+        width: 180,
+        render: renderValue,
+      },
       {
         title: "Name",
         dataIndex: "fullName",
         key: "fullName",
-        fixed: screens.md ? "left" : undefined,
         width: 180,
         render: renderValue,
       },
@@ -125,11 +131,11 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
         render: renderValue,
       },
       {
-        title: "Role",
-        dataIndex: "roleId",
-        key: "roleId",
+        title: "Created By",
+        dataIndex: "created_by",
+        key: "created_by",
         width: 180,
-        render: (val) => ROLE_MAP[val] ?? "--",
+        render: renderDate,
       },
       {
         title: "Created Date",
@@ -162,7 +168,7 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
     <>
       <div className="mb-6">
         <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
-          <h2 className="text-lg md:text-xl font-semibold">User Listing</h2>
+          <h2 className="text-lg md:text-xl font-semibold">Customer Listing</h2>
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 w-full xl:w-auto">
             <div className="w-full sm:flex-1 lg:w-80">
               <SearchInput
@@ -176,10 +182,10 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="w-full sm:w-40 md:w-35 lg:w-40">
                   <FilterInput
-                    placeholder="All Users"
-                    filterKey="role"
-                    value={roleFilter}
-                    options={userRole}
+                    placeholder="Verification Status"
+                    filterKey="verification"
+                    value={verificationFilter}
+                    options={customerVerificationStatus}
                     className="w-full h-10!"
                     onChange={handleFilterChange}
                   />
@@ -198,9 +204,9 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
               <div className="w-full sm:w-auto sm:ml-auto">
                 <AppButton
                   icon={<PlusOutlined />}
-                  label="New User"
+                  label="New Customer"
                   className="w-full sm:w-auto h-10! px-4 shrink-0 whitespace-nowrap"
-                  onClick={() => router.push("/users/add-user")}
+                  onClick={() => router.push("/customers/add-customer")}
                 />
               </div>
             </div>
@@ -218,3 +224,38 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
     </>
   );
 };
+
+//  {
+//                 "id": 4,
+//                 "createdBy": 12,
+//                 "customerCode": "CUST-4710EB81",
+//                 "firstName": "Tilak1",
+//                 "lastName": "Varma",
+//                 "email": "tilak3@yopmail.com",
+//                 "phone": "9853321116",
+//                 "gender": "male",
+//                 "address": "101, Empire Business Hub",
+//                 "city": "Mumbai",
+//                 "state": "Maharashtra",
+//                 "pincode": "402440",
+//                 "profileImage": "/uploads/profile/1782209156543-7d0a7517-12ad-4bc4-9a42-dc4401aab8bf.png",
+//                 "isActive": true,
+//                 "createdAt": "2026-06-23T10:05:56.000Z",
+//                 "updatedAt": "2026-06-23T10:05:56.000Z",
+//                 "deletedAt": null,
+//                 "customer_documents": {
+//                     "id": 6,
+//                     "customerId": 4,
+//                     "aadhaarNumber": "986532653265",
+//                     "panNumber": "ABCDE1234F",
+//                     "aadhaarFile": "/uploads/aadhaarCard/1782209156544-FR_PJ_AV.jpg",
+//                     "panFile": "/uploads/panCard/1782209156544-Rectangle_42.png",
+//                     "verificationStatus": "verified",
+//                     "remarks": "remarks"
+//                 },
+//                 "created_by": {
+//                     "id": 12,
+//                     "roleId": 2,
+//                     "fullName": "Virat Kohli"
+//                 }
+//             },

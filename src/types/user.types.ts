@@ -28,7 +28,7 @@ export interface UserPaginatedResponse {
 export interface UserListParams extends ListParams {
   isManager?: boolean;
   isCollector?: boolean;
-  status?: string;
+  status?: boolean;
 };
 
 export type UserRow = {
@@ -43,16 +43,6 @@ export type UserRow = {
 };
 
 export interface UserFormValues {
-  userName: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  password?: string;
-  roleId: number | undefined;
-  isActive: boolean;
-};
-
-export interface UserPayload {
   userName: string;
   fullName: string;
   email: string;

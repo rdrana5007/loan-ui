@@ -1,32 +1,29 @@
 "use client";
-import { useDeleteUserMutation, useUpdateUserMutation, useUsersQuery } from "@/api";
-import { UserListParams, UserRow } from "@/types";
+import { useCustomersQuery, useDeleteCustomerMutation, useUpdateCustomerMutation } from "@/api";
+import { CustomerListParams, CustomerRow } from "@/types";
 import { TableProps } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useDebounce } from "./useDebounce";
 import { AppToast } from "@/components";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/constants";
 
-export const useUserListing = () => {
+export const useCustomerListing = () => {
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search, 500);
-  const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [verificationFilter, setVerificationFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 
   const trimmedSearch = debouncedSearch.trim();
 
-  const listParams = useMemo((): UserListParams => {
-    const params: UserListParams = {};
+  const listParams = useMemo((): CustomerListParams => {
+    const params: CustomerListParams = {};
     if (trimmedSearch.length >= 2) {
       params.search = trimmedSearch;
     }
-    if (roleFilter === "isManager") {
-      params.isManager = true;
-    }
-    if (roleFilter === "isCollector") {
-      params.isCollector = true;
+    if (verificationFilter === "pending" || verificationFilter === "verified" || verificationFilter === "rejected") {
+      params.verificationStatus = verificationFilter;
     }
     if (statusFilter === "active") {
       params.status = true;
@@ -37,11 +34,11 @@ export const useUserListing = () => {
     params.page = page;
     params.pageSize = rowsPerPage;
     return params;
-  }, [trimmedSearch, page, rowsPerPage, roleFilter, statusFilter]);
+  }, [trimmedSearch, page, rowsPerPage, verificationFilter, statusFilter]);
 
-  const { data: queryData, isLoading } = useUsersQuery(listParams);
-  const { mutateAsync: deleteUser, isPending: isDeleting } = useDeleteUserMutation();
-  const { mutateAsync: updateUser } = useUpdateUserMutation();
+  const { data: queryData, isLoading } = useCustomersQuery(listParams);
+  const { mutateAsync: deleteCustomer, isPending: isDeleting } = useDeleteCustomerMutation();
+  const { mutateAsync: updateCustomer } = useUpdateCustomerMutation();
 
   const data = queryData?.items ?? [];
   const pageInfo = queryData?.page_info;
@@ -55,7 +52,7 @@ export const useUserListing = () => {
     [pageInfo, page, rowsPerPage, data],
   );
 
-  const handleTableChange: TableProps<UserRow>["onChange"] = useCallback((pagination: any) => {
+  const handleTableChange: TableProps<CustomerRow>["onChange"] = useCallback((pagination: any) => {
     setPage(pagination.current ?? DEFAULT_PAGE);
     setRowsPerPage(pagination.pageSize ?? DEFAULT_PAGE_SIZE);
   }, []);
@@ -66,8 +63,8 @@ export const useUserListing = () => {
         setSearch(value);
         setPage(DEFAULT_PAGE);
       }
-      if (name === "role" && typeof value === "string") {
-        setRoleFilter(value);
+      if (name === "verification" && typeof value === "string") {
+        setVerificationFilter(value);
         setPage(DEFAULT_PAGE);
       }
       if (name === "status" && typeof value === "string") {
@@ -80,24 +77,24 @@ export const useUserListing = () => {
 
   const handleDelete = useCallback(
     async (id: number) => {
-      await deleteUser(id);
+      await deleteCustomer(id);
     },
-    [deleteUser]
+    [deleteCustomer]
   );
 
   const handleToggle = useCallback(
     async (id: number, isActive: boolean) => {
       try {
-        await updateUser({
+        await updateCustomer({
           id,
           payload: { isActive },
         });
-        AppToast.success(isActive ? "User activated" : "User deactivated");
+        AppToast.success(isActive ? "Customer activated" : "Customer deactivated");
       } catch {
-        AppToast.error("Failed to update user status");
+        AppToast.error("Failed to update customer status");
       }
     },
-    [updateUser]
+    [updateCustomer]
   );
 
   return {
@@ -106,7 +103,7 @@ export const useUserListing = () => {
     isDeleting,
     pagination,
     searchValue: search,
-    roleFilter,
+    verificationFilter,
     statusFilter,
     handleFilterChange,
     handleTableChange,

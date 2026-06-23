@@ -44,8 +44,9 @@ export const App: FC<AppProps> = ({
 
   const selectedKey = useMemo(() => {
     if (pathname.startsWith("/users")) return ["2"];
-    // if (pathname.startsWith("/videos")) return ["3"];
-    // if (pathname.startsWith("/uploads")) return ["4"];
+    if (pathname.startsWith("/customers")) return ["3"];
+    if (pathname.startsWith("/videos")) return ["4"];
+    if (pathname.startsWith("/uploads")) return ["5"];
     return ["1"];
   }, [pathname]);
 

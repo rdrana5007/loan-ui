@@ -17,14 +17,19 @@ export const sidebarMenuItems: MenuProps['items'] = [
     icon: <UserOutlined />,
     label: <Link href="/users">Users</Link>,
   },
-  // {
-  //   key: "3",
-  //   icon: <VideoCameraOutlined />,
-  //   label: <Link href="/videos">Videos</Link>,
-  // },
-  // {
-  //   key: "4",
-  //   icon: <UploadOutlined />,
-  //   label: <Link href="/uploads">Uploads</Link>,
-  // },
+  {
+    key: "3",
+    icon: <UserOutlined />,
+    label: <Link href="/customers">Customers</Link>,
+  },
+  {
+    key: "4",
+    icon: <VideoCameraOutlined />,
+    label: <Link href="/videos">Videos</Link>,
+  },
+  {
+    key: "5",
+    icon: <UploadOutlined />,
+    label: <Link href="/uploads">Uploads</Link>,
+  },
 ];

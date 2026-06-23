@@ -1,11 +1,11 @@
 import CookiePersistence from "@/utils/cookiePersistence";
 import { Client } from "../apiClient";
-import { UserFormValues, UserListParams } from "@/types";
+import { CustomerFormValues, CustomerListParams } from "@/types";
 
 const client = new Client();
 const localCookie = new CookiePersistence();
 
-export default class UserService {
+export default class CustomerService {
   private getAuthHeaders() {
     const token = localCookie.getItem("access_token");
     return {
@@ -14,45 +14,45 @@ export default class UserService {
     };
   }
 
-  getUsers(params?: UserListParams) {
+  getCustomers(params?: CustomerListParams) {
     return client.api({
       method: "GET",
-      url: "/users",
+      url: "/customers",
       headers: this.getAuthHeaders(),
       params,
     });
   }
 
-  getUser(id: number) {
+  getCustomer(id: number) {
     return client.api({
       method: "GET",
-      url: `/users/${id}`,
+      url: `/customers/${id}`,
       headers: this.getAuthHeaders(),
     });
   }
 
-  createUser(payload: UserFormValues) {
+  createCustomer(payload: CustomerFormValues) {
     return client.api({
       method: "POST",
-      url: "/users",
+      url: "/customers",
       headers: this.getAuthHeaders(),
       data: payload
     });
   }
 
-  updateUser(id: number, payload: Partial<UserFormValues>) {
+  updateCustomer(id: number, payload: Partial<CustomerFormValues>) {
     return client.api({
       method: "PATCH",
-      url: `/users/${id}`,
+      url: `/customers/${id}`,
       headers: this.getAuthHeaders(),
       data: payload,
     });
   }
 
-  deleteUser(id: number) {
+  deleteCustomer(id: number) {
     return client.api({
       method: "DELETE",
-      url: `/users/${id}`,
+      url: `/customers/${id}`,
       headers: this.getAuthHeaders(),
     });
   }
