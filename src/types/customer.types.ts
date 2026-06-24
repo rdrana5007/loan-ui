@@ -65,7 +65,15 @@ export type CustomerRow = {
   profileImage: string;
   isActive: boolean;
   createdAt: string;
+  customer_documents: CustomerDocument;
 };
+
+export interface profileImageData {
+  uid: string;
+  name: string | undefined;
+  status: string;
+  url: string;
+}
 
 export interface CustomerFormValues {
   firstName: string;
@@ -77,6 +85,12 @@ export interface CustomerFormValues {
   city: string;
   state: string;
   pincode: string;
-  profileImage: string;
+  profileImage: profileImageData[];
   isActive: boolean;
+  aadhaarNumber: string;
+  panNumber: string;
+  verificationStatus: string;
+  remarks: string;
+  aadhaarFile: string;
+  panFile: string;
 };

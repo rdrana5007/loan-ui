@@ -1,3 +1,5 @@
+import { KeyboardEvent } from "react";
+
 // format date time
 export const formatDateTime = (value: string | number | Date): string => {
   return new Date(value)
@@ -6,9 +8,20 @@ export const formatDateTime = (value: string | number | Date): string => {
       month: "2-digit",
       year: "numeric",
       hour: "2-digit",
-      minute: "2-digit"
+      minute: "2-digit",
     })
     .replace(",", "");
+};
+
+export const handleNumericKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  if (e.ctrlKey || e.metaKey) return;
+
+  if (["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight"].includes(e.key))
+    return;
+
+  if (!/^\d$/.test(e.key)) {
+    e.preventDefault();
+  }
 };
 
 export const resolveNumericId = (param?: string): number | null => {

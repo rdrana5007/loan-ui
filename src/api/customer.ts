@@ -1,6 +1,6 @@
 import { CUSTOMER_KEYS } from "@/constants";
 import { CustomerService } from "@/services";
-import { CustomerApiRecord, CustomerFormValues, CustomerListParams, CustomerPaginatedResponse } from "@/types";
+import { CustomerApiRecord, CustomerListParams, CustomerPaginatedResponse } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const customerService = new CustomerService();
@@ -47,7 +47,7 @@ export const useCreateCustomerMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: CustomerFormValues) => customerService.createCustomer(payload),
+    mutationFn: (payload: FormData) => customerService.createCustomer(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CUSTOMER_KEYS.all });
     },
@@ -63,7 +63,7 @@ export const useUpdateCustomerMutation = () => {
       payload,
     }: {
       id: number;
-      payload: Partial<CustomerFormValues>;
+      payload: FormData;
     }) => customerService.updateCustomer(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CUSTOMER_KEYS.all });

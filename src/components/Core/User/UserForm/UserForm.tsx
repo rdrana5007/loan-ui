@@ -15,7 +15,7 @@ import {
 import { roleList } from "@/constants";
 import { usePageBreadcrumbs } from "@/hooks";
 import { UserFormValues, UserRow } from "@/types";
-import { resolveNumericId } from "@/utils";
+import { handleNumericKeyDown, resolveNumericId } from "@/utils";
 import { Col, Form, Row } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import { FC, useEffect, useMemo } from "react";
@@ -163,6 +163,7 @@ export const UserForm: FC<UserFormProps> = ({ title, breadcrumbs }) => {
               requiredMsg="Mobile Number is required"
               patternMsg="Phone number must be between 10 and 15 digits."
               placeholder="Enter mobile number"
+              onKeyDown={(e) => handleNumericKeyDown(e)}
             />
           </Col>
           <Col xs={24} sm={12}>

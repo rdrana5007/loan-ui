@@ -95,7 +95,7 @@ export const Login = () => {
                 block
                 label={isLoginPending ? "Signing in..." : "Sign In"}
                 disabled={isLoginPending}
-                className="!h-12 !rounded-lg !font-semibold bg-indigo-500!"
+                className={`!h-12 !rounded-lg !font-semibold bg-indigo-500! text-white!`}
               />
             </Form.Item>
           </Form>

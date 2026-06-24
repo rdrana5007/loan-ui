@@ -1,15 +1,15 @@
 import CookiePersistence from "@/utils/cookiePersistence";
 import { Client } from "../apiClient";
-import { CustomerFormValues, CustomerListParams } from "@/types";
+import { CustomerListParams } from "@/types";
 
 const client = new Client();
 const localCookie = new CookiePersistence();
 
 export default class CustomerService {
-  private getAuthHeaders() {
+  private getAuthHeaders(isFormData = false) {
     const token = localCookie.getItem("access_token");
     return {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       Authorization: `Bearer ${token}`,
     };
   }
@@ -31,20 +31,20 @@ export default class CustomerService {
     });
   }
 
-  createCustomer(payload: CustomerFormValues) {
+  createCustomer(payload: FormData) {
     return client.api({
       method: "POST",
       url: "/customers",
-      headers: this.getAuthHeaders(),
+      headers: this.getAuthHeaders(true),
       data: payload
     });
   }
 
-  updateCustomer(id: number, payload: Partial<CustomerFormValues>) {
+  updateCustomer(id: number, payload: FormData) {
     return client.api({
       method: "PATCH",
       url: `/customers/${id}`,
-      headers: this.getAuthHeaders(),
+      headers: this.getAuthHeaders(true),
       data: payload,
     });
   }

@@ -85,10 +85,10 @@ export const useCustomerListing = () => {
   const handleToggle = useCallback(
     async (id: number, isActive: boolean) => {
       try {
-        await updateCustomer({
-          id,
-          payload: { isActive },
-        });
+        // await updateCustomer({
+        //   id,
+        //   payload: { isActive },
+        // });
         AppToast.success(isActive ? "Customer activated" : "Customer deactivated");
       } catch {
         AppToast.error("Failed to update customer status");

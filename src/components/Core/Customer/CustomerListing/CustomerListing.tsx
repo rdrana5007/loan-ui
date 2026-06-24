@@ -85,7 +85,7 @@ export const CustomerListing: FC<CustomerListingProps> = ({
     (_: unknown, row: CustomerRow) => (
       <div className="flex items-center justify-center">
         <EditOutlined
-          onClick={() => router.push(`/customers/${row.id}`)}
+          // onClick={() => router.push(`/customers/${row.id}`)}
           className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
         />
         <DeleteOutlined
@@ -110,10 +110,9 @@ export const CustomerListing: FC<CustomerListingProps> = ({
       },
       {
         title: "Name",
-        dataIndex: "fullName",
         key: "fullName",
         width: 180,
-        render: renderValue,
+        render: (_, record) => renderValue(`${record.firstName ?? ""} ${record.lastName ?? ""}`.trim())
       },
       {
         title: "Email",
@@ -132,10 +131,10 @@ export const CustomerListing: FC<CustomerListingProps> = ({
       },
       {
         title: "Created By",
-        dataIndex: "created_by",
+        dataIndex: ["created_by", "fullName"],
         key: "created_by",
         width: 180,
-        render: renderDate,
+        render: renderValue,
       },
       {
         title: "Created Date",
