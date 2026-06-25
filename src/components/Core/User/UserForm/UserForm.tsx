@@ -78,6 +78,7 @@ export const UserForm: FC<UserFormProps> = ({ title, breadcrumbs }) => {
           id: data.id,
           payload: updatePayload,
         });
+
         if (response && response.status === 200) {
           AppToast.success(response.data?.message ?? "User updated");
         }
@@ -87,6 +88,7 @@ export const UserForm: FC<UserFormProps> = ({ title, breadcrumbs }) => {
           AppToast.success(response.data?.message ?? "User created");
         }
       }
+
       router.replace("/users");
     } catch (error: any) {
       AppToast.error(error?.response?.data?.message ?? "Failed to save user");

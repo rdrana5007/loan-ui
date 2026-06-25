@@ -7,6 +7,7 @@ export * from "./UploadInput";
 export * from "./AppButton";
 export * from "./AppTable";
 export * from "./FormSkeleton";
+export * from "./AppTag";
 export * from "./AppSwitch";
 export * from "./AppToast";
 export * from "./DeleteModal";

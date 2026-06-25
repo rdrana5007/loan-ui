@@ -1,6 +1,6 @@
 "use client";
 import { useCustomersQuery, useDeleteCustomerMutation, useUpdateCustomerMutation } from "@/api";
-import { CustomerListParams, CustomerRow } from "@/types";
+import { CustomerListParams, CustomerRow, StatusFilter, VerificationFilter } from "@/types";
 import { TableProps } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useDebounce } from "./useDebounce";
@@ -10,29 +10,28 @@ import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/constants";
 export const useCustomerListing = () => {
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search, 500);
-  const [verificationFilter, setVerificationFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [page, setPage] = useState<number>(1);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [verificationFilter, setVerificationFilter] = useState<VerificationFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [page, setPage] = useState<number>(DEFAULT_PAGE);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(DEFAULT_PAGE_SIZE);
 
   const trimmedSearch = debouncedSearch.trim();
 
   const listParams = useMemo((): CustomerListParams => {
-    const params: CustomerListParams = {};
+    const params: CustomerListParams = {
+      page,
+      pageSize: rowsPerPage
+    };
+
     if (trimmedSearch.length >= 2) {
       params.search = trimmedSearch;
     }
-    if (verificationFilter === "pending" || verificationFilter === "verified" || verificationFilter === "rejected") {
+    if (verificationFilter !== "all") {
       params.verificationStatus = verificationFilter;
     }
-    if (statusFilter === "active") {
-      params.status = true;
-    }
-    if (statusFilter === "inactive") {
-      params.status = false;
-    }
-    params.page = page;
-    params.pageSize = rowsPerPage;
+    if (statusFilter === "active") params.status = true;
+    if (statusFilter === "inactive") params.status = false;
+
     return params;
   }, [trimmedSearch, page, rowsPerPage, verificationFilter, statusFilter]);
 
@@ -64,11 +63,11 @@ export const useCustomerListing = () => {
         setPage(DEFAULT_PAGE);
       }
       if (name === "verification" && typeof value === "string") {
-        setVerificationFilter(value);
+        setVerificationFilter(value as VerificationFilter);
         setPage(DEFAULT_PAGE);
       }
       if (name === "status" && typeof value === "string") {
-        setStatusFilter(value);
+        setStatusFilter(value as StatusFilter);
         setPage(DEFAULT_PAGE);
       }
     },
@@ -85,10 +84,14 @@ export const useCustomerListing = () => {
   const handleToggle = useCallback(
     async (id: number, isActive: boolean) => {
       try {
-        // await updateCustomer({
-        //   id,
-        //   payload: { isActive },
-        // });
+        const formData = new FormData();
+        formData.append("isActive", String(isActive));
+
+        await updateCustomer({
+          id,
+          payload: formData,
+        });
+
         AppToast.success(isActive ? "Customer activated" : "Customer deactivated");
       } catch {
         AppToast.error("Failed to update customer status");

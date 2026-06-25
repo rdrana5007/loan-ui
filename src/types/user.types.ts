@@ -1,5 +1,7 @@
 import { ListParams, PaginationInfo } from "./common.types";
 
+export type RoleFilter = "all" | "isManager" | "isCollector";
+
 interface UserRole {
   id: number;
   name: string;

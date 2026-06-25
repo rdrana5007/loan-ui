@@ -6,13 +6,11 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
 } from "@ant-design/icons";
-import { Grid } from "antd";
 import { usePathname } from "next/navigation";
 import { sidebarMenuItems } from "@/config";
 import { AppButton } from "../Common";
 import { useBreadcrumbs } from "@/contexts";
-
-const { useBreakpoint } = Grid;
+import { useResponsive } from "@/hooks";
 
 interface AppProps {
   children: ReactNode;
@@ -30,12 +28,11 @@ export const App: FC<AppProps> = ({
     token: { colorBgContainer },
   } = theme.useToken();
   const pathname = usePathname();
-  const screens = useBreakpoint();
-  const isMobile = !screens.md; // md = 768px
+  const { isMobile } = useResponsive();
   const breadcrumbs =
     breadcrumbsContext.length > 0 ? breadcrumbsContext : breadcrumbsProp;
-  const [collapsed, setCollapsed] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   const publicRoute = ["/login"];
   const isPublicRoute = publicRoute.some(
@@ -62,22 +59,23 @@ export const App: FC<AppProps> = ({
         <Layout className="min-h-screen">
           {/* Desktop Sidebar */}
           {!isMobile && (
-            <Sider
-              trigger={null}
-              collapsible
-              collapsed={collapsed}
-              width={260}
-              collapsedWidth={90}
-              className="fixed left-0 top-0 h-screen overflow-auto shadow-lg"
-              style={{
-                position: "fixed",
-                left: 0,
-                top: 0,
-                bottom: 0,
-              }}
-            >
-              <div className="flex h-16 items-center justify-center border-b border-gray-700">
-                {/* <Image
+            <div className="hidden md:block">
+              <Sider
+                trigger={null}
+                collapsible
+                collapsed={collapsed}
+                width={260}
+                collapsedWidth={90}
+                className="fixed left-0 top-0 h-screen overflow-auto shadow-lg bg-linear-to-br! from-indigo-700 to-blue-600"
+                style={{
+                  position: "fixed",
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                }}
+              >
+                <div className="flex h-16 items-center justify-center border-gray-700">
+                  {/* <Image
                 src="/logo.png"
                 alt="Logo"
                 width={collapsed ? 40 : 120}
@@ -85,66 +83,74 @@ export const App: FC<AppProps> = ({
                 className="transition-all duration-300"
                 priority
               /> */}
-                <div className="text-white">LOGO</div>
-              </div>
-              <Menu
-                theme="dark"
-                mode="inline"
-                items={sidebarMenuItems}
-                selectedKeys={selectedKey}
-              />
-            </Sider>
+                  <div className="text-white">LOGO</div>
+                </div>
+                <Menu
+                  theme="dark"
+                  mode="inline"
+                  items={sidebarMenuItems}
+                  selectedKeys={selectedKey}
+                  className="bg-transparent! text-base! font-medium"
+                />
+              </Sider>
+            </div>
           )}
 
           {/* Mobile Drawer */}
           {isMobile && (
-            <Drawer
-              placement="left"
-              open={drawerOpen}
-              onClose={() => setDrawerOpen(false)}
-              size={260}
-              closable={false}
-              styles={{
-                body: {
-                  padding: 0,
-                },
-              }}
-            >
-              {/* Drawer Header */}
-              <div className="flex h-16 items-center justify-between border-b px-4">
-                {/* <Image
+            <div className="block md:hidden">
+              <Drawer
+                placement="left"
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                size={260}
+                closable={false}
+                styles={{
+                  body: {
+                    padding: 0,
+                  },
+                }}
+                className="shadow-lg bg-linear-to-br! from-indigo-700 to-blue-600"
+              >
+                {/* Drawer Header */}
+                <div className="flex h-16 items-center justify-between px-4">
+                  {/* <Image
                 src="/logo.png"
                 alt="Logo"
                 width={120}
                 height={40}
                 priority
               /> */}
-                <div className="text-black">LOGO</div>
-                <AppButton
-                  type="text"
-                  icon={<CloseOutlined />}
+                  <div className="text-white">LOGO</div>
+                  <AppButton
+                    type="text"
+                    icon={<CloseOutlined />}
+                    onClick={() => setDrawerOpen(false)}
+                    className="text-white!"
+                    size="large"
+                  />
+                </div>
+                <Menu
+                  mode="inline"
+                  items={sidebarMenuItems}
                   onClick={() => setDrawerOpen(false)}
+                  selectedKeys={selectedKey}
+                  className="bg-transparent! text-white! text-base! font-medium"
                 />
-              </div>
-              <Menu
-                mode="inline"
-                items={sidebarMenuItems}
-                onClick={() => setDrawerOpen(false)}
-                selectedKeys={selectedKey}
-              />
-            </Drawer>
+              </Drawer>
+            </div>
           )}
 
           <Layout
-            className={`transition-all duration-300 ${
-              !isMobile ? (collapsed ? "ml-23" : "ml-65") : ""
-            }`}
+            className={`${collapsed ? "desktop-sider-collapsed" : "desktop-sider"}`}
           >
             {/* Header */}
             <Header
-              style={{ background: colorBgContainer, padding: 8 }}
-              className={`fixed top-0 right-0 z-50 flex h-16 items-center px-4 shadow-sm transition-all duration-300
-                ${!isMobile ? (collapsed ? "left-23" : "left-65") : "left-0"}`}
+              style={{
+                background: colorBgContainer,
+                padding: 8,
+              }}
+              className={`fixed top-0 right-0 z-50 flex h-16 items-center px-4 shadow-sm ${collapsed ? "desktop-header-collapsed" : "desktop-header"}`}
             >
               <AppButton
                 type="text"

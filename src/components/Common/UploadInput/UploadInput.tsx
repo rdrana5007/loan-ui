@@ -16,7 +16,7 @@ export const UploadInput = ({
   label,
   maxCount = 1,
   listType = "picture",
-  isEdit = false
+  isEdit = false,
 }: UploadInputProps) => {
   return (
     <Form.Item
@@ -33,8 +33,9 @@ export const UploadInput = ({
         listType={listType}
         maxCount={maxCount}
         beforeUpload={() => false}
+        onPreview={isEdit ? undefined : () => false}
         showUploadList={{
-          showRemoveIcon: !isEdit
+          showRemoveIcon: !isEdit,
         }}
       >
         <AppButton icon={<UploadOutlined />} label="Click to Upload" />

@@ -30,3 +30,16 @@ export const resolveNumericId = (param?: string): number | null => {
   if (!Number.isNaN(parsed) && Number.isFinite(parsed)) return parsed;
   return null;
 };
+
+type OptionItem<T = string | number> = {
+  value: T;
+  label: string;
+};
+
+export const createOptionMap = <T extends OptionItem>(
+  list: T[],
+): Record<T["value"], T["label"]> => {
+  return Object.fromEntries(
+    list.map((item) => [item.value, item.label]),
+  ) as any;
+};

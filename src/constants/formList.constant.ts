@@ -1,4 +1,4 @@
-import { FilterOption } from "./filterList.constant";
+import { OptionItem } from "@/types";
 
 type Role = {
   id: number;
@@ -13,14 +13,14 @@ export const roleList: Role[] = [
 ];
 
 // Customer verification status list
-export const customerVerificationStatusList: FilterOption[] = [
+export const customerVerificationStatusList: OptionItem[] = [
   { label: "Pending", value: "pending" },
   { label: "Verified", value: "verified" },
   { label: "Rejected", value: "rejected" }
 ];
 
 // Customer gender list
-export const customerGenderOptions: FilterOption[] = [
+export const customerGenderOptions: OptionItem[] = [
   { label: "Male", value: "male" },
   { label: "Female", value: "female" },
   { label: "Other", value: "other" }

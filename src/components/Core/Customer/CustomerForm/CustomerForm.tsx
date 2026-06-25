@@ -19,7 +19,12 @@ import {
   customerVerificationStatusList,
 } from "@/constants";
 import { usePageBreadcrumbs } from "@/hooks";
-import { CustomerFormValues, CustomergGender, CustomerRow } from "@/types";
+import {
+  CustomerFormValues,
+  CustomergGender,
+  CustomerRow,
+  fileImageData,
+} from "@/types";
 import { handleNumericKeyDown, resolveNumericId } from "@/utils";
 import { Col, Divider, Form, Row } from "antd";
 import { useParams, useRouter } from "next/navigation";
@@ -30,7 +35,7 @@ interface CustomerFormProps {
   breadcrumbs?: string[];
 }
 
-const url: string | undefined = process.env.NEXT_PUBLIC_API_BASE_URL;
+const url = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
 const fileFields: Record<string, string> = {
   profileImage: "profile",
@@ -38,9 +43,21 @@ const fileFields: Record<string, string> = {
   panFile: "pan",
 };
 
-const getImagePath = (profile: string) => {
-  return new URL(url + profile).pathname.split("/").pop();
+const getImagePath = (path: string) => {
+  return new URL(path, url).pathname.split("/").pop() || "";
 };
+
+const createUploadFile = (path?: string): fileImageData[] =>
+  path
+    ? [
+        {
+          uid: "-1",
+          name: getImagePath(path),
+          status: "done" as const,
+          url: `${url}${path}`,
+        },
+      ]
+    : [];
 
 const toFormValues = (customer?: CustomerRow | null): CustomerFormValues => ({
   firstName: customer?.firstName ?? "",
@@ -53,23 +70,14 @@ const toFormValues = (customer?: CustomerRow | null): CustomerFormValues => ({
   city: customer?.city ?? "",
   state: customer?.state ?? "",
   pincode: customer?.pincode ?? "",
-  profileImage: customer?.profileImage
-    ? [
-        {
-          uid: "-1",
-          name: getImagePath(customer.profileImage),
-          status: "done",
-          url: url + customer.profileImage,
-        },
-      ]
-    : [],
+  profileImage: createUploadFile(customer?.profileImage),
   aadhaarNumber: customer?.customer_documents?.aadhaarNumber ?? "",
   panNumber: customer?.customer_documents?.panNumber ?? "",
   verificationStatus:
     customer?.customer_documents?.verificationStatus ?? "pending",
   remarks: customer?.customer_documents?.remarks ?? "",
-  aadhaarFile: customer?.customer_documents?.aadhaarFile ?? "",
-  panFile: customer?.customer_documents?.panFile ?? "",
+  aadhaarFile: createUploadFile(customer?.customer_documents?.aadhaarFile),
+  panFile: createUploadFile(customer?.customer_documents?.panFile),
 });
 
 const toApiPayload = (values: CustomerFormValues) => ({
@@ -91,6 +99,24 @@ const toApiPayload = (values: CustomerFormValues) => ({
   aadhaarFile: values.aadhaarFile,
   panFile: values.panFile,
 });
+
+const buildCustomerFormData = (values: CustomerFormValues): FormData => {
+  const formData = new FormData();
+
+  Object.entries(values).forEach(([key, value]) => {
+    if (fileFields[key]) {
+      const file = (value as any)?.[0]?.originFileObj;
+
+      if (file) {
+        formData.append(fileFields[key], file);
+      }
+    } else if (value !== undefined && value !== null) {
+      formData.append(key, String(value));
+    }
+  });
+
+  return formData;
+};
 
 export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
   usePageBreadcrumbs(title, breadcrumbs);
@@ -116,30 +142,17 @@ export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
     }
   }, [data, form]);
 
-  const buildCustomerFormData = (values: CustomerFormValues) => {
-    const formData = new FormData();
-    Object.entries(values).forEach(([key, value]) => {
-      if (fileFields[key]) {
-        const file = (value as any)?.[0]?.originFileObj;
-        if (file) {
-          formData.append(fileFields[key], file);
-        }
-      } else if (value !== undefined && value !== null) {
-        formData.append(key, String(value));
-      }
-    });
-    return formData;
-  };
-
   const handleSubmit = async (values: CustomerFormValues) => {
     const payload = toApiPayload(values);
     try {
       const formData = buildCustomerFormData(payload);
+
       if (isEdit && data?.id) {
         const response = await updateCustomer({
           id: data.id,
           payload: formData,
         });
+
         if (response && response.status === 200) {
           AppToast.success(response.data?.message ?? "Customer updated");
         }
@@ -149,6 +162,7 @@ export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
           AppToast.success(response.data?.message ?? "Customer created");
         }
       }
+
       router.replace("/customers");
     } catch (error: any) {
       AppToast.error(
@@ -158,7 +172,7 @@ export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
   };
 
   if (isEdit && isLoading) {
-    return <FormSkeleton fields={15} />;
+    return <FormSkeleton fields={17} />;
   }
 
   return (
@@ -173,7 +187,13 @@ export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
         onFinish={handleSubmit}
       >
         <Row gutter={[16, 16]}>
-          <Divider titlePlacement="start">Personal Details</Divider>
+          <Col span={24}>
+            <Divider titlePlacement="start">
+              <span className="font-semibold text-primary">
+                Personal Details
+              </span>
+            </Divider>
+          </Col>
           <Col xs={24} sm={12}>
             <TextInput
               name="firstName"
@@ -225,13 +245,15 @@ export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
             />
           </Col>
           <Col xs={24} sm={12}>
-            <UploadInput
-              name="profileImage"
-              label="Profile"
-              isEdit={isEdit}
-            />
+            <UploadInput name="profileImage" label="Profile" isEdit={isEdit} />
           </Col>
-          <Divider titlePlacement="start">Address</Divider>
+          <Col span={24}>
+            <Divider titlePlacement="start">
+              <span className="font-semibold text-primary">
+                Address Details
+              </span>
+            </Divider>
+          </Col>
           <Col xs={24} sm={12}>
             <TextInput
               name="address"
@@ -274,11 +296,17 @@ export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
               onKeyDown={(e) => handleNumericKeyDown(e)}
             />
           </Col>
-          <Divider titlePlacement="start">Documents</Divider>
+          <Col span={24}>
+            <Divider titlePlacement="start">
+              <span className="font-semibold text-primary">
+                Documents & Verification
+              </span>
+            </Divider>
+          </Col>
           <Col xs={24} sm={12}>
             <TextInput
               name="aadhaarNumber"
-              label="Aadhaar number"
+              label="Aadhaar"
               required={true}
               pattern={/^[0-9]{12}$/}
               requiredMsg="Aadhaar number is required"
@@ -290,7 +318,7 @@ export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
           <Col xs={24} sm={12}>
             <TextInput
               name="panNumber"
-              label="Pan number"
+              label="PAN"
               required={true}
               pattern={/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/}
               requiredMsg="Pan number is required"
@@ -299,18 +327,10 @@ export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
             />
           </Col>
           <Col xs={24} sm={12}>
-            <UploadInput
-              name="aadhaarFile"
-              label="Aadhaar"
-              isEdit={isEdit}
-            />
+            <UploadInput name="aadhaarFile" label="Aadhaar file" isEdit={isEdit} />
           </Col>
           <Col xs={24} sm={12}>
-            <UploadInput
-              name="panFile"
-              label="Pan"
-              isEdit={isEdit}
-            />
+            <UploadInput name="panFile" label="Pan file" isEdit={isEdit} />
           </Col>
           <Col xs={24} sm={12}>
             <SelectInput
@@ -360,38 +380,3 @@ export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
     </div>
   );
 };
-
-// const handleSubmit = (values: any) => {
-//   const formData = new FormData();
-
-//   Object.keys(values).forEach((key) => {
-//     if (key === "profileImage") {
-//       const file = values.profileImage?.[0]?.originFileObj;
-//       if (file) {
-//         formData.append("profileImage", file);
-//       }
-//     } else {
-//       formData.append(key, values[key]);
-//     }
-//   });
-
-//   // send formData to API
-// };
-
-// Optional: show existing image in edit mode
-
-// If editing customer:
-
-// initialValues={{
-//   ...toFormValues(data),
-//   profileImage: data?.profileImage
-//     ? [
-//         {
-//           uid: "-1",
-//           name: "image.png",
-//           status: "done",
-//           url: data.profileImage,
-//         },
-//       ]
-//     : [],
-// }}

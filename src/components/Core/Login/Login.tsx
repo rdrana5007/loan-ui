@@ -14,7 +14,7 @@ export const Login = () => {
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
       {/* Left Side */}
-      <div className="hidden lg:flex items-center justify-center bg-gradient-to-br from-indigo-700 to-blue-600 text-white px-8 xl:px-12 py-10">
+      <div className="hidden lg:flex items-center justify-center bg-linear-to-br from-indigo-700 to-blue-600 text-white px-8 xl:px-12 py-10">
         <div className="max-w-md">
           <h1 className="text-4xl xl:text-5xl font-bold mb-6">Welcome Back</h1>
 
@@ -26,7 +26,7 @@ export const Login = () => {
       </div>
 
       {/* Right Side */}
-      <div className="flex items-center justify-center bg-gradient-to-br from-indigo-600 via-blue-500 to-cyan-400 px-4 py-6 sm:px-6 md:px-8">
+      <div className="flex items-center justify-center bg-linear-to-br from-indigo-600 via-blue-500 to-cyan-400 px-4 py-6 sm:px-6 md:px-8">
         <Card
           className="w-full max-w-md shadow-2xl rounded-2xl border-0"
           styles={{
@@ -50,7 +50,7 @@ export const Login = () => {
             </div>
             <Title
               level={2}
-              className="!mb-1 !text-2xl sm:!text-3xl hidden lg:block"
+              className="mb-1! text-2xl! sm:text-3xl hidden lg:block"
             >
               Welcome Back
             </Title>
@@ -95,7 +95,7 @@ export const Login = () => {
                 block
                 label={isLoginPending ? "Signing in..." : "Sign In"}
                 disabled={isLoginPending}
-                className={`!h-12 !rounded-lg !font-semibold bg-indigo-500! text-white!`}
+                className={`h-12! rounded-lg! font-semibold! bg-indigo-500! text-white!`}
               />
             </Form.Item>
           </Form>

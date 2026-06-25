@@ -1,3 +1,10 @@
+export type StatusFilter = "all" | "active" | "inactive";
+
+export type OptionItem = {
+  label: string;
+  value: string;
+};
+
 export interface ListParams {
   search?: string;
   page?: number;

@@ -1,6 +1,6 @@
 "use client";
 import { useDeleteUserMutation, useUpdateUserMutation, useUsersQuery } from "@/api";
-import { UserListParams, UserRow } from "@/types";
+import { RoleFilter, StatusFilter, UserListParams, UserRow } from "@/types";
 import { TableProps } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useDebounce } from "./useDebounce";
@@ -10,32 +10,27 @@ import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/constants";
 export const useUserListing = () => {
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search, 500);
-  const [roleFilter, setRoleFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [page, setPage] = useState<number>(1);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [roleFilter, setRoleFilter] = useState<RoleFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [page, setPage] = useState<number>(DEFAULT_PAGE);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(DEFAULT_PAGE_SIZE);
 
   const trimmedSearch = debouncedSearch.trim();
 
   const listParams = useMemo((): UserListParams => {
-    const params: UserListParams = {};
+    const params: UserListParams = {
+      page,
+      pageSize: rowsPerPage
+    };
+
     if (trimmedSearch.length >= 2) {
       params.search = trimmedSearch;
     }
-    if (roleFilter === "isManager") {
-      params.isManager = true;
-    }
-    if (roleFilter === "isCollector") {
-      params.isCollector = true;
-    }
-    if (statusFilter === "active") {
-      params.status = true;
-    }
-    if (statusFilter === "inactive") {
-      params.status = false;
-    }
-    params.page = page;
-    params.pageSize = rowsPerPage;
+    if (roleFilter === "isManager") params.isManager = true;
+    if (roleFilter === "isCollector") params.isCollector = true;
+    if (statusFilter === "active") params.status = true;
+    if (statusFilter === "inactive") params.status = false;
+
     return params;
   }, [trimmedSearch, page, rowsPerPage, roleFilter, statusFilter]);
 
@@ -67,11 +62,11 @@ export const useUserListing = () => {
         setPage(DEFAULT_PAGE);
       }
       if (name === "role" && typeof value === "string") {
-        setRoleFilter(value);
+        setRoleFilter(value as RoleFilter);
         setPage(DEFAULT_PAGE);
       }
       if (name === "status" && typeof value === "string") {
-        setStatusFilter(value);
+        setStatusFilter(value as StatusFilter);
         setPage(DEFAULT_PAGE);
       }
     },
