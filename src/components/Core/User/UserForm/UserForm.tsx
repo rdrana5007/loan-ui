@@ -20,11 +20,6 @@ import { Col, Form, Row } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import { FC, useEffect, useMemo } from "react";
 
-interface UserFormProps {
-  title: string;
-  breadcrumbs?: string[];
-}
-
 const toFormValues = (user?: UserRow | null): UserFormValues => ({
   userName: user?.userName ?? "",
   fullName: user?.fullName ?? "",
@@ -44,15 +39,22 @@ const toApiPayload = (values: UserFormValues) => ({
   isActive: values.isActive,
 });
 
-export const UserForm: FC<UserFormProps> = ({ title, breadcrumbs }) => {
-  usePageBreadcrumbs(title, breadcrumbs);
+interface UserFormProps {
+  breadcrumbs?: string[];
+}
+
+export const UserForm: FC<UserFormProps> = ({ breadcrumbs }) => {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const [form] = Form.useForm();
 
   const id: string = params?.id;
   const numericId = useMemo(() => resolveNumericId(id), [id]);
+
   const isEdit: boolean = !!numericId;
+
+  const title: string | number = isEdit ? `User-${id}` || "" : "Add User";
+  usePageBreadcrumbs(title, breadcrumbs, "Users");
 
   const { data, isLoading } = useUserQuery(numericId!);
   const { mutateAsync: createUser, isPending: isCreating } =

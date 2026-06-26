@@ -1,35 +1,38 @@
+"use client";
 import type { MenuProps } from "antd";
 import {
+  DashboardOutlined,
+  SolutionOutlined,
   UploadOutlined,
   UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 
-export const sidebarMenuItems: MenuProps['items'] = [
+export const SIDEBAR_MENU_ITEMS: MenuProps['items'] = [
   {
     key: "1",
-    icon: <UserOutlined />,
+    icon: <DashboardOutlined className="text-lg!" />,
     label: <Link href="/">Dashboard</Link>,
   },
   {
     key: "2",
-    icon: <UserOutlined />,
+    icon: <UserOutlined className="text-lg!" />,
     label: <Link href="/users">Users</Link>,
   },
   {
     key: "3",
-    icon: <UserOutlined />,
+    icon: <SolutionOutlined className="text-lg!" />,
     label: <Link href="/customers">Customers</Link>,
   },
   {
     key: "4",
-    icon: <VideoCameraOutlined />,
+    icon: <VideoCameraOutlined className="text-lg!" />,
     label: <Link href="/videos">Videos</Link>,
   },
   {
     key: "5",
-    icon: <UploadOutlined />,
+    icon: <UploadOutlined className="text-lg!" />,
     label: <Link href="/uploads">Uploads</Link>,
   },
 ];

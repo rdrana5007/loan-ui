@@ -166,7 +166,7 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
             </div>
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <div className="flex flex-col sm:flex-row gap-3">
-                <div className="w-full sm:w-40 md:w-35 lg:w-40">
+                <div className="w-full sm:w-40 md:w-30 lg:w-40">
                   <FilterInput
                     placeholder="All Users"
                     filterKey="role"
@@ -176,7 +176,7 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
                     onChange={handleFilterChange}
                   />
                 </div>
-                <div className="w-full sm:w-40 md:w-35 lg:w-40">
+                <div className="w-full sm:w-40 md:w-30 lg:w-40">
                   <FilterInput
                     placeholder="All Status"
                     filterKey="status"

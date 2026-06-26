@@ -55,6 +55,7 @@ export interface CustomerListParams extends ListParams {
 
 export type CustomerRow = {
   id: number;
+  customerCode: string;
   firstName: string;
   lastName: string;
   email: string;

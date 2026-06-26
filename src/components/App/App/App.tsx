@@ -1,0 +1,94 @@
+"use client";
+import { FC, ReactNode, useCallback, useState } from "react";
+import { Layout } from "antd";
+import { usePathname } from "next/navigation";
+import { useBreadcrumbs } from "@/contexts";
+import { useResponsive } from "@/hooks";
+import clsx from "clsx";
+import { LayoutSidebar } from "../LayoutSidebar";
+import { LayoutHeader } from "../LayoutHeader";
+import { LayoutContent } from "../LayoutContent";
+
+const { Footer } = Layout;
+
+const PUBLIC_ROUTES = ["/login"];
+
+const ROUTE_MAP: Record<string, string> = {
+  "/users": "2",
+  "/customers": "3",
+  "/videos": "4",
+  "/uploads": "5",
+};
+
+interface AppProps {
+  children: ReactNode;
+  breadcrumbs?: string[];
+}
+
+export const App: FC<AppProps> = ({
+  children,
+  breadcrumbs: breadcrumbsProp,
+}) => {
+  const pathname = usePathname();
+  const { breadcrumbs: breadcrumbsContext } = useBreadcrumbs();
+  const { isMobile } = useResponsive();
+
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+
+  const breadcrumbs =
+    breadcrumbsContext.length > 0 ? breadcrumbsContext : breadcrumbsProp ?? [];
+
+  const isPublicRoute = PUBLIC_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route),
+  );
+
+  const selectedKey = [
+    Object.entries(ROUTE_MAP).find(([route]) =>
+      pathname.startsWith(route),
+    )?.[1] ?? "1",
+  ];
+
+  const toggleSidebar = useCallback(() => {
+    if (isMobile) {
+      setDrawerOpen(true);
+    } else {
+      setCollapsed((prev) => !prev);
+    }
+  }, [isMobile]);
+
+  const closeDrawer = useCallback(() => {
+    setDrawerOpen(false);
+  }, []);
+
+  if (isPublicRoute) {
+    return <>{children}</>;
+  }
+
+  return (
+    <Layout className="min-h-screen">
+      <LayoutSidebar
+        selectedKey={selectedKey}
+        isMobile={isMobile}
+        collapsed={collapsed}
+        drawerOpen={drawerOpen}
+        onClose={closeDrawer}
+      />
+      <Layout
+        className={clsx(
+          collapsed ? "desktop-sider-collapsed" : "desktop-sider",
+        )}
+      >
+        <LayoutHeader
+          isMobile={isMobile}
+          collapsed={collapsed}
+          onToggleSidebar={toggleSidebar}
+        />
+        <LayoutContent breadcrumbs={breadcrumbs}>{children}</LayoutContent>
+        <Footer style={{ textAlign: "center" }}>
+          Ant Design Created by Ant UED
+        </Footer>
+      </Layout>
+    </Layout>
+  );
+};

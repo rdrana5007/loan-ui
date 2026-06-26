@@ -30,11 +30,6 @@ import { Col, Divider, Form, Row } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import { FC, useEffect, useMemo } from "react";
 
-interface CustomerFormProps {
-  title: string;
-  breadcrumbs?: string[];
-}
-
 const url = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
 const fileFields: Record<string, string> = {
@@ -118,14 +113,18 @@ const buildCustomerFormData = (values: CustomerFormValues): FormData => {
   return formData;
 };
 
-export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
-  usePageBreadcrumbs(title, breadcrumbs);
+interface CustomerFormProps {
+  breadcrumbs?: string[];
+}
+
+export const CustomerForm: FC<CustomerFormProps> = ({ breadcrumbs }) => {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const [form] = Form.useForm();
 
   const id: string = params?.id;
   const numericId = useMemo(() => resolveNumericId(id), [id]);
+
   const isEdit: boolean = !!numericId;
 
   const { data, isLoading } = useCustomerQuery(numericId!);
@@ -135,6 +134,9 @@ export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
     useUpdateCustomerMutation();
 
   const isSubmitting: boolean = isCreating || isUpdating;
+
+  const title: string | number = isEdit ? data?.customerCode || "" : "Add Customer";
+  usePageBreadcrumbs(title, breadcrumbs, "Customers");
 
   useEffect(() => {
     if (data) {
@@ -199,8 +201,8 @@ export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
               name="firstName"
               label="First name"
               required={true}
-              requiredMsg="User name is required"
-              placeholder="Enter user name"
+              requiredMsg="First name is required"
+              placeholder="Enter first name"
             />
           </Col>
           <Col xs={24} sm={12}>
@@ -208,8 +210,8 @@ export const CustomerForm: FC<CustomerFormProps> = ({ title, breadcrumbs }) => {
               name="lastName"
               label="Last name"
               required={true}
-              requiredMsg="Full name is required"
-              placeholder="Enter full name"
+              requiredMsg="Last name is required"
+              placeholder="Enter last name"
             />
           </Col>
           <Col xs={24} sm={12}>

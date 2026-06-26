@@ -2,12 +2,20 @@
 import { useEffect } from "react";
 import { useBreadcrumbs } from "@/contexts";
 
-export const usePageBreadcrumbs = (title?: string, breadcrumbs?: string[]) => {
+export const usePageBreadcrumbs = (
+  title?: string,
+  breadcrumbs?: string[],
+  baseBreadcrumb?: string,
+) => {
   const { setBreadcrumbs } = useBreadcrumbs();
 
   useEffect(() => {
-    const items = breadcrumbs?.length ? breadcrumbs : title ? [title] : [];
+    const items = [
+      ...(baseBreadcrumb ? [baseBreadcrumb] : []),
+      ...(title ? [title] : []),
+    ];
+
     setBreadcrumbs(items);
     return () => setBreadcrumbs([]);
-  }, [breadcrumbs, title, setBreadcrumbs]);
+  }, [breadcrumbs, baseBreadcrumb, title, setBreadcrumbs]);
 };
