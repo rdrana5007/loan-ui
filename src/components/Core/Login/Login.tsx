@@ -1,9 +1,10 @@
 "use client";
 import { Form, Card, Typography } from "antd";
-import { LoginOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useAuthentication } from "@/hooks";
 import { AppButton, TextInput } from "@/components/Common";
+import Image from "next/image";
+import Logo from "@/assets/Logo1.png";
 
 const { Title, Text } = Typography;
 
@@ -37,7 +38,9 @@ export const Login = () => {
         >
           {/* Mobile Welcome Text */}
           <div className="lg:hidden text-center mb-6">
-            <h2 className="text-2xl lg:text-3xl font-bold text-center lg:text-left">Welcome Back</h2>
+            <h2 className="text-2xl lg:text-3xl font-bold text-center lg:text-left">
+              Welcome Back
+            </h2>
             <p className="text-sm lg:text-base text-gray-500 text-center lg:text-left">
               Sign in to continue to your account
             </p>
@@ -46,7 +49,15 @@ export const Login = () => {
           {/* Logo / Header */}
           <div className="text-center mb-8">
             <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 bg-indigo-500 rounded-full flex items-center justify-center">
-              <LoginOutlined className="text-white! text-xl sm:text-2xl" />
+              <Image
+                src={Logo}
+                alt="Logo"
+                width={60}
+                height={60}
+                priority
+                sizes="100vw"
+                className="object-cover transition-all duration-300"
+              />
             </div>
             <Title
               level={2}
@@ -77,7 +88,7 @@ export const Login = () => {
               requiredMsg="Password is required"
               placeholder="Enter password"
             />
-            <Form.Item>
+            {/* <Form.Item>
               <div className="flex justify-end">
                 <Link
                   href="/forgot-password"
@@ -86,7 +97,7 @@ export const Login = () => {
                   Forgot Password
                 </Link>
               </div>
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item>
               <AppButton
                 type="primary"

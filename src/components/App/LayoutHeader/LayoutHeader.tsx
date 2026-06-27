@@ -1,10 +1,18 @@
 "use client";
-import { Avatar, Dropdown, Layout, Space, theme } from "antd";
+import { Avatar, Dropdown, Layout, MenuProps, Space, theme } from "antd";
 import clsx from "clsx";
 import { AppButton } from "../../Common";
-import { DownOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UpOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  DownOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  UpOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { useState } from "react";
 import { DROPDOWN_ITEMS } from "@/config";
+import { useAuthentication } from "@/hooks";
+import { useRouter } from "next/navigation";
 
 const { Header } = Layout;
 
@@ -19,13 +27,26 @@ export const LayoutHeader = ({
   collapsed,
   onToggleSidebar,
 }: LayoutHeaderProps) => {
+  const router = useRouter();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  const { handleLogout } = useAuthentication();
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const headerIcon =
     isMobile || collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />;
+
+  const onMenuClick: MenuProps["onClick"] = ({ key }) => {
+    switch (key) {
+      case "logout":
+        handleLogout();
+        break;
+      case "profile":
+        router.push("/profile");
+        break;
+    }
+  };
 
   return (
     <Header
@@ -53,6 +74,7 @@ export const LayoutHeader = ({
           onOpenChange={setIsDropdownOpen}
           menu={{
             items: DROPDOWN_ITEMS,
+            onClick: onMenuClick,
           }}
           trigger={["click"]}
         >
