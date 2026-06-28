@@ -2,7 +2,7 @@
 import { SIDEBAR_MENU_ITEMS } from "@/config";
 import { Drawer, Layout, Menu } from "antd";
 import Image from "next/image";
-import Logo from "@/assets/eng_logo.png";
+import Logo from "@/assets/Logo1.png";
 import { AppButton } from "../../Common";
 import { CloseOutlined } from "@ant-design/icons";
 
@@ -72,7 +72,7 @@ const DesktopSidebar = ({ collapsed, selectedKey }: DesktopSidebarProps) => (
       className="fixed! left-0 top-0 bottom-0 h-screen overflow-auto shadow-lg bg-linear-to-br! from-indigo-700 to-blue-600"
     >
       <div className="flex h-16 items-center justify-center border-gray-700">
-        {/* <AppLogo collapsed={collapsed} /> */}
+        <AppLogo collapsed={collapsed} />
       </div>
       <SidebarMenu selectedKey={selectedKey} />
     </Sider>
@@ -95,7 +95,7 @@ const MobileDrawer = ({
       className="shadow-lg bg-linear-to-br! from-indigo-700 to-blue-600"
     >
       <div className="flex h-16 items-center justify-between px-4">
-        {/* <AppLogo /> */}
+        <AppLogo />
         <AppButton
           type="text"
           icon={<CloseOutlined />}
@@ -124,14 +124,14 @@ const SidebarMenu = ({ selectedKey, mobile, onClose }: SidebarMenuProps) => (
   />
 );
 
-// const AppLogo = ({ collapsed }: AppLogoProps) => (
-//   <Image
-//     src={Logo}
-//     alt="Logo"
-//     width={collapsed ? 40 : 50}
-//     height={collapsed ? 40 : 50}
-//     priority
-//     sizes="100vw"
-//     className="object-cover transition-all duration-300"
-//   />
-// );
+const AppLogo = ({ collapsed }: AppLogoProps) => (
+  <Image
+    src={Logo}
+    alt="Logo"
+    width={collapsed ? 50 : 60}
+    height={collapsed ? 50 : 60}
+    priority
+    sizes="100vw"
+    className="object-cover transition-all duration-300 border-2 border-white rounded-full"
+  />
+);
