@@ -85,8 +85,9 @@ export const App: FC<AppProps> = ({
           onToggleSidebar={toggleSidebar}
         />
         <LayoutContent breadcrumbs={breadcrumbs}>{children}</LayoutContent>
-        <Footer style={{ textAlign: "center" }}>
-          Ant Design Created by Ant UED
+        <Footer className="text-center text-gray-500! text-base! font-medium">
+          {/* Ant Design Created by Ant UED */}
+          Loan Management Created by HNH Group
         </Footer>
       </Layout>
     </Layout>
