@@ -25,14 +25,14 @@ export const SIDEBAR_MENU_ITEMS: MenuProps['items'] = [
     icon: <SolutionOutlined className="text-lg!" />,
     label: <Link href="/customers">Customers</Link>,
   },
-  {
-    key: "4",
-    icon: <VideoCameraOutlined className="text-lg!" />,
-    label: <Link href="/videos">Videos</Link>,
-  },
-  {
-    key: "5",
-    icon: <UploadOutlined className="text-lg!" />,
-    label: <Link href="/uploads">Uploads</Link>,
-  },
+  // {
+  //   key: "4",
+  //   icon: <VideoCameraOutlined className="text-lg!" />,
+  //   label: <Link href="/videos">Videos</Link>,
+  // },
+  // {
+  //   key: "5",
+  //   icon: <UploadOutlined className="text-lg!" />,
+  //   label: <Link href="/uploads">Uploads</Link>,
+  // },
 ];

@@ -132,6 +132,6 @@ const AppLogo = ({ collapsed }: AppLogoProps) => (
     height={collapsed ? 50 : 60}
     priority
     sizes="100vw"
-    className="object-cover transition-all duration-300 border-2 border-white rounded-full"
+    className="object-cover transition-all duration-300s"
   />
 );
