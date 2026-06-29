@@ -85,9 +85,9 @@ export const App: FC<AppProps> = ({
           onToggleSidebar={toggleSidebar}
         />
         <LayoutContent breadcrumbs={breadcrumbs}>{children}</LayoutContent>
-        <Footer className="text-center text-gray-500! text-base! font-medium">
+        <Footer className="text-center text-gray-500! md:text-base! font-medium">
           {/* Ant Design Created by Ant UED */}
-          Loan Management Created by HNH Group
+          © 2026 HNH Group | Loan Management System. All Rights Reserved.
         </Footer>
       </Layout>
     </Layout>
