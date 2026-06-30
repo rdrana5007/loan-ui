@@ -90,7 +90,7 @@ const toApiPayload = (values: CustomerFormValues) => ({
   aadhaarNumber: values.aadhaarNumber.trim(),
   panNumber: values.panNumber.trim(),
   verificationStatus: values.verificationStatus,
-  remarks: values.remarks.trim(),
+  remarks: values.remarks.trim() || "",
   aadhaarFile: values.aadhaarFile,
   panFile: values.panFile,
 });

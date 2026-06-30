@@ -15,7 +15,7 @@ import {
 } from "@/constants";
 import { useCustomerListing, usePageBreadcrumbs, useResponsive } from "@/hooks";
 import { CustomerRow, VerificationStatus } from "@/types";
-import { createOptionMap, formatters } from "@/utils";
+import { formatters } from "@/utils";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -29,20 +29,8 @@ import { FC, useCallback, useMemo } from "react";
 const renderFullName = (record: CustomerRow) =>
   [record.firstName, record.lastName].filter(Boolean).join(" ") || "--";
 
-const VERIFICATION_COLOR_MAP: Record<VerificationStatus, string> = {
-  pending: "gold",
-  verified: "green",
-  rejected: "red",
-};
-
-const VERIFICATION_MAP = createOptionMap(customerVerificationStatusList);
-
 const renderVerificationTag = (val?: VerificationStatus) => (
-  <AppTag
-    value={val}
-    labelMap={VERIFICATION_MAP}
-    colorMap={VERIFICATION_COLOR_MAP}
-  />
+  <AppTag value={val} options={customerVerificationStatusList} />
 );
 
 interface CustomerListingProps {
@@ -167,7 +155,7 @@ export const CustomerListing: FC<CustomerListingProps> = ({
         dataIndex: "createdAt",
         key: "createdAt",
         width: 180,
-        render: formatters.date,
+        render: formatters.dateTime,
       },
       {
         title: "Active",

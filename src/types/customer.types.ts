@@ -69,6 +69,7 @@ export type CustomerRow = {
   isActive: boolean;
   createdAt: string;
   customer_documents: CustomerDocument;
+  created_by: CreatedBy;
 };
 
 export interface fileImageData {

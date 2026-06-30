@@ -128,7 +128,7 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
         dataIndex: "createdAt",
         key: "createdAt",
         width: 180,
-        render: formatters.date,
+        render: formatters.dateTime,
       },
       {
         title: "Active",

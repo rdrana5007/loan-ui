@@ -13,6 +13,17 @@ export const formatDateTime = (value: string | number | Date): string => {
     .replace(",", "");
 };
 
+// format date
+export const formatDate = (value: string | number | Date): string => {
+  return new Date(value)
+    .toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    })
+    .replace(",", "");
+};
+
 export const handleNumericKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
   if (e.ctrlKey || e.metaKey) return;
 

@@ -1,26 +1,28 @@
+import { OptionItem } from "@/types";
 import { Tag } from "antd";
 
 type AppTagProps<T extends string> = {
   value?: T;
-  labelMap: Record<T, string>;
-  colorMap: Record<T, string>;
+  options: OptionItem<T>[];
   fallback?: string;
 };
 
 export const AppTag = <T extends string>({
   value,
-  labelMap,
-  colorMap,
+  options,
   fallback = "--",
 }: AppTagProps<T>) => {
   if (!value) return <span>{fallback}</span>;
+
+  const option = options.find((item) => item.value === value);
+
   return (
     <Tag
-      color={colorMap[value] ?? "default"}
+      color={option?.color ?? "default"}
       variant="solid"
       className="font-bold"
     >
-      {labelMap[value] ?? fallback}
+      {option?.label ?? fallback}
     </Tag>
   );
 };

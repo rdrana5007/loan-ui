@@ -5,11 +5,11 @@ import { TableProps } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useDebounce } from "./useDebounce";
 import { AppToast } from "@/components";
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/constants";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, SEARCH_DEBOUNCE_MS } from "@/constants";
 
 export const useCustomerListing = () => {
   const [search, setSearch] = useState<string>("");
-  const debouncedSearch = useDebounce(search, 500);
+  const debouncedSearch = useDebounce(search, SEARCH_DEBOUNCE_MS);
   const [verificationFilter, setVerificationFilter] = useState<VerificationFilter>("all");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [page, setPage] = useState<number>(DEFAULT_PAGE);
@@ -26,7 +26,7 @@ export const useCustomerListing = () => {
     if (trimmedSearch.length >= 2) {
       params.search = trimmedSearch;
     }
-    if (verificationFilter !== "all") {
+    if (verificationFilter && verificationFilter !== "all") {
       params.verificationStatus = verificationFilter;
     }
     if (statusFilter === "active") params.status = true;

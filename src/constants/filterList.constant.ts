@@ -1,4 +1,4 @@
-import { OptionItem } from "@/types";
+import { LoanStatus, OptionItem } from "@/types";
 
 // User role filter
 export const userRole: OptionItem[] = [
@@ -20,4 +20,15 @@ export const customerVerificationStatus: OptionItem[] = [
   { label: "Pending", value: "pending" },
   { label: "Verified", value: "verified" },
   { label: "Rejected", value: "rejected" }
+];
+
+// Loan status filter
+export const loanStatus: OptionItem[] = [
+  { label: "All Status", value: "all" },
+  { label: "Pending", value: "pending" },
+  { label: "Approved", value: "approved" },
+  { label: "Rejected", value: "rejected" },
+  { label: "Active", value: "active" },
+  { label: "Closed", value: "closed" },
+  { label: "Defaulted", value: "defaulted" }
 ];
