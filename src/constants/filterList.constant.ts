@@ -1,4 +1,4 @@
-import { LoanStatus, OptionItem } from "@/types";
+import { OptionItem } from "@/types";
 
 // Filter keys
 export const FILTER_KEYS = {
