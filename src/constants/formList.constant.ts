@@ -1,4 +1,10 @@
-import { OptionItem } from "@/types";
+import {
+  EmiScheduleStatus,
+  LoanStatus,
+  OptionItem,
+  PaymentMethodFilter,
+  VerificationStatus,
+} from "@/types";
 
 type Role = {
   id: number;
@@ -9,19 +15,46 @@ type Role = {
 // User role list
 export const roleList: Role[] = [
   { id: 1, label: "Manager", value: 2 },
-  { id: 2, label: "Collector", value: 3 }
+  { id: 2, label: "Collector", value: 3 },
 ];
 
 // Customer verification status list
-export const customerVerificationStatusList: OptionItem[] = [
-  { label: "Pending", value: "pending" },
-  { label: "Verified", value: "verified" },
-  { label: "Rejected", value: "rejected" }
-];
+export const customerVerificationStatusList: OptionItem<VerificationStatus>[] =
+  [
+    { label: "Pending", value: "pending", color: "gold" },
+    { label: "Verified", value: "verified", color: "green" },
+    { label: "Rejected", value: "rejected", color: "red" },
+  ];
 
 // Customer gender list
 export const customerGenderOptions: OptionItem[] = [
   { label: "Male", value: "male" },
   { label: "Female", value: "female" },
-  { label: "Other", value: "other" }
+  { label: "Other", value: "other" },
+];
+
+// Loan status list
+export const loanStatusList: OptionItem<LoanStatus>[] = [
+  { label: "Pending", value: "pending", color: "gold" },
+  { label: "Approved", value: "approved", color: "green" },
+  { label: "Rejected", value: "rejected", color: "red" },
+  { label: "Active", value: "active", color: "blue" },
+  { label: "Closed", value: "closed", color: "geekblue" },
+  { label: "Defaulted", value: "defaulted", color: "default" },
+];
+
+// Emi Schedule status list
+export const emiScheduleStatusList: OptionItem<EmiScheduleStatus>[] = [
+  { label: "Pending", value: "pending", color: "gold" },
+  { label: "Paid", value: "paid", color: "green" },
+  { label: "Partial", value: "partial", color: "blue" },
+  { label: "Overdue", value: "overdue", color: "red" },
+];
+
+// Payment method list
+export const paymentMethodList: OptionItem<PaymentMethodFilter>[] = [
+  { label: "Cash", value: "cash", color: "green" },
+  { label: "UPI", value: "upi", color: "purple" },        
+  { label: "Cheque", value: "cheque", color: "orange" },  
+  { label: "Bank Transfer", value: "bank", color: "blue" },
 ];

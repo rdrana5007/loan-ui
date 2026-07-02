@@ -1,6 +1,6 @@
 import { USER_KEYS } from "@/constants";
 import { UserService } from "@/services";
-import { UserApiRecord, UserFormValues, UserListParams, UserPaginatedResponse } from "@/types";
+import { CollectorPaginatedResponse, ListParams, UserApiRecord, UserFormValues, UserListParams, UserPaginatedResponse } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const userService = new UserService();
@@ -11,6 +11,33 @@ export const useUsersQuery = (params?: UserListParams) => {
     placeholderData: (previousData) => previousData,
     queryFn: async () => {
       const response = await userService.getUsers(params);
+      const payload = response.data?.data;
+      const totalCount = payload.page_info.total_count ?? payload.items.length;
+
+      if (Array.isArray(payload)) {
+        const perPage = params?.pageSize ?? totalCount;
+        const page = params?.page ?? 1;
+        return {
+          data: payload,
+          meta: {
+            current_page: page,
+            per_page: perPage,
+            total: totalCount,
+          },
+        };
+      }
+
+      return payload;
+    },
+  });
+};
+
+export const useCollectorsQuery = (id: number, params?: ListParams) => {
+  return useQuery<CollectorPaginatedResponse>({
+    queryKey: [...USER_KEYS.collectors, id, JSON.stringify(params)],
+    placeholderData: (previousData) => previousData,
+    queryFn: async () => {
+      const response = await userService.getCollectors(id, params);
       const payload = response.data?.data;
       const totalCount = payload.page_info.total_count ?? payload.items.length;
 

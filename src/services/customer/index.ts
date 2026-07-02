@@ -1,6 +1,6 @@
 import CookiePersistence from "@/utils/cookiePersistence";
 import { Client } from "../apiClient";
-import { CustomerListParams } from "@/types";
+import { CustomerListParams, ListParams } from "@/types";
 
 const client = new Client();
 const localCookie = new CookiePersistence();
@@ -18,6 +18,15 @@ export default class CustomerService {
     return client.api({
       method: "GET",
       url: "/customers",
+      headers: this.getAuthHeaders(),
+      params,
+    });
+  }
+
+  getCustomerCodes(id: number, params?: ListParams) {
+    return client.api({
+      method: "GET",
+      url: `/customers/${id}/codes`,
       headers: this.getAuthHeaders(),
       params,
     });

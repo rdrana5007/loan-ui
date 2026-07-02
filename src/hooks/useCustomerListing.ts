@@ -5,11 +5,13 @@ import { TableProps } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useDebounce } from "./useDebounce";
 import { AppToast } from "@/components";
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/constants";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, FILTER_KEYS, SEARCH_DEBOUNCE_MS } from "@/constants";
+
+const { SEARCH, VERIFICATION, STATUS } = FILTER_KEYS;
 
 export const useCustomerListing = () => {
   const [search, setSearch] = useState<string>("");
-  const debouncedSearch = useDebounce(search, 500);
+  const debouncedSearch = useDebounce(search, SEARCH_DEBOUNCE_MS);
   const [verificationFilter, setVerificationFilter] = useState<VerificationFilter>("all");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [page, setPage] = useState<number>(DEFAULT_PAGE);
@@ -26,7 +28,7 @@ export const useCustomerListing = () => {
     if (trimmedSearch.length >= 2) {
       params.search = trimmedSearch;
     }
-    if (verificationFilter !== "all") {
+    if (verificationFilter && verificationFilter !== "all") {
       params.verificationStatus = verificationFilter;
     }
     if (statusFilter === "active") params.status = true;
@@ -58,15 +60,15 @@ export const useCustomerListing = () => {
 
   const handleFilterChange = useCallback(
     (name: string, value: string | undefined) => {
-      if (name === "search" && typeof value === "string") {
+      if (name === SEARCH && typeof value === "string") {
         setSearch(value);
         setPage(DEFAULT_PAGE);
       }
-      if (name === "verification" && typeof value === "string") {
+      if (name === VERIFICATION && typeof value === "string") {
         setVerificationFilter(value as VerificationFilter);
         setPage(DEFAULT_PAGE);
       }
-      if (name === "status" && typeof value === "string") {
+      if (name === STATUS && typeof value === "string") {
         setStatusFilter(value as StatusFilter);
         setPage(DEFAULT_PAGE);
       }

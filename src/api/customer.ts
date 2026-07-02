@@ -32,6 +32,33 @@ export const useCustomersQuery = (params?: CustomerListParams) => {
   });
 };
 
+export const useCustomerCodesQuery = (id: number, params?: CustomerListParams) => {
+  return useQuery<CustomerPaginatedResponse>({
+    queryKey: [...CUSTOMER_KEYS.codes, id, JSON.stringify(params)],
+    placeholderData: (previousData) => previousData,
+    queryFn: async () => {
+      const response = await customerService.getCustomerCodes(id, params);
+      const payload = response.data?.data;
+      const totalCount = payload.page_info.total_count ?? payload.items.length;
+
+      if (Array.isArray(payload)) {
+        const perPage = params?.pageSize ?? totalCount;
+        const page = params?.page ?? 1;
+        return {
+          data: payload,
+          meta: {
+            current_page: page,
+            per_page: perPage,
+            total: totalCount,
+          },
+        };
+      }
+
+      return payload;
+    },
+  });
+};
+
 export const useCustomerQuery = (id: number) => {
   return useQuery<CustomerApiRecord>({
     queryKey: CUSTOMER_KEYS.detail(id),

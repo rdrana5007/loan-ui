@@ -9,8 +9,12 @@ interface SelectInputProps {
   requiredMsg?: string;
   placeholder: string;
   options: { label: string | number; value: string | number }[];
-  disabled?: boolean;
   className?: string;
+  disabled?: boolean;
+  searchable?: boolean;
+  loading?: boolean;
+  onSearch?: (value: string) => void;
+  onLoadMore?: () => void;
 }
 
 export const SelectInput = ({
@@ -22,7 +26,11 @@ export const SelectInput = ({
   placeholder,
   options,
   disabled = false,
+  searchable = false,
+  loading = false,
   className = "",
+  onSearch,
+  onLoadMore,
 }: SelectInputProps) => {
   return (
     <Form.Item
@@ -35,7 +43,18 @@ export const SelectInput = ({
         placeholder={placeholder}
         options={options}
         disabled={disabled}
-        className={className ? className : "w-full! h-10! md:h-8 lg:h-10"}
+        loading={loading}
+        showSearch={searchable ? { onSearch, filterOption: false } : false}
+        onPopupScroll={(e) => {
+          const target = e.target as HTMLElement;
+          if (
+            !loading &&
+            target.scrollTop + target.clientHeight >= target.scrollHeight - 20
+          ) {
+            onLoadMore?.();
+          }
+        }}
+        className={className || "w-full! h-10! md:h-8 lg:h-10"}
       />
     </Form.Item>
   );

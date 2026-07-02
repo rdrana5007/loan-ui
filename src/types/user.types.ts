@@ -27,6 +27,16 @@ export interface UserPaginatedResponse {
   items: UserApiRecord[];
 };
 
+export interface CollectorApiRecord {
+  id: number;
+  fullName: string;
+};
+
+export interface CollectorPaginatedResponse {
+  page_info: PaginationInfo;
+  items: CollectorApiRecord[];
+};
+
 export interface UserListParams extends ListParams {
   isManager?: boolean;
   isCollector?: boolean;

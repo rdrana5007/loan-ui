@@ -90,7 +90,7 @@ const toApiPayload = (values: CustomerFormValues) => ({
   aadhaarNumber: values.aadhaarNumber.trim(),
   panNumber: values.panNumber.trim(),
   verificationStatus: values.verificationStatus,
-  remarks: values.remarks.trim(),
+  remarks: values.remarks.trim() || "",
   aadhaarFile: values.aadhaarFile,
   panFile: values.panFile,
 });
@@ -135,7 +135,7 @@ export const CustomerForm: FC<CustomerFormProps> = ({ breadcrumbs }) => {
 
   const isSubmitting: boolean = isCreating || isUpdating;
 
-  const title: string | number = isEdit ? data?.customerCode || "" : "Add Customer";
+  const title: string = isEdit ? data?.customerCode || "" : "Add Customer";
   usePageBreadcrumbs(title, breadcrumbs, "Customers");
 
   useEffect(() => {

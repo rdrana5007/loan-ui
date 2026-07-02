@@ -1,11 +1,12 @@
 "use client";
 import type { MenuProps } from "antd";
 import {
+  BankOutlined,
   DashboardOutlined,
+  MoneyCollectOutlined,
+  ScheduleOutlined,
   SolutionOutlined,
-  UploadOutlined,
   UserOutlined,
-  VideoCameraOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -25,14 +26,20 @@ export const SIDEBAR_MENU_ITEMS: MenuProps['items'] = [
     icon: <SolutionOutlined className="text-lg!" />,
     label: <Link href="/customers">Customers</Link>,
   },
-  // {
-  //   key: "4",
-  //   icon: <VideoCameraOutlined className="text-lg!" />,
-  //   label: <Link href="/videos">Videos</Link>,
-  // },
+  {
+    key: "4",
+    icon: <BankOutlined className="text-lg!" />,
+    label: <Link href="/loans">Loans</Link>,
+    // label: <Link href="/loans">Users</Link>,
+  },
   // {
   //   key: "5",
-  //   icon: <UploadOutlined className="text-lg!" />,
-  //   label: <Link href="/uploads">Uploads</Link>,
+  //   icon: <MoneyCollectOutlined className="text-lg!" />,
+  //   label: <Link href="/emi-collections">Emi Collections</Link>,
   // },
+  // {
+  //   key: "6",
+  //   icon: <ScheduleOutlined className="text-lg!" />,
+  //   label: <Link href="/emi-followups">Emi Followups</Link>,
+  // }
 ];

@@ -3,6 +3,7 @@ export * from "./RadioInput";
 export * from "./SelectInput";
 export * from "./FilterInput";
 export * from "./SearchInput";
+export * from "./DateInput";
 export * from "./UploadInput";
 export * from "./AppButton";
 export * from "./AppTable";
