@@ -1,6 +1,6 @@
 import { LOAN_KEYS } from "@/constants";
 import { LoanService } from "@/services";
-import { LoanApiRecord, LoanListParams, LoanPaginatedResponse, LoanPayload } from "@/types";
+import { EmiScheduleListParams, EmiSchedulePaginatedResponse, LoanApiRecord, LoanListParams, LoanPaginatedResponse, LoanPayload } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const loanService = new LoanService();
@@ -11,6 +11,33 @@ export const useLoansQuery = (params?: LoanListParams) => {
     placeholderData: (previousData) => previousData,
     queryFn: async () => {
       const response = await loanService.getLoans(params);
+      const payload = response.data?.data;
+      const totalCount = payload.page_info.total_count ?? payload.items.length;
+
+      if (Array.isArray(payload)) {
+        const perPage = params?.pageSize ?? totalCount;
+        const page = params?.page ?? 1;
+        return {
+          data: payload,
+          meta: {
+            current_page: page,
+            per_page: perPage,
+            total: totalCount,
+          },
+        };
+      }
+
+      return payload;
+    },
+  });
+};
+
+export const useEmiSchedulesQuery = (id: number, params?: EmiScheduleListParams) => {
+  return useQuery<EmiSchedulePaginatedResponse>({
+    queryKey: [...LOAN_KEYS.emis, id, JSON.stringify(params)],
+    placeholderData: (previousData) => previousData,
+    queryFn: async () => {
+      const response = await loanService.getEmiSchedules(id, params);
       const payload = response.data?.data;
       const totalCount = payload.page_info.total_count ?? payload.items.length;
 

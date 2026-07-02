@@ -135,7 +135,7 @@ export const CustomerForm: FC<CustomerFormProps> = ({ breadcrumbs }) => {
 
   const isSubmitting: boolean = isCreating || isUpdating;
 
-  const title: string | number = isEdit ? data?.customerCode || "" : "Add Customer";
+  const title: string = isEdit ? data?.customerCode || "" : "Add Customer";
   usePageBreadcrumbs(title, breadcrumbs, "Customers");
 
   useEffect(() => {

@@ -16,6 +16,7 @@ interface TextInputProps {
   maxMsg?: string;
   placeholder: string;
   className?: string;
+  disabled?: boolean;
   isPassword?: boolean;
   isTextarea?: boolean;
   rows?: number;
@@ -36,6 +37,7 @@ export const TextInput = ({
   maxMsg,
   placeholder,
   className = "",
+  disabled = false,
   isPassword = false,
   isTextarea = false,
   rows = 2,
@@ -67,6 +69,7 @@ export const TextInput = ({
       ) : (
         <Input
           placeholder={placeholder}
+          disabled={disabled}
           className={className ? className : "w-full! h-10! md:h-8 lg:h-10"}
           onKeyDown={onKeyDown}
         />

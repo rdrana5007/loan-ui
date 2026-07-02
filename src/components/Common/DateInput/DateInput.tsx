@@ -7,7 +7,7 @@ interface DateInputProps {
   placeholder: string;
   required?: boolean;
   requiredMsg?: string;
-  disabled?: boolean | any;
+  disabled?: boolean;
   format?: string;
   className?: string;
 }

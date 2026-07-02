@@ -1,3 +1,3 @@
 export * from "./LoanListingContainer";
 export * from "./LoanFormContainer";
-export * from "./EmiScheduleContainer";
+export * from "./EmiScheduleListingContainer";

@@ -1,4 +1,9 @@
-import { LoanStatus, OptionItem, VerificationStatus } from "@/types";
+import {
+  EmiScheduleStatus,
+  LoanStatus,
+  OptionItem,
+  VerificationStatus,
+} from "@/types";
 
 type Role = {
   id: number;
@@ -13,11 +18,12 @@ export const roleList: Role[] = [
 ];
 
 // Customer verification status list
-export const customerVerificationStatusList: OptionItem<VerificationStatus>[] = [
-  { label: "Pending", value: "pending", color: "gold" },
-  { label: "Verified", value: "verified", color: "green" },
-  { label: "Rejected", value: "rejected", color: "red" },
-];
+export const customerVerificationStatusList: OptionItem<VerificationStatus>[] =
+  [
+    { label: "Pending", value: "pending", color: "gold" },
+    { label: "Verified", value: "verified", color: "green" },
+    { label: "Rejected", value: "rejected", color: "red" },
+  ];
 
 // Customer gender list
 export const customerGenderOptions: OptionItem[] = [
@@ -33,5 +39,13 @@ export const loanStatusList: OptionItem<LoanStatus>[] = [
   { label: "Rejected", value: "rejected", color: "red" },
   { label: "Active", value: "active", color: "blue" },
   { label: "Closed", value: "closed", color: "geekblue" },
-  { label: "Defaulted", value: "defaulted", color: "volcano" },
+  { label: "Defaulted", value: "defaulted", color: "default" },
+];
+
+// Emi Schedule status list
+export const emiScheduleStatusList: OptionItem<EmiScheduleStatus>[] = [
+  { label: "Pending", value: "pending", color: "gold" },
+  { label: "Paid", value: "paid", color: "green" },
+  { label: "Partial", value: "partial", color: "blue" },
+  { label: "Overdue", value: "overdue", color: "red" },
 ];

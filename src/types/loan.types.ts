@@ -79,6 +79,8 @@ export interface LoanPaginatedResponse {
 
 export interface LoanListParams extends ListParams {
   status?: LoanStatus;
+  fromDate?: string | null;
+  toDate?: string | null;
 };
 
 export type LoanRow = {

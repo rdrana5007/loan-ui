@@ -73,7 +73,7 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
 
   const isSubmitting: boolean = isCreating || isUpdating;
 
-  const title: string | number = isEdit ? data?.loanNumber || "" : "Add Loan";
+  const title: string = isEdit ? data?.loanNumber || "" : "Add Loan";
   usePageBreadcrumbs(title, breadcrumbs, "Loans");
 
   useEffect(() => {
@@ -82,14 +82,36 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
     }
   }, [data, form]);
 
+  const status = data?.status;
+
+  const DISBURSED_STATUSES =
+    status === "approved" ||
+    status === "active" ||
+    status === "closed" ||
+    status === "defaulted";
+  const START_DATE_STATUSES =
+    status === "active" || status === "closed" || status === "defaulted";
+  const REJECTION_STATUSES = status === "pending" || status === "rejected";
+
+  const isDisbursedAmount: boolean = status !== "approved";
+  const isStartDate: boolean = isEdit && START_DATE_STATUSES;
+  const shouldShowDisbursedAmount: boolean = isEdit && DISBURSED_STATUSES;
+  const shouldShowRejectionReason: boolean = isEdit && REJECTION_STATUSES;
+
   const handleSubmit = async (values: LoanFormValues) => {
     const payload = toApiPayload(values);
 
     try {
       if (isEdit && data?.id) {
+        const { customerId, loanAmount, processingFee, ...updatePayload } =
+          payload;
+
+        if (!shouldShowDisbursedAmount) delete updatePayload.disbursedAmount;
+        if (!shouldShowRejectionReason) delete updatePayload.rejectionReason;
+
         const response = await updateLoan({
           id: data.id,
-          payload,
+          payload: updatePayload,
         });
 
         if (response && response.status === 200) {
@@ -110,7 +132,7 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
   };
 
   if (isEdit && isLoading) {
-    return <FormSkeleton fields={8} />;
+    return <FormSkeleton fields={11} />;
   }
 
   return (
@@ -162,6 +184,7 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
               required
               requiredMsg="Amount is required"
               placeholder="Enter amount"
+              disabled={isEdit}
               onKeyDown={(e) => handleNumericKeyDown(e)}
             />
           </Col>
@@ -192,6 +215,7 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
               required
               requiredMsg="Processing fee is required"
               placeholder="Enter processing fee"
+              disabled={isEdit}
               onKeyDown={(e) => handleNumericKeyDown(e)}
             />
           </Col>
@@ -202,23 +226,26 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
               placeholder="Select start date"
               required
               requiredMsg="Start date is required"
+              disabled={isStartDate}
             />
           </Col>
-          {/* <Col xs={24} sm={12}>
-            <DateInput
-              name="endDate"
-              label="End date"
-              placeholder="Select end date"
-              required
-              requiredMsg="End date is required"
-            />
-          </Col> */}
           {isEdit && (
+            <Col xs={24} sm={12}>
+              <DateInput
+                name="endDate"
+                label="End date"
+                placeholder="Select end date"
+                disabled
+              />
+            </Col>
+          )}
+          {shouldShowDisbursedAmount && (
             <Col xs={24} sm={12}>
               <TextInput
                 name="disbursedAmount"
                 label="Disbursed amount"
                 placeholder="Enter disbursed amount"
+                disabled={isDisbursedAmount}
                 onKeyDown={(e) => handleNumericKeyDown(e)}
               />
             </Col>
@@ -238,19 +265,19 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
               name="notes"
               label="Notes"
               isTextarea={true}
-              max={1000}
-              maxMsg="Notes cannot exceed 1000 characters"
+              max={2000}
+              maxMsg="Notes cannot exceed 2000 characters"
               placeholder="Enter notes"
             />
           </Col>
-          {isEdit && (
+          {shouldShowRejectionReason && (
             <Col xs={24} sm={12}>
               <TextInput
                 name="rejectionReason"
                 label="Rejection reason"
                 isTextarea={true}
-                max={1000}
-                maxMsg="Rejection reason cannot exceed 1000 characters"
+                max={100}
+                maxMsg="Rejection reason cannot exceed 100 characters"
                 placeholder="Enter rejection reason"
               />
             </Col>

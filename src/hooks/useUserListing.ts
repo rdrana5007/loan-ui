@@ -5,7 +5,9 @@ import { TableProps } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useDebounce } from "./useDebounce";
 import { AppToast } from "@/components";
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, SEARCH_DEBOUNCE_MS } from "@/constants";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, FILTER_KEYS, SEARCH_DEBOUNCE_MS } from "@/constants";
+
+const { SEARCH, ROLE, STATUS } = FILTER_KEYS;
 
 export const useUserListing = () => {
   const [search, setSearch] = useState<string>("");
@@ -57,15 +59,15 @@ export const useUserListing = () => {
 
   const handleFilterChange = useCallback(
     (name: string, value: string | undefined) => {
-      if (name === "search" && typeof value === "string") {
+      if (name === SEARCH && typeof value === "string") {
         setSearch(value);
         setPage(DEFAULT_PAGE);
       }
-      if (name === "role" && typeof value === "string") {
+      if (name === ROLE && typeof value === "string") {
         setRoleFilter(value as RoleFilter);
         setPage(DEFAULT_PAGE);
       }
-      if (name === "status" && typeof value === "string") {
+      if (name === STATUS && typeof value === "string") {
         setStatusFilter(value as StatusFilter);
         setPage(DEFAULT_PAGE);
       }

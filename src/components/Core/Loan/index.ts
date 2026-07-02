@@ -1,3 +1,3 @@
 export * from "./LoanListing";
 export * from "./LoanForm";
-export * from "./EmiSchedule";
+export * from "./EmiScheduleListing";
