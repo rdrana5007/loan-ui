@@ -1,4 +1,4 @@
-import { OptionItem } from "@/types";
+import { LoanStatus, OptionItem } from "@/types";
 
 // Filter keys
 export const FILTER_KEYS = {
@@ -50,4 +50,22 @@ export const emiScheduleStatus: OptionItem[] = [
   { label: "Paid", value: "paid" },
   { label: "Partial", value: "partial" },
   { label: "Overdue", value: "overdue" },
+  { label: "Defaulted", value: "defaulted" }
+];
+
+export const paymentMethodStatus: OptionItem[] = [
+  { label: "All Status", value: "all" },
+  {label: "Cash",value: "cash",},
+  {
+    label: "UPI",
+    value: "upi",
+  },
+  {
+    label: "Cheque",
+    value: "cheque",
+  },
+  {
+    label: "Bank Transfer",
+    value: "bank_transfer",
+  },
 ];

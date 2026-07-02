@@ -2,6 +2,7 @@ import {
   EmiScheduleStatus,
   LoanStatus,
   OptionItem,
+  PaymentMethodFilter,
   VerificationStatus,
 } from "@/types";
 
@@ -48,4 +49,12 @@ export const emiScheduleStatusList: OptionItem<EmiScheduleStatus>[] = [
   { label: "Paid", value: "paid", color: "green" },
   { label: "Partial", value: "partial", color: "blue" },
   { label: "Overdue", value: "overdue", color: "red" },
+];
+
+// Payment method list
+export const paymentMethodList: OptionItem<PaymentMethodFilter>[] = [
+  { label: "Cash", value: "cash", color: "green" },
+  { label: "UPI", value: "upi", color: "purple" },        
+  { label: "Cheque", value: "cheque", color: "orange" },  
+  { label: "Bank Transfer", value: "bank", color: "blue" },
 ];
