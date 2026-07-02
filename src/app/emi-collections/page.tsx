@@ -1,4 +1,4 @@
-// import { LayersContainer } from "@/containers/LayersContainer";
+import { EmiCollectionListingContainer } from "@/components";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,6 +10,6 @@ export const metadata: Metadata = {
   }
 };
 
-export default function layers() {
-  return <>Video Page</>;
+export default function UserPage() {
+  return <EmiCollectionListingContainer />;
 };
