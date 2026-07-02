@@ -1,13 +1,16 @@
 "use client";
-import { Select } from "antd";
+import { DatePicker, Select } from "antd";
+import { Dayjs } from "dayjs";
 
 interface FilterInputProps {
   placeholder: string;
   filterKey: string;
-  value: string;
-  options: { label: string | number; value: string | number }[];
+  value: string | Dayjs | null;
+  options?: { label: string | number; value: string | number }[];
   className: string;
-  onChange: (name: string, value: string | undefined) => void;
+  isDatePicker?: boolean;
+  format?: string;
+  onChange: (name: string, value?: string | undefined) => void;
 }
 
 export const FilterInput = ({
@@ -16,15 +19,31 @@ export const FilterInput = ({
   value,
   options,
   className = "",
+  isDatePicker = false,
+  format = "DD/MM/YYYY",
   onChange,
 }: FilterInputProps) => {
   return (
-    <Select
-      placeholder={placeholder}
-      value={value}
-      options={options}
-      className={className ? className : ""}
-      onChange={(value) => onChange(filterKey, value)}
-    />
+    <>
+      {isDatePicker ? (
+        <DatePicker
+          placeholder={placeholder}
+          value={value as Dayjs | null}
+          format={format}
+          className={className ? className : ""}
+          onChange={(date) => {
+            onChange(filterKey, date ? date.format("YYYY-MM-DD") : undefined);
+          }}
+        />
+      ) : (
+        <Select
+          placeholder={placeholder}
+          value={value as string}
+          options={options}
+          className={className ? className : ""}
+          onChange={(value) => onChange(filterKey, String(value))}
+        />
+      )}
+    </>
   );
 };

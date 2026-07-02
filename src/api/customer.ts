@@ -1,6 +1,6 @@
 import { CUSTOMER_KEYS } from "@/constants";
 import { CustomerService } from "@/services";
-import { CustomerApiRecord, CustomerFormValues, CustomerListParams, CustomerPaginatedResponse } from "@/types";
+import { CustomerApiRecord, CustomerListParams, CustomerPaginatedResponse } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const customerService = new CustomerService();
@@ -11,6 +11,33 @@ export const useCustomersQuery = (params?: CustomerListParams) => {
     placeholderData: (previousData) => previousData,
     queryFn: async () => {
       const response = await customerService.getCustomers(params);
+      const payload = response.data?.data;
+      const totalCount = payload.page_info.total_count ?? payload.items.length;
+
+      if (Array.isArray(payload)) {
+        const perPage = params?.pageSize ?? totalCount;
+        const page = params?.page ?? 1;
+        return {
+          data: payload,
+          meta: {
+            current_page: page,
+            per_page: perPage,
+            total: totalCount,
+          },
+        };
+      }
+
+      return payload;
+    },
+  });
+};
+
+export const useCustomerCodesQuery = (id: number, params?: CustomerListParams) => {
+  return useQuery<CustomerPaginatedResponse>({
+    queryKey: [...CUSTOMER_KEYS.codes, id, JSON.stringify(params)],
+    placeholderData: (previousData) => previousData,
+    queryFn: async () => {
+      const response = await customerService.getCustomerCodes(id, params);
       const payload = response.data?.data;
       const totalCount = payload.page_info.total_count ?? payload.items.length;
 
@@ -47,7 +74,7 @@ export const useCreateCustomerMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: CustomerFormValues) => customerService.createCustomer(payload),
+    mutationFn: (payload: FormData) => customerService.createCustomer(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CUSTOMER_KEYS.all });
     },
@@ -63,7 +90,7 @@ export const useUpdateCustomerMutation = () => {
       payload,
     }: {
       id: number;
-      payload: Partial<CustomerFormValues>;
+      payload: FormData;
     }) => customerService.updateCustomer(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CUSTOMER_KEYS.all });

@@ -1,5 +1,7 @@
 import { ListParams, PaginationInfo } from "./common.types";
 
+export type VerificationFilter = "all" | "pending" | "verified" | "rejected";
+export type VerificationStatus = "pending" | "verified" | "rejected";
 export type CustomergGender = "male" | "female" | "other";
 
 interface CustomerDocument {
@@ -9,7 +11,7 @@ interface CustomerDocument {
   panNumber: string;
   aadhaarFile: string;
   panFile: string;
-  verificationStatus: "pending" | "verified" | "rejected";
+  verificationStatus: VerificationStatus;
   remarks: string;
 }
 
@@ -47,12 +49,13 @@ export interface CustomerPaginatedResponse {
 };
 
 export interface CustomerListParams extends ListParams {
-  verificationStatus?: "pending" | "verified" | "rejected";
+  verificationStatus?: VerificationStatus;
   status?: boolean;
 };
 
 export type CustomerRow = {
   id: number;
+  customerCode: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -65,7 +68,16 @@ export type CustomerRow = {
   profileImage: string;
   isActive: boolean;
   createdAt: string;
+  customer_documents: CustomerDocument;
+  created_by: CreatedBy;
 };
+
+export interface fileImageData {
+  uid: string;
+  name: string;
+  status: "uploading" | "done" | "error" | "removed";
+  url: string;
+}
 
 export interface CustomerFormValues {
   firstName: string;
@@ -77,6 +89,12 @@ export interface CustomerFormValues {
   city: string;
   state: string;
   pincode: string;
-  profileImage: string;
+  profileImage: fileImageData[];
   isActive: boolean;
+  aadhaarNumber: string;
+  panNumber: string;
+  verificationStatus: string;
+  remarks: string;
+  aadhaarFile: fileImageData[];
+  panFile: fileImageData[];
 };

@@ -8,28 +8,20 @@ import {
   SearchInput,
 } from "@/components/Common";
 import { roleList, userRole, userStatus } from "@/constants";
-import { usePageBreadcrumbs, useUserListing } from "@/hooks";
+import { usePageBreadcrumbs, useResponsive, useUserListing } from "@/hooks";
 import { UserRow } from "@/types";
-import { formatDateTime } from "@/utils";
+import { createOptionMap, formatters } from "@/utils";
 import {
   DeleteOutlined,
   EditOutlined,
   PlusOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { Grid } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import { FC, useCallback, useMemo } from "react";
 
-const { useBreakpoint } = Grid;
-
-const renderValue = (value: unknown) => value || "--";
-const renderDate = (value?: string) => (value ? formatDateTime(value) : "--");
-
-const ROLE_MAP: Record<number, string> = Object.fromEntries(
-  roleList.map((role) => [role.value, role.label]),
-);
+const ROLE_MAP = createOptionMap(roleList);
 
 interface UserListingProps {
   title: string;
@@ -38,7 +30,7 @@ interface UserListingProps {
 
 export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
   const router = useRouter();
-  const screens = useBreakpoint();
+  const { isMobile } = useResponsive();
   usePageBreadcrumbs(title, breadcrumbs);
   const {
     data,
@@ -105,9 +97,9 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
         title: "Name",
         dataIndex: "fullName",
         key: "fullName",
-        fixed: screens.md ? "left" : undefined,
+        fixed: !isMobile ? "left" : undefined,
         width: 180,
-        render: renderValue,
+        render: formatters.value,
       },
       {
         title: "Email",
@@ -115,14 +107,14 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
         key: "email",
         responsive: ["md"],
         width: 250,
-        render: renderValue,
+        render: formatters.value,
       },
       {
         title: "Mobile Number",
         dataIndex: "phone",
         key: "phone",
         width: 180,
-        render: renderValue,
+        render: formatters.value,
       },
       {
         title: "Role",
@@ -136,7 +128,7 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
         dataIndex: "createdAt",
         key: "createdAt",
         width: 180,
-        render: renderDate,
+        render: formatters.dateTime,
       },
       {
         title: "Active",
@@ -151,11 +143,11 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
         key: "action",
         align: "center",
         fixed: "right",
-        width: screens.md ? 100 : 60,
+        width: !isMobile ? 100 : 60,
         render: renderActions,
       },
     ],
-    [renderActive, renderActions],
+    [isMobile, renderActive, renderActions],
   );
 
   return (
@@ -174,7 +166,7 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
             </div>
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <div className="flex flex-col sm:flex-row gap-3">
-                <div className="w-full sm:w-40 md:w-35 lg:w-40">
+                <div className="w-full sm:w-40 md:w-30 lg:w-40">
                   <FilterInput
                     placeholder="All Users"
                     filterKey="role"
@@ -184,9 +176,9 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
                     onChange={handleFilterChange}
                   />
                 </div>
-                <div className="w-full sm:w-40 md:w-35 lg:w-40">
+                <div className="w-full sm:w-40 md:w-30 lg:w-40">
                   <FilterInput
-                    placeholder="Status"
+                    placeholder="All Status"
                     filterKey="status"
                     value={statusFilter}
                     options={userStatus}

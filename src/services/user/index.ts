@@ -1,6 +1,6 @@
 import CookiePersistence from "@/utils/cookiePersistence";
 import { Client } from "../apiClient";
-import { UserFormValues, UserListParams } from "@/types";
+import { ListParams, UserFormValues, UserListParams } from "@/types";
 
 const client = new Client();
 const localCookie = new CookiePersistence();
@@ -18,6 +18,15 @@ export default class UserService {
     return client.api({
       method: "GET",
       url: "/users",
+      headers: this.getAuthHeaders(),
+      params,
+    });
+  }
+
+  getCollectors(id: number, params?: ListParams) {
+    return client.api({
+      method: "GET",
+      url: `/users/${id}/collectors`,
       headers: this.getAuthHeaders(),
       params,
     });

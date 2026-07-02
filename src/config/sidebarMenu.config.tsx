@@ -1,35 +1,45 @@
+"use client";
 import type { MenuProps } from "antd";
 import {
-  UploadOutlined,
+  BankOutlined,
+  DashboardOutlined,
+  MoneyCollectOutlined,
+  ScheduleOutlined,
+  SolutionOutlined,
   UserOutlined,
-  VideoCameraOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 
-export const sidebarMenuItems: MenuProps['items'] = [
+export const SIDEBAR_MENU_ITEMS: MenuProps['items'] = [
   {
     key: "1",
-    icon: <UserOutlined />,
+    icon: <DashboardOutlined className="text-lg!" />,
     label: <Link href="/">Dashboard</Link>,
   },
   {
     key: "2",
-    icon: <UserOutlined />,
+    icon: <UserOutlined className="text-lg!" />,
     label: <Link href="/users">Users</Link>,
   },
   {
     key: "3",
-    icon: <UserOutlined />,
+    icon: <SolutionOutlined className="text-lg!" />,
     label: <Link href="/customers">Customers</Link>,
   },
   {
     key: "4",
-    icon: <VideoCameraOutlined />,
-    label: <Link href="/videos">Videos</Link>,
+    icon: <BankOutlined className="text-lg!" />,
+    label: <Link href="/loans">Loans</Link>,
+    // label: <Link href="/loans">Users</Link>,
   },
-  {
-    key: "5",
-    icon: <UploadOutlined />,
-    label: <Link href="/uploads">Uploads</Link>,
-  },
+  // {
+  //   key: "5",
+  //   icon: <MoneyCollectOutlined className="text-lg!" />,
+  //   label: <Link href="/emi-collections">Emi Collections</Link>,
+  // },
+  // {
+  //   key: "6",
+  //   icon: <ScheduleOutlined className="text-lg!" />,
+  //   label: <Link href="/emi-followups">Emi Followups</Link>,
+  // }
 ];

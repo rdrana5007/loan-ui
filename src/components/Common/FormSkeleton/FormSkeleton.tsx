@@ -6,7 +6,7 @@ interface FormSkeletonProps {
 }
 
 export const FormSkeleton = ({
-  fields = 6,
+  fields = 10,
   showActions = true,
 }: FormSkeletonProps) => {
   return (

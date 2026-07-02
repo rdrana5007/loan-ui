@@ -1,5 +1,7 @@
 import { ListParams, PaginationInfo } from "./common.types";
 
+export type RoleFilter = "all" | "isManager" | "isCollector";
+
 interface UserRole {
   id: number;
   name: string;
@@ -23,6 +25,16 @@ export interface UserApiRecord {
 export interface UserPaginatedResponse {
   page_info: PaginationInfo;
   items: UserApiRecord[];
+};
+
+export interface CollectorApiRecord {
+  id: number;
+  fullName: string;
+};
+
+export interface CollectorPaginatedResponse {
+  page_info: PaginationInfo;
+  items: CollectorApiRecord[];
 };
 
 export interface UserListParams extends ListParams {

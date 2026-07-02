@@ -3,29 +3,35 @@ import {
   AppButton,
   AppSwitch,
   AppTable,
+  AppTag,
   DeleteModal,
   FilterInput,
   SearchInput,
 } from "@/components/Common";
-import { customerVerificationStatus, userStatus } from "@/constants";
-import { useCustomerListing, usePageBreadcrumbs } from "@/hooks";
-import { CustomerRow } from "@/types";
-import { formatDateTime } from "@/utils";
+import {
+  customerVerificationStatus,
+  customerVerificationStatusList,
+  userStatus,
+} from "@/constants";
+import { useCustomerListing, usePageBreadcrumbs, useResponsive } from "@/hooks";
+import { CustomerRow, VerificationStatus } from "@/types";
+import { formatters } from "@/utils";
 import {
   DeleteOutlined,
   EditOutlined,
   PlusOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { Grid } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import { FC, useCallback, useMemo } from "react";
 
-const { useBreakpoint } = Grid;
+const renderFullName = (record: CustomerRow) =>
+  [record.firstName, record.lastName].filter(Boolean).join(" ") || "--";
 
-const renderValue = (value: unknown) => value || "--";
-const renderDate = (value?: string) => (value ? formatDateTime(value) : "--");
+const renderVerificationTag = (val?: VerificationStatus) => (
+  <AppTag value={val} options={customerVerificationStatusList} />
+);
 
 interface CustomerListingProps {
   title: string;
@@ -37,7 +43,7 @@ export const CustomerListing: FC<CustomerListingProps> = ({
   breadcrumbs,
 }) => {
   const router = useRouter();
-  const screens = useBreakpoint();
+  const { isMobile } = useResponsive();
   usePageBreadcrumbs(title, breadcrumbs);
   const {
     data,
@@ -104,16 +110,15 @@ export const CustomerListing: FC<CustomerListingProps> = ({
         title: "Code",
         dataIndex: "customerCode",
         key: "customerCode",
-        fixed: screens.md ? "left" : undefined,
+        fixed: !isMobile ? "left" : undefined,
         width: 180,
-        render: renderValue,
+        render: formatters.value,
       },
       {
         title: "Name",
-        dataIndex: "fullName",
         key: "fullName",
         width: 180,
-        render: renderValue,
+        render: (_, record) => renderFullName(record),
       },
       {
         title: "Email",
@@ -121,28 +126,36 @@ export const CustomerListing: FC<CustomerListingProps> = ({
         key: "email",
         responsive: ["md"],
         width: 250,
-        render: renderValue,
+        render: formatters.value,
       },
       {
         title: "Mobile Number",
         dataIndex: "phone",
         key: "phone",
+        responsive: ["md"],
         width: 180,
-        render: renderValue,
+        render: formatters.value,
+      },
+      {
+        title: "Verification",
+        dataIndex: ["customer_documents", "verificationStatus"],
+        key: "verificationStatus",
+        width: 180,
+        render: renderVerificationTag,
       },
       {
         title: "Created By",
-        dataIndex: "created_by",
-        key: "created_by",
+        dataIndex: ["created_by", "fullName"],
+        key: "fullName",
         width: 180,
-        render: renderDate,
+        render: formatters.value,
       },
       {
         title: "Created Date",
         dataIndex: "createdAt",
         key: "createdAt",
         width: 180,
-        render: renderDate,
+        render: formatters.dateTime,
       },
       {
         title: "Active",
@@ -157,11 +170,11 @@ export const CustomerListing: FC<CustomerListingProps> = ({
         key: "action",
         align: "center",
         fixed: "right",
-        width: screens.md ? 100 : 60,
+        width: !isMobile ? 100 : 60,
         render: renderActions,
       },
     ],
-    [renderActive, renderActions],
+    [isMobile, renderActive, renderActions],
   );
 
   return (
@@ -180,7 +193,7 @@ export const CustomerListing: FC<CustomerListingProps> = ({
             </div>
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <div className="flex flex-col sm:flex-row gap-3">
-                <div className="w-full sm:w-40 md:w-35 lg:w-40">
+                <div className="w-full sm:w-40 md:w-30 lg:w-40">
                   <FilterInput
                     placeholder="Verification Status"
                     filterKey="verification"
@@ -190,9 +203,9 @@ export const CustomerListing: FC<CustomerListingProps> = ({
                     onChange={handleFilterChange}
                   />
                 </div>
-                <div className="w-full sm:w-40 md:w-35 lg:w-40">
+                <div className="w-full sm:w-40 md:w-30 lg:w-40">
                   <FilterInput
-                    placeholder="Status"
+                    placeholder="All Status"
                     filterKey="status"
                     value={statusFilter}
                     options={userStatus}
@@ -224,38 +237,3 @@ export const CustomerListing: FC<CustomerListingProps> = ({
     </>
   );
 };
-
-//  {
-//                 "id": 4,
-//                 "createdBy": 12,
-//                 "customerCode": "CUST-4710EB81",
-//                 "firstName": "Tilak1",
-//                 "lastName": "Varma",
-//                 "email": "tilak3@yopmail.com",
-//                 "phone": "9853321116",
-//                 "gender": "male",
-//                 "address": "101, Empire Business Hub",
-//                 "city": "Mumbai",
-//                 "state": "Maharashtra",
-//                 "pincode": "402440",
-//                 "profileImage": "/uploads/profile/1782209156543-7d0a7517-12ad-4bc4-9a42-dc4401aab8bf.png",
-//                 "isActive": true,
-//                 "createdAt": "2026-06-23T10:05:56.000Z",
-//                 "updatedAt": "2026-06-23T10:05:56.000Z",
-//                 "deletedAt": null,
-//                 "customer_documents": {
-//                     "id": 6,
-//                     "customerId": 4,
-//                     "aadhaarNumber": "986532653265",
-//                     "panNumber": "ABCDE1234F",
-//                     "aadhaarFile": "/uploads/aadhaarCard/1782209156544-FR_PJ_AV.jpg",
-//                     "panFile": "/uploads/panCard/1782209156544-Rectangle_42.png",
-//                     "verificationStatus": "verified",
-//                     "remarks": "remarks"
-//                 },
-//                 "created_by": {
-//                     "id": 12,
-//                     "roleId": 2,
-//                     "fullName": "Virat Kohli"
-//                 }
-//             },
