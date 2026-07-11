@@ -5,4 +5,3 @@ export * from "./customer.types";
 export * from "./loan.types";
 export * from "./emiScheduling.types";
 export * from "./emiCollection.types";
-export * from "./emiFollowUp.types";
