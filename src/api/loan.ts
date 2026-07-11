@@ -1,6 +1,6 @@
 import { LOAN_KEYS } from "@/constants";
 import { LoanService } from "@/services";
-import { EmiScheduleListParams, EmiSchedulePaginatedResponse, LoanApiRecord, LoanListParams, LoanPaginatedResponse, LoanPayload } from "@/types";
+import { EmiSchedulingListParams, EmiSchedulingPaginatedResponse, LoanApiRecord, LoanListParams, LoanPaginatedResponse, LoanPayload } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const loanService = new LoanService();
@@ -32,12 +32,12 @@ export const useLoansQuery = (params?: LoanListParams) => {
   });
 };
 
-export const useEmiSchedulesQuery = (id: number, params?: EmiScheduleListParams) => {
-  return useQuery<EmiSchedulePaginatedResponse>({
+export const useEmiSchedulingQuery = (id: number, params?: EmiSchedulingListParams) => {
+  return useQuery<EmiSchedulingPaginatedResponse>({
     queryKey: [...LOAN_KEYS.emis, id, JSON.stringify(params)],
     placeholderData: (previousData) => previousData,
     queryFn: async () => {
-      const response = await loanService.getEmiSchedules(id, params);
+      const response = await loanService.getEmiScheduling(id, params);
       const payload = response.data?.data;
       const totalCount = payload.page_info.total_count ?? payload.items.length;
 

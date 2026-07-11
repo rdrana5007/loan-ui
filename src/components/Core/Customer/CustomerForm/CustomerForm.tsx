@@ -21,7 +21,7 @@ import {
 import { usePageBreadcrumbs } from "@/hooks";
 import {
   CustomerFormValues,
-  CustomergGender,
+  CustomerGender,
   CustomerRow,
   fileImageData,
 } from "@/types";
@@ -60,7 +60,7 @@ const toFormValues = (customer?: CustomerRow | null): CustomerFormValues => ({
   email: customer?.email ?? "",
   phone: customer?.phone ?? "",
   isActive: customer?.isActive ?? false,
-  gender: customer?.gender as CustomergGender,
+  gender: customer?.gender as CustomerGender,
   address: customer?.address ?? "",
   city: customer?.city ?? "",
   state: customer?.state ?? "",

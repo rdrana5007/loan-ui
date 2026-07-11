@@ -16,9 +16,7 @@ const PUBLIC_ROUTES = ["/login"];
 const ROUTE_MAP: Record<string, string> = {
   "/users": "2",
   "/customers": "3",
-  "/loans": "4",
-  "/emi-collections": "5",
-  "/emi-followups": "6",
+  "/loans": "4"
 };
 
 interface AppProps {

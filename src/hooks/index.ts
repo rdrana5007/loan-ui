@@ -8,5 +8,5 @@ export * from "./useAuthentication";
 export * from "./useUserListing";
 export * from "./useCustomerListing";
 export * from "./useLoanListing";
-export * from "./useEmiScheduleListing";
+export * from "./useEmiSchedulingListing";
 export * from "./useEmiCollectionListing";

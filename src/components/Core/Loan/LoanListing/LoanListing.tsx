@@ -2,14 +2,15 @@
 import {
   AppButton,
   AppTable,
+  AppTabs,
   AppTag,
   DeleteModal,
   FilterInput,
   SearchInput,
 } from "@/components/Common";
-import { loanStatus, loanStatusList } from "@/constants";
+import { loanStatus, loanStatusList, repaymentFrequencyTabs } from "@/constants";
 import { useLoanListing, usePageBreadcrumbs, useResponsive } from "@/hooks";
-import { LoanRow, LoanStatus } from "@/types";
+import { LoanRepaymentFrequency, LoanRow, LoanStatus } from "@/types";
 import { formatters } from "@/utils";
 import {
   DeleteOutlined,
@@ -46,6 +47,7 @@ export const LoanListing: FC<LoanListingProps> = ({ title, breadcrumbs }) => {
     isDeleting,
     pagination,
     searchValue,
+    repaymentFrequencyFilter,
     statusFilter,
     fromDateFilter,
     toDateFilter,
@@ -72,16 +74,16 @@ export const LoanListing: FC<LoanListingProps> = ({ title, breadcrumbs }) => {
     [handleDelete],
   );
 
-  const shouldShowEmiSchedule = (status: LoanStatus) => {
+  const shouldShowLoanDetail = (status: LoanStatus) => {
     return status === "active" || status === "closed" || status === "defaulted";
   };
 
   const renderActions = useCallback(
     (_: unknown, row: LoanRow) => (
       <div className="flex items-center justify-center">
-        {shouldShowEmiSchedule(row?.status) && (
+        {shouldShowLoanDetail(row?.status) && (
           <EyeOutlined
-            onClick={() => router.push(`/loans/${row.id}/emi-schedules`)}
+            onClick={() => router.push(`/loans/${row.id}/loan-detail`)}
             className="cursor-pointer text-green-500! hover:bg-green-50! hover:text-green-600! p-2 rounded-full text-lg md:text-xl transition-all"
           />
         )}
@@ -115,10 +117,10 @@ export const LoanListing: FC<LoanListingProps> = ({ title, breadcrumbs }) => {
         key: "loanAmount",
         responsive: ["md"],
         width: 180,
-        render: formatters.value,
+        render: formatters.currency,
       },
       {
-        title: "Interest Rate",
+        title: "Interest Rate (%)",
         dataIndex: "interestRate",
         key: "interestRate",
         responsive: ["md"],
@@ -126,10 +128,9 @@ export const LoanListing: FC<LoanListingProps> = ({ title, breadcrumbs }) => {
         render: formatters.value,
       },
       {
-        title: "Tenure Months",
-        dataIndex: "tenureMonths",
-        key: "tenureMonths",
-        responsive: ["md"],
+        title: "Installment Count",
+        dataIndex: "installmentCount",
+        key: "installmentCount",
         width: 180,
         render: formatters.value,
       },
@@ -137,7 +138,7 @@ export const LoanListing: FC<LoanListingProps> = ({ title, breadcrumbs }) => {
         title: "Status",
         dataIndex: "status",
         key: "status",
-        width: 180,
+        width: 150,
         render: renderVerificationTag,
       },
       {
@@ -245,6 +246,11 @@ export const LoanListing: FC<LoanListingProps> = ({ title, breadcrumbs }) => {
           </div>
         </div>
       </div>
+      <AppTabs
+        items={repaymentFrequencyTabs}
+        activeKey={repaymentFrequencyFilter}
+        onChange={(key) => handleFilterChange("repaymentFrequency", key as LoanRepaymentFrequency)}
+      />
       <AppTable
         rowKey={(record: any) => record.id}
         tableColumns={columns}

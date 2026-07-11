@@ -5,6 +5,7 @@ export const FILTER_KEYS = {
   SEARCH: "search",
   STATUS: "status",
   ROLE: "role",
+  REPAYMENT_FREQUENCY: "repaymentFrequency",
   VERIFICATION: "verification",
   FROM_DATE: "fromDate",
   TO_DATE: "toDate",
@@ -43,29 +44,11 @@ export const loanStatus: OptionItem[] = [
   { label: "Defaulted", value: "defaulted" },
 ];
 
-// Emi Schedule status filter
-export const emiScheduleStatus: OptionItem[] = [
+// Emi Scheduling status filter
+export const emiSchedulingStatus: OptionItem[] = [
   { label: "All Status", value: "all" },
   { label: "Pending", value: "pending" },
   { label: "Paid", value: "paid" },
   { label: "Partial", value: "partial" },
   { label: "Overdue", value: "overdue" },
-  { label: "Defaulted", value: "defaulted" }
-];
-
-export const paymentMethodStatus: OptionItem[] = [
-  { label: "All Status", value: "all" },
-  {label: "Cash",value: "cash",},
-  {
-    label: "UPI",
-    value: "upi",
-  },
-  {
-    label: "Cheque",
-    value: "cheque",
-  },
-  {
-    label: "Bank Transfer",
-    value: "bank_transfer",
-  },
 ];

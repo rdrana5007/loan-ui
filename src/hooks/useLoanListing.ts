@@ -1,17 +1,18 @@
 "use client";
 import { useDeleteLoanMutation, useLoansQuery } from "@/api";
-import { LoanListParams, LoanRow, LoanStatusFilter } from "@/types";
+import { LoanListParams, LoanRepaymentFrequency, LoanRow, LoanStatusFilter } from "@/types";
 import { TableProps } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useDebounce } from "./useDebounce";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, FILTER_KEYS, SEARCH_DEBOUNCE_MS } from "@/constants";
 import dayjs, { Dayjs } from "dayjs";
 
-const { SEARCH, STATUS, FROM_DATE, TO_DATE } = FILTER_KEYS;
+const { SEARCH, REPAYMENT_FREQUENCY, STATUS, FROM_DATE, TO_DATE } = FILTER_KEYS;
 
 export const useLoanListing = () => {
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search, SEARCH_DEBOUNCE_MS);
+  const [repaymentFrequencyFilter, setRepaymentFrequencyFilter] = useState<LoanRepaymentFrequency>("daily");
   const [statusFilter, setStatusFilter] = useState<LoanStatusFilter>("all");
   const [fromDateFilter, setFromDateFilter] = useState<Dayjs | null>(null);
   const [toDateFilter, setToDateFilter] = useState<Dayjs | null>(null);
@@ -29,6 +30,7 @@ export const useLoanListing = () => {
     if (trimmedSearch.length >= 2) {
       params.search = trimmedSearch;
     }
+    if (repaymentFrequencyFilter) params.repaymentFrequency = repaymentFrequencyFilter;
     if (statusFilter && statusFilter !== "all") {
       params.status = statusFilter;
     }
@@ -36,7 +38,7 @@ export const useLoanListing = () => {
     if (toDateFilter) params.toDate = toDateFilter?.format("YYYY-MM-DD");
 
     return params;
-  }, [trimmedSearch, page, rowsPerPage, statusFilter, fromDateFilter, toDateFilter]);
+  }, [trimmedSearch, page, rowsPerPage, repaymentFrequencyFilter, statusFilter, fromDateFilter, toDateFilter]);
 
   const { data: queryData, isLoading } = useLoansQuery(listParams);
   const { mutateAsync: deleteLoan, isPending: isDeleting } = useDeleteLoanMutation();
@@ -62,6 +64,10 @@ export const useLoanListing = () => {
     (name: string, value: string | undefined) => {
       if (name === SEARCH && typeof value === "string") {
         setSearch(value);
+        setPage(DEFAULT_PAGE);
+      }
+      if (name === REPAYMENT_FREQUENCY && typeof value === "string") {
+        setRepaymentFrequencyFilter(value as LoanRepaymentFrequency);
         setPage(DEFAULT_PAGE);
       }
       if (name === STATUS && typeof value === "string") {
@@ -93,6 +99,7 @@ export const useLoanListing = () => {
     isDeleting,
     pagination,
     searchValue: search,
+    repaymentFrequencyFilter,
     statusFilter,
     fromDateFilter,
     toDateFilter,

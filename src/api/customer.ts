@@ -1,6 +1,6 @@
 import { CUSTOMER_KEYS } from "@/constants";
 import { CustomerService } from "@/services";
-import { CustomerApiRecord, CustomerListParams, CustomerPaginatedResponse } from "@/types";
+import { CustomerApiRecord, CustomerListParams, CustomerPaginatedResponse, ListParams } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const customerService = new CustomerService();
@@ -32,12 +32,12 @@ export const useCustomersQuery = (params?: CustomerListParams) => {
   });
 };
 
-export const useCustomerCodesQuery = (id: number, params?: CustomerListParams) => {
+export const useCustomerCodesQuery = (params?: ListParams) => {
   return useQuery<CustomerPaginatedResponse>({
-    queryKey: [...CUSTOMER_KEYS.codes, id, JSON.stringify(params)],
+    queryKey: [...CUSTOMER_KEYS.codes, JSON.stringify(params)],
     placeholderData: (previousData) => previousData,
     queryFn: async () => {
-      const response = await customerService.getCustomerCodes(id, params);
+      const response = await customerService.getCustomerCodes(params);
       const payload = response.data?.data;
       const totalCount = payload.page_info.total_count ?? payload.items.length;
 

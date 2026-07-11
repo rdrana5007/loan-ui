@@ -7,6 +7,7 @@ interface RadioInputProps {
   required?: boolean;
   requiredMsg?: string;
   options: { label: string; value: string }[];
+  disabled?: boolean;
 }
 
 export const RadioInput = ({
@@ -15,6 +16,7 @@ export const RadioInput = ({
   required = false,
   requiredMsg,
   options,
+  disabled = false,
 }: RadioInputProps) => {
   return (
     <Form.Item
@@ -22,7 +24,7 @@ export const RadioInput = ({
       label={label}
       rules={required ? [{ required, message: requiredMsg }] : undefined}
     >
-      <Radio.Group options={options} />
+      <Radio.Group options={options} disabled={disabled} />
     </Form.Item>
   );
 };

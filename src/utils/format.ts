@@ -13,8 +13,19 @@ const formatDateValue = (value?: string): string => {
   return value ? formatDate(value) : "--";
 };
 
+const formatCurrency = (value: string | number) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+  }).format(Number(value));
+
+const formatReceiptNo = (value?: number) =>
+  value ? `RCPT-${String(value).padStart(3, "0")}` : "--";
+
 export const formatters = {
   value: formatValue,
   dateTime: formatDateTimeValue,
-  date: formatDateValue
+  date: formatDateValue,
+  currency: formatCurrency,
+  receiptNo: formatReceiptNo,
 };

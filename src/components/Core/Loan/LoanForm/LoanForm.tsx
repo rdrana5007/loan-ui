@@ -9,12 +9,19 @@ import {
   AppToast,
   DateInput,
   FormSkeleton,
+  RadioInput,
   SelectInput,
   TextInput,
 } from "@/components/Common";
-import { loanStatusList } from "@/constants";
+import { loanProcessingFeeTypeOptions, loanRepaymentFrequencyList, loanStatusList } from "@/constants";
 import { useInfiniteSelectService, usePageBreadcrumbs } from "@/hooks";
-import { LoanFormValues, LoanPayload, LoanRow } from "@/types";
+import {
+  LoanFormValues,
+  LoanPayload,
+  LoanProcessingFeeType,
+  LoanRepaymentFrequency,
+  LoanRow,
+} from "@/types";
 import { handleNumericKeyDown, resolveNumericId } from "@/utils";
 import { Col, Form, Row } from "antd";
 import dayjs from "dayjs";
@@ -26,9 +33,11 @@ const toFormValues = (loan?: LoanRow | null): LoanFormValues => ({
   collectorId: loan?.collectorId ?? null,
   loanAmount: loan?.loanAmount?.toString() ?? "",
   interestRate: loan?.interestRate?.toString() ?? "",
-  tenureMonths: loan?.tenureMonths?.toString() ?? "",
+  processingFeeType: loan?.processingFeeType as LoanProcessingFeeType,
   processingFee: loan?.processingFee?.toString() ?? "",
   disbursedAmount: loan?.disbursedAmount?.toString() ?? "",
+  installmentCount: loan?.installmentCount?.toString() ?? "",
+  repaymentFrequency: loan?.repaymentFrequency as LoanRepaymentFrequency,
   startDate: loan?.startDate ? dayjs(loan.startDate) : null,
   endDate: loan?.endDate ? dayjs(loan.endDate) : null,
   status: loan?.status ?? "pending",
@@ -41,9 +50,11 @@ const toApiPayload = (values: LoanFormValues): LoanPayload => ({
   collectorId: values.collectorId,
   loanAmount: Number(values.loanAmount),
   interestRate: Number(values.interestRate),
-  tenureMonths: Number(values.tenureMonths),
+  processingFeeType: values.processingFeeType,
   processingFee: Number(values.processingFee),
   disbursedAmount: Number(values.disbursedAmount),
+  installmentCount: Number(values.installmentCount),
+  repaymentFrequency: values.repaymentFrequency,
   startDate: values.startDate?.format("YYYY-MM-DD") ?? null,
   status: values.status,
   notes: values.notes?.trim() || "",
@@ -82,19 +93,19 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
     }
   }, [data, form]);
 
-  const status = data?.status;
+  const status = data?.status as string;
 
   const DISBURSED_STATUSES =
     status === "approved" ||
     status === "active" ||
     status === "closed" ||
     status === "defaulted";
-  const START_DATE_STATUSES =
+  const INSTALLMENT_COUNT_STATUSES =
     status === "active" || status === "closed" || status === "defaulted";
   const REJECTION_STATUSES = status === "pending" || status === "rejected";
 
   const isDisbursedAmount: boolean = status !== "approved";
-  const isStartDate: boolean = isEdit && START_DATE_STATUSES;
+  const isInstallmentCount: boolean = isEdit && INSTALLMENT_COUNT_STATUSES;
   const shouldShowDisbursedAmount: boolean = isEdit && DISBURSED_STATUSES;
   const shouldShowRejectionReason: boolean = isEdit && REJECTION_STATUSES;
 
@@ -103,8 +114,7 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
 
     try {
       if (isEdit && data?.id) {
-        const { customerId, loanAmount, processingFee, ...updatePayload } =
-          payload;
+        const { customerId, loanAmount, processingFee, processingFeeType, ...updatePayload } = payload;
 
         if (!shouldShowDisbursedAmount) delete updatePayload.disbursedAmount;
         if (!shouldShowRejectionReason) delete updatePayload.rejectionReason;
@@ -132,7 +142,7 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
   };
 
   if (isEdit && isLoading) {
-    return <FormSkeleton fields={11} />;
+    return <FormSkeleton fields={13} />;
   }
 
   return (
@@ -199,13 +209,13 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
             />
           </Col>
           <Col xs={24} sm={12}>
-            <TextInput
-              name="tenureMonths"
-              label="Tenure months"
-              required
-              requiredMsg="Tenure months is required"
-              placeholder="Enter tenure months"
-              onKeyDown={(e) => handleNumericKeyDown(e)}
+            <RadioInput
+              name="processingFeeType"
+              label="Processing fee type"
+              required={true}
+              requiredMsg="Processing fee type is required"
+              options={loanProcessingFeeTypeOptions}
+              disabled={isEdit}
             />
           </Col>
           <Col xs={24} sm={12}>
@@ -219,26 +229,6 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
               onKeyDown={(e) => handleNumericKeyDown(e)}
             />
           </Col>
-          <Col xs={24} sm={12}>
-            <DateInput
-              name="startDate"
-              label="Start date"
-              placeholder="Select start date"
-              required
-              requiredMsg="Start date is required"
-              disabled={isStartDate}
-            />
-          </Col>
-          {isEdit && (
-            <Col xs={24} sm={12}>
-              <DateInput
-                name="endDate"
-                label="End date"
-                placeholder="Select end date"
-                disabled
-              />
-            </Col>
-          )}
           {shouldShowDisbursedAmount && (
             <Col xs={24} sm={12}>
               <TextInput
@@ -250,6 +240,28 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
               />
             </Col>
           )}
+          <Col xs={24} sm={12}>
+            <TextInput
+              name="installmentCount"
+              label="Installment count"
+              required
+              requiredMsg="Installment count is required"
+              placeholder="Enter installment count"
+              disabled={isInstallmentCount}
+              onKeyDown={(e) => handleNumericKeyDown(e)}
+            />
+          </Col>
+          <Col xs={24} sm={12}>
+            <SelectInput
+              name="repaymentFrequency"
+              label="Repayment frequency"
+              required={true}
+              requiredMsg="Repayment frequency is required"
+              placeholder="Select repayment frequency"
+              options={loanRepaymentFrequencyList || []}
+              disabled={isInstallmentCount}
+            />
+          </Col>
           {isEdit && (
             <Col xs={24} sm={12}>
               <SelectInput
@@ -257,6 +269,26 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
                 label="Status"
                 placeholder="Select status"
                 options={loanStatusList || []}
+              />
+            </Col>
+          )}
+          <Col xs={24} sm={12}>
+            <DateInput
+              name="startDate"
+              label="Start date"
+              placeholder="Select start date"
+              required
+              requiredMsg="Start date is required"
+              disabled={isInstallmentCount}
+            />
+          </Col>
+          {isEdit && (
+            <Col xs={24} sm={12}>
+              <DateInput
+                name="endDate"
+                label="End date"
+                placeholder="Select end date"
+                disabled
               />
             </Col>
           )}

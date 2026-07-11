@@ -4,6 +4,8 @@ import { VerificationStatus } from "./customer.types";
 
 export type LoanStatus = "pending" | "approved" | "rejected" | "active" | "closed" | "defaulted";
 export type LoanStatusFilter = "all" | LoanStatus;
+export type LoanProcessingFeeType = "flat" | "percentage";
+export type LoanRepaymentFrequency = "daily" | "weekly" | "monthly";
 
 interface CustomerDocument {
   id: number;
@@ -42,9 +44,11 @@ export interface LoanApiRecord {
   loanNumber: string;
   loanAmount: string;
   interestRate: string;
-  tenureMonths: number;
+  installmentCount: number;
+  processingFeeType: LoanProcessingFeeType;
   processingFee: string;
   disbursedAmount: string;
+  repaymentFrequency: LoanRepaymentFrequency;
   status: LoanStatus;
   notes: string;
   rejectionReason: string | null;
@@ -78,6 +82,7 @@ export interface LoanPaginatedResponse {
 };
 
 export interface LoanListParams extends ListParams {
+  repaymentFrequency?: LoanRepaymentFrequency;
   status?: LoanStatus;
   fromDate?: string | null;
   toDate?: string | null;
@@ -90,10 +95,12 @@ export type LoanRow = {
   createdBy: number;
   loanNumber: string;
   loanAmount: string;
+  processingFeeType: LoanProcessingFeeType;
   processingFee: string;
   disbursedAmount: string;
   interestRate: string;
-  tenureMonths: number;
+  installmentCount: number;
+  repaymentFrequency: LoanRepaymentFrequency;
   status: LoanStatus;
   notes: string;
   rejectionReason: string | null;
@@ -110,9 +117,11 @@ export interface LoanPayload {
   collectorId: number | null;
   loanAmount: number;
   interestRate: number;
-  tenureMonths: number;
+  installmentCount: number;
+  processingFeeType: LoanProcessingFeeType;
   processingFee: number;
   disbursedAmount?: number | null;
+  repaymentFrequency: LoanRepaymentFrequency;
   startDate: string | null;
   status: LoanStatus;
   notes: string;
@@ -124,9 +133,11 @@ export interface LoanFormValues {
   collectorId: number | null;
   loanAmount: string | number;
   interestRate: string | number;
-  tenureMonths: string | number;
+  installmentCount: string | number;
+  processingFeeType: LoanProcessingFeeType;
   processingFee: string | number;
   disbursedAmount?: string | number;
+  repaymentFrequency: LoanRepaymentFrequency;
   startDate: Dayjs | null;
   endDate?: Dayjs | null;
   status: LoanStatus;

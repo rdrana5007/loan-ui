@@ -23,10 +23,10 @@ export default class UserService {
     });
   }
 
-  getCollectors(id: number, params?: ListParams) {
+  getCollectors(params?: ListParams) {
     return client.api({
       method: "GET",
-      url: `/users/${id}/collectors`,
+      url: "/users/collectors/name",
       headers: this.getAuthHeaders(),
       params,
     });

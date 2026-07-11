@@ -4,12 +4,14 @@ import { Tag } from "antd";
 type AppTagProps<T extends string> = {
   value?: T;
   options: OptionItem<T>[];
+  variant?: "filled" | "outlined" | "solid";
   fallback?: string;
 };
 
 export const AppTag = <T extends string>({
   value,
   options,
+  variant = "solid",
   fallback = "--",
 }: AppTagProps<T>) => {
   if (!value) return <span>{fallback}</span>;
@@ -19,7 +21,7 @@ export const AppTag = <T extends string>({
   return (
     <Tag
       color={option?.color ?? "default"}
-      variant="solid"
+      variant={variant}
       className="font-bold"
     >
       {option?.label ?? fallback}

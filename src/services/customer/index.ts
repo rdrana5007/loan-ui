@@ -23,10 +23,10 @@ export default class CustomerService {
     });
   }
 
-  getCustomerCodes(id: number, params?: ListParams) {
+  getCustomerCodes(params?: ListParams) {
     return client.api({
       method: "GET",
-      url: `/customers/${id}/codes`,
+      url: "/customers/cust/codes",
       headers: this.getAuthHeaders(),
       params,
     });

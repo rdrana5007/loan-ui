@@ -2,7 +2,7 @@ import { ListParams, PaginationInfo } from "./common.types";
 
 export type VerificationFilter = "all" | "pending" | "verified" | "rejected";
 export type VerificationStatus = "pending" | "verified" | "rejected";
-export type CustomergGender = "male" | "female" | "other";
+export type CustomerGender = "male" | "female" | "other";
 
 interface CustomerDocument {
   id: number;
@@ -29,7 +29,7 @@ export interface CustomerApiRecord {
   lastName: string;
   email: string;
   phone: string;
-  gender: CustomergGender;
+  gender: CustomerGender;
   address: string;
   city: string;
   state: string;
@@ -60,7 +60,7 @@ export type CustomerRow = {
   lastName: string;
   email: string;
   phone: string;
-  gender: CustomergGender;
+  gender: CustomerGender;
   address: string;
   city: string;
   state: string;
@@ -84,7 +84,7 @@ export interface CustomerFormValues {
   lastName: string;
   email: string;
   phone: string;
-  gender: CustomergGender;
+  gender: CustomerGender;
   address: string;
   city: string;
   state: string;

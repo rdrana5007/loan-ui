@@ -20,7 +20,7 @@ export const LOAN_KEYS = {
   customers: "loan-detail-customers" as const,
 };
 
-export const EMICOLLECTION_KEYS = {
-  all: ["emicollections"] as const,
-  detail: (id: number) => ["emicollections", "detail", id] as const
+export const EMI_COLLECTION_KEYS = {
+  all: ["emi-collections"] as const,
+  detail: (id: number) => ["emi-collections", "detail", id] as const,
 };

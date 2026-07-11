@@ -22,17 +22,13 @@ const customerService = new CustomerService();
 export const useInfiniteSelectService = () => {
   const collectors = useInfiniteSelectData<UserApiRecord>({
     queryKey: LOAN_KEYS.collectors,
-    service: (params) =>
-      userService.getUsers({
-        ...params,
-        isCollector: true,
-      }),
+    service: (params) => userService.getCollectors(params),
     mapToOption: mapUserOption,
   });
 
   const customers = useInfiniteSelectData<CustomerApiRecord>({
     queryKey: LOAN_KEYS.customers,
-    service: (params) => customerService.getCustomers(params),
+    service: (params) => customerService.getCustomerCodes(params),
     mapToOption: mapCustomerOption,
   });
 

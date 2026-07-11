@@ -12,3 +12,5 @@ export * from "./AppTag";
 export * from "./AppSwitch";
 export * from "./AppToast";
 export * from "./DeleteModal";
+export * from "./AppModal";
+export * from "./AppTabs";

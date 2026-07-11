@@ -1,43 +1,30 @@
 "use client";
-import {
-  EmiCollectionListParams,
-  EmiCollectionRow,
-  PaymentMethodFilter,
-} from "@/types";
+import { EmiCollectionRow, ListParams } from "@/types";
 import { TableProps } from "antd";
 import { useCallback, useMemo, useState } from "react";
-import { useDebounce } from "./useDebounce";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/constants";
-import { useEmiCollectionsQuery } from "@/api/emiCollection";
+import { useEmiCollectionsByLoanQuery } from "@/api";
 
-export const useEmiCollectionListing = () => {
-  const [search, setSearch] = useState<string>("");
-  const debouncedSearch = useDebounce(search, 500);
-  const [paymentmethodFilter, setPaymentMethodFilter] =
-    useState<PaymentMethodFilter>("all");
+interface UseEmiCollectionListingParams {
+  loanId: string | number | null;
+}
+
+export const useEmiCollectionListing = ({
+  loanId,
+}: UseEmiCollectionListingParams) => {
   const [page, setPage] = useState<number>(DEFAULT_PAGE);
   const [rowsPerPage, setRowsPerPage] = useState<number>(DEFAULT_PAGE_SIZE);
 
-  const trimmedSearch = debouncedSearch.trim();
-
-  const listParams = useMemo((): EmiCollectionListParams => {
-    const params: EmiCollectionListParams = {
+  const listParams = useMemo((): ListParams => {
+    const params: ListParams = {
       page,
       pageSize: rowsPerPage,
     };
-
-    if (trimmedSearch.length >= 2) {
-      params.search = trimmedSearch;
-    }
-
-    if (paymentmethodFilter && paymentmethodFilter !== "all") {
-      params.paymentMethod = paymentmethodFilter;
-    }
-
     return params;
-  }, [trimmedSearch, page, rowsPerPage, paymentmethodFilter]);
+  }, [page, rowsPerPage]);
 
-  const { data: queryData, isLoading } = useEmiCollectionsQuery(listParams);
+  const id = Number(loanId);
+  const { data: queryData, isLoading } = useEmiCollectionsByLoanQuery(id, listParams);
 
   const data = queryData?.items ?? [];
   const pageInfo = queryData?.page_info;
@@ -57,27 +44,10 @@ export const useEmiCollectionListing = () => {
       setRowsPerPage(pagination.pageSize ?? DEFAULT_PAGE_SIZE);
     }, []);
 
-  const handleFilterChange = useCallback(
-    (name: string, value: string | undefined) => {
-      if (name === "search" && typeof value === "string") {
-        setSearch(value);
-        setPage(DEFAULT_PAGE);
-      }
-      if (name === "paymentMethod" && typeof value === "string") {
-        setPaymentMethodFilter(value as PaymentMethodFilter);
-        setPage(DEFAULT_PAGE);
-      }
-    },
-    [],
-  );
-
   return {
     data,
     isLoading,
     pagination,
-    searchValue: search,
-    paymentmethodFilter,
-    handleFilterChange,
     handleTableChange,
   };
 };

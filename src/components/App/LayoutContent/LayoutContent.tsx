@@ -9,9 +9,7 @@ const BREADCRUMB_PATHS: Record<string, string> = {
   Home: "/",
   Users: "/users",
   Customers: "/customers",
-  Loans: "/loans",
-  EmiCollections: "/emi-collections",
-  EmiFollowups: "/emi-followups",
+  Loans: "/loans"
 };
 
 interface LayoutContentProps {

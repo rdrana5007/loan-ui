@@ -32,12 +32,12 @@ export const useUsersQuery = (params?: UserListParams) => {
   });
 };
 
-export const useCollectorsQuery = (id: number, params?: ListParams) => {
+export const useCollectorsQuery = (params?: ListParams) => {
   return useQuery<CollectorPaginatedResponse>({
-    queryKey: [...USER_KEYS.collectors, id, JSON.stringify(params)],
+    queryKey: [...USER_KEYS.collectors, JSON.stringify(params)],
     placeholderData: (previousData) => previousData,
     queryFn: async () => {
-      const response = await userService.getCollectors(id, params);
+      const response = await userService.getCollectors(params);
       const payload = response.data?.data;
       const totalCount = payload.page_info.total_count ?? payload.items.length;
 

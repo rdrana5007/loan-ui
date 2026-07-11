@@ -1,6 +1,6 @@
 import CookiePersistence from "@/utils/cookiePersistence";
 import { Client } from "../apiClient";
-import { EmiScheduleListParams, LoanListParams, LoanPayload } from "@/types";
+import { EmiSchedulingListParams, LoanListParams, LoanPayload } from "@/types";
 
 const client = new Client();
 const localCookie = new CookiePersistence();
@@ -23,7 +23,7 @@ export default class LoanService {
     });
   }
 
-  getEmiSchedules(id: number, params?: EmiScheduleListParams) {
+  getEmiScheduling(id: number, params?: EmiSchedulingListParams) {
     return client.api({
       method: "GET",
       url: `/loans/${id}/emi-schedules`,
