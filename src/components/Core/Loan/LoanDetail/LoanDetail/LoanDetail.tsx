@@ -8,13 +8,13 @@ import { ComponentType, FC, useMemo, useState } from "react";
 import { EmiSchedulingListing } from "../EmiSchedulingListing";
 import { EmiCollectionListing } from "../EmiCollectionListing";
 
-// type LoanEmiTab = "scheduling" | "collection" | "followup";
+// type LoanEmiTab = "scheduling" | "collection" | "followUp";
 type LoanEmiTab = "scheduling" | "collection";
 
 const tabComponents: Record<LoanEmiTab, ComponentType> = {
   scheduling: EmiSchedulingListing,
   collection: EmiCollectionListing,
-  // followup: EmiFollowupListing,
+  // followUp: EmifollowUpListing,
 };
 
 interface LoanDetailProps {

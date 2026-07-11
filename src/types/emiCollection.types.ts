@@ -1,6 +1,6 @@
 import { PaginationInfo } from "./common.types";
 
-export type PaymentMethod = "cash" | "upi" | "bank" | "cheque";
+export type EmiPaymentMethod = "cash" | "upi" | "bank" | "cheque";
 
 interface Customer {
   id: number;
@@ -22,7 +22,7 @@ export interface EmiCollectionApiRecord {
   customerId: number;
   collectorId: number;
   collectedAmount: string;
-  paymentMethod: PaymentMethod;
+  paymentMethod: EmiPaymentMethod;
   transactionReference: string;
   remarks: string;
   createdAt: string;
@@ -40,8 +40,9 @@ export interface EmiCollectionPaginatedResponse {
 export type EmiCollectionRow = {
   id: number;
   collectedAmount: string;
-  paymentMethod: PaymentMethod;
+  paymentMethod: EmiPaymentMethod;
   transactionReference: string;
+  remarks: string;
   createdAt: string;
 };
 
@@ -50,7 +51,7 @@ export interface EmiCollectionFormValues {
   loanId?: number;
   customerId?: number;
   collectedAmount: number;
-  paymentMethod: PaymentMethod;
+  paymentMethod: EmiPaymentMethod;
   transactionReference: string;
   remarks: string;
 }

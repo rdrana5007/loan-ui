@@ -28,7 +28,7 @@ const renderFullName = (record: LoanRow) =>
     .filter(Boolean)
     .join(" ") || "--";
 
-const renderVerificationTag = (val?: LoanStatus) => (
+const renderStatusTag = (val?: LoanStatus) => (
   <AppTag value={val} options={loanStatusList} />
 );
 
@@ -80,7 +80,7 @@ export const LoanListing: FC<LoanListingProps> = ({ title, breadcrumbs }) => {
 
   const renderActions = useCallback(
     (_: unknown, row: LoanRow) => (
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-end">
         {shouldShowLoanDetail(row?.status) && (
           <EyeOutlined
             onClick={() => router.push(`/loans/${row.id}/loan-detail`)}
@@ -139,7 +139,7 @@ export const LoanListing: FC<LoanListingProps> = ({ title, breadcrumbs }) => {
         dataIndex: "status",
         key: "status",
         width: 150,
-        render: renderVerificationTag,
+        render: renderStatusTag,
       },
       {
         title: "Start Date",

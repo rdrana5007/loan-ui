@@ -1,11 +1,11 @@
 import {
   CustomerGender,
+  EmiPaymentMethod,
   EmiSchedulingStatus,
   LoanProcessingFeeType,
   LoanRepaymentFrequency,
   LoanStatus,
   OptionItem,
-  PaymentMethod,
   VerificationStatus,
 } from "@/types";
 
@@ -69,8 +69,8 @@ export const emiSchedulingStatusList: OptionItem<EmiSchedulingStatus>[] = [
   { label: "Overdue", value: "overdue", color: "red" },
 ];
 
-// Payment method list
-export const paymentMethodList: OptionItem<PaymentMethod>[] = [
+// Emi Payment method list
+export const emiPaymentMethodList: OptionItem<EmiPaymentMethod>[] = [
   { label: "Cash", value: "cash", color: "green" },
   { label: "UPI", value: "upi", color: "blue" },
   { label: "Cheque", value: "cheque", color: "orange" },

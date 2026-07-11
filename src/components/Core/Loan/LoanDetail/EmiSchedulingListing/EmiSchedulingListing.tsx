@@ -21,8 +21,9 @@ import {
 } from "react";
 import { CollectEmiModal } from "../CollectEmiModal";
 import { ViewEmiScheduleModal } from "../ViewEmiScheduleModal";
+import { FollowUpModal } from "../FollowUpModal";
 
-type EmiModalType = "view" | "collect" | "follow-up";
+type EmiModalType = "view" | "collect" | "followUp";
 
 type ModalState = {
   open: boolean;
@@ -39,10 +40,10 @@ type ModalContentConfig = {
 const MODAL_TITLES: Record<EmiModalType, string> = {
   view: "EMI Details",
   collect: "Create EMI Collection",
-  "follow-up": "Follow-up",
+  followUp: "Create Follow-up",
 };
 
-const renderVerificationTag = (val?: EmiSchedulingStatus) => (
+const renderStatusTag = (val?: EmiSchedulingStatus) => (
   <AppTag value={val} options={emiSchedulingStatusList} />
 );
 
@@ -71,20 +72,12 @@ export const EmiSchedulingListing = () => {
   });
 
   const closeModal = useCallback(() => {
-    setModalState({
-      open: false,
-      type: null,
-      row: null,
-    });
+    setModalState({ open: false, type: null, row: null });
   }, []);
 
   const openModal = useCallback(
     (type: EmiModalType, row?: EmiSchedulingRow) => {
-      setModalState({
-        open: true,
-        type,
-        row,
-      });
+      setModalState({ open: true, type, row });
     },
     [],
   );
@@ -93,9 +86,11 @@ export const EmiSchedulingListing = () => {
 
   const modalContentConfig: Record<EmiModalType, ModalContentConfig> = {
     view: {
-      component: <ViewEmiScheduleModal data={modalState.row} onClose={closeModal} />,
+      component: (
+        <ViewEmiScheduleModal data={modalState.row} onClose={closeModal} />
+      ),
       width: 800,
-      style: { maxWidth: "95vw" }
+      style: { maxWidth: "95vw" },
     },
     collect: {
       component: (
@@ -105,10 +100,17 @@ export const EmiSchedulingListing = () => {
           refetch={refetch}
           onClose={closeModal}
         />
-      )
+      ),
     },
-    "follow-up": {
-      component: "<FollowUp row={modalState.row!} />",
+    followUp: {
+      component: (
+        <FollowUpModal
+          data={modalState.row}
+          loanData={loanData}
+          refetch={refetch}
+          onClose={closeModal}
+        />
+      ),
     },
   };
 
@@ -116,24 +118,24 @@ export const EmiSchedulingListing = () => {
 
   const renderActions = useCallback(
     (_: unknown, row: EmiSchedulingRow) => (
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <AppButton
           size="small"
           label="View"
           className="rounded-md bg-blue-100! text-blue-700! hover:bg-blue-200! border-0!"
           onClick={() => openModal("view", row)}
         />
-        <AppButton
+        {row?.status !== "paid" && <AppButton
           size="small"
           label="Collect"
           className="rounded-md bg-green-100! text-green-700! hover:bg-green-200! border-0!"
           onClick={() => openModal("collect", row)}
-        />
+        />}
         {/* <AppButton
           size="small"
           label="Follow-up"
           className="rounded-md bg-amber-100! text-amber-700! hover:bg-amber-200! border-0!"
-          onClick={() => openModal("follow-up")}
+          onClick={() => openModal("followUp", row)}
         /> */}
       </div>
     ),
@@ -147,7 +149,7 @@ export const EmiSchedulingListing = () => {
         dataIndex: "installmentNo",
         key: "installmentNo",
         fixed: !isMobile ? "left" : undefined,
-        width: 150,
+        width: 130,
         render: formatters.value,
       },
       {
@@ -190,7 +192,7 @@ export const EmiSchedulingListing = () => {
         dataIndex: "status",
         key: "status",
         width: 150,
-        render: renderVerificationTag,
+        render: renderStatusTag,
       },
       {
         title: "Due Date",
@@ -211,7 +213,7 @@ export const EmiSchedulingListing = () => {
         dataIndex: "action",
         key: "action",
         align: "center",
-        fixed: "right",
+        fixed: !isMobile ? "right" : undefined,
         render: renderActions,
       },
     ],
@@ -258,21 +260,3 @@ export const EmiSchedulingListing = () => {
     </>
   );
 };
-
-// import dayjs from "dayjs";
-
-// const canCollectEmi = (
-//   status: EmiSchedulingStatus,
-//   dueDate: string // e.g. "2026-07-10"
-// ) => {
-//   const today = dayjs().startOf("day");
-//   const due = dayjs(dueDate).startOf("day");
-
-//   const isFuture = due.isAfter(today);
-
-//   return !isFuture && ["pending", "partial", "overdue"].includes(status);
-// };
-
-// {canCollectEmi(emi.status, emi.dueDate) && (
-//   <button>Collect EMI</button>
-// )}

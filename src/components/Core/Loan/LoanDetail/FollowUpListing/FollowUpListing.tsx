@@ -18,7 +18,7 @@ const renderPaymentMethodTag = (val?: EmiPaymentMethod) => (
   <AppTag value={val} options={emiPaymentMethodList} variant="outlined" />
 );
 
-export const EmiCollectionListing = () => {
+export const FollowUpListing = () => {
   const params = useParams<{ id: string }>();
   const { isMobile } = useResponsive();
 

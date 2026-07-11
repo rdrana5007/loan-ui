@@ -18,7 +18,7 @@ import { FC } from "react";
 
 type RefetchType = ReturnType<typeof useEmiSchedulingQuery>["refetch"];
 
-interface CollectEmiModalProps {
+interface FollowUpModalProps {
   data?: EmiSchedulingRow | null;
   loanData?: LoanEmiApiRecord | null;
   refetch: RefetchType;
@@ -39,7 +39,7 @@ const toApiPayload = (
   remarks: values.remarks?.trim() || "",
 });
 
-export const CollectEmiModal: FC<CollectEmiModalProps> = ({
+export const FollowUpModal: FC<FollowUpModalProps> = ({
   data,
   loanData,
   refetch,
