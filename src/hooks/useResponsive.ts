@@ -6,19 +6,27 @@ const { useBreakpoint } = Grid;
 
 export const useResponsive = () => {
   const screens = useBreakpoint();
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isXL, setIsXL] = useState<boolean>(false);
+  const [is2XL, setIs2XL] = useState<boolean>(false);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+    const checkScreenSize = () => {
+      const width = window.innerWidth;
+
+      setIsMobile(width < 768);
+      // setIsTablet(width >= 768 && width < 1024);
+      // setIsDesktop(width >= 1024);
+      setIsXL(width >= 1280);
+      setIs2XL(width >= 1536);
     };
 
-    checkMobile();
+    checkScreenSize();
 
-    window.addEventListener("resize", checkMobile);
+    window.addEventListener("resize", checkScreenSize);
 
     return () => {
-      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener("resize", checkScreenSize);
     };
   }, []);
 
@@ -27,7 +35,9 @@ export const useResponsive = () => {
     // isMobile: !screens.md,
     isTablet: screens.md && !screens.lg,
     isDesktop: screens.lg,
-    isXL: screens.xl,
-    isMobile
+    // isXL: screens.xl,
+    isMobile,
+    isXL,
+    is2XL
   };
 };

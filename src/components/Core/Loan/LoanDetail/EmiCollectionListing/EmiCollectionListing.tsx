@@ -87,7 +87,7 @@ export const EmiCollectionListing = () => {
         render: formatters.value,
       },
       {
-        title: "Created Date",
+        title: "Collected Date",
         dataIndex: "createdAt",
         key: "createdAt",
         width: 180,
@@ -98,7 +98,7 @@ export const EmiCollectionListing = () => {
         dataIndex: "action",
         key: "action",
         align: "center",
-        fixed: "right",
+        fixed: !isMobile ? "right" : undefined,
         width: 50,
         render: renderActions,
       },

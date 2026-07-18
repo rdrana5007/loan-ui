@@ -52,7 +52,6 @@ const toApiPayload = (values: LoanFormValues): LoanPayload => ({
   interestRate: Number(values.interestRate),
   processingFeeType: values.processingFeeType,
   processingFee: Number(values.processingFee),
-  disbursedAmount: Number(values.disbursedAmount),
   installmentCount: Number(values.installmentCount),
   repaymentFrequency: values.repaymentFrequency,
   startDate: values.startDate?.format("YYYY-MM-DD") ?? null,
@@ -104,7 +103,6 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
     status === "active" || status === "closed" || status === "defaulted";
   const REJECTION_STATUSES = status === "pending" || status === "rejected";
 
-  const isDisbursedAmount: boolean = status !== "approved";
   const isInstallmentCount: boolean = isEdit && INSTALLMENT_COUNT_STATUSES;
   const shouldShowDisbursedAmount: boolean = isEdit && DISBURSED_STATUSES;
   const shouldShowRejectionReason: boolean = isEdit && REJECTION_STATUSES;
@@ -116,7 +114,6 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
       if (isEdit && data?.id) {
         const { customerId, loanAmount, processingFee, processingFeeType, ...updatePayload } = payload;
 
-        if (!shouldShowDisbursedAmount) delete updatePayload.disbursedAmount;
         if (!shouldShowRejectionReason) delete updatePayload.rejectionReason;
 
         const response = await updateLoan({
@@ -128,7 +125,7 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
           AppToast.success(response.data?.message ?? "Loan updated");
         }
       } else {
-        const { disbursedAmount, rejectionReason, ...createPayload } = payload;
+        const { rejectionReason, ...createPayload } = payload;
         const response = await createLoan(createPayload);
         if (response && response.status === 201) {
           AppToast.success(response.data?.message ?? "Loan created");
@@ -235,7 +232,7 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
                 name="disbursedAmount"
                 label="Disbursed amount"
                 placeholder="Enter disbursed amount"
-                disabled={isDisbursedAmount}
+                disabled
                 onKeyDown={(e) => handleNumericKeyDown(e)}
               />
             </Col>
@@ -315,7 +312,7 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
             </Col>
           )}
         </Row>
-        <Row gutter={[12, 12]} justify="end" className="mt-4">
+        <Row gutter={[12, 12]} justify="end" className="mt-6">
           <Col xs={24} sm={8} md={6} lg={4}>
             <AppButton
               block

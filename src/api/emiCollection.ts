@@ -1,7 +1,6 @@
 import { EMI_COLLECTION_KEYS } from "@/constants";
 import { EmiCollectionService } from "@/services";
 import {
-  EmiCollectionApiRecord,
   EmiCollectionFormValues,
   EmiCollectionPaginatedResponse,
   ListParams,
@@ -33,17 +32,6 @@ export const useEmiCollectionsByLoanQuery = (id: number, params?: ListParams) =>
       }
 
       return payload;
-    },
-  });
-};
-
-export const useEmiCollectionQuery = (id: number) => {
-  return useQuery<EmiCollectionApiRecord>({
-    queryKey: EMI_COLLECTION_KEYS.detail(id),
-    enabled: id !== null,
-    queryFn: async () => {
-      const response = await emiCollectionService.getEmiCollection(id);
-      return response.data?.data;
     },
   });
 };

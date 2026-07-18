@@ -1,8 +1,5 @@
 "use client";
-import {
-  useCreateEmiFollowUpMutation,
-  useEmiSchedulesByLoanQuery,
-} from "@/api";
+import { useUpdateEmiFollowUpMutation } from "@/api";
 import {
   AppButton,
   AppToast,
@@ -10,70 +7,87 @@ import {
   SelectInput,
   TextInput,
 } from "@/components/Common";
-import { followUpCommunicationTypeList } from "@/constants";
+import { followUpCommunicationTypeList, followUpStatusList } from "@/constants";
 import {
+  CommunicationType,
   EmiFollowUpFormValues,
   EmiFollowUpPayload,
-  EmiScheduleRow,
-  LoanEmiApiRecord,
+  EmiFollowUpRow,
+  EmiFollowUpStatus,
 } from "@/types";
 import { Col, Form, Row } from "antd";
-import { FC } from "react";
+import dayjs from "dayjs";
+import { FC, useEffect } from "react";
 
-type RefetchType = ReturnType<typeof useEmiSchedulesByLoanQuery>["refetch"];
-
-interface FollowUpModalProps {
-  data?: EmiScheduleRow | null;
-  loanData?: LoanEmiApiRecord | null;
-  refetch: RefetchType;
+interface UpdateFollowUpModalProps {
+  data?: EmiFollowUpRow | null;
   onClose: () => void;
 }
 
-const toApiPayload = (
-  values: EmiFollowUpFormValues,
-  data?: EmiScheduleRow | null,
-  loanData?: LoanEmiApiRecord | null,
-): EmiFollowUpPayload => ({
-  emiScheduleId: data?.id,
-  loanId: data?.loanId,
-  customerId: loanData?.customerId,
-  communicationType: values.communicationType,
-  followUpDate: values.followUpDate?.format("YYYY-MM-DD") ?? null,
-  nextFollowupDate: values.nextFollowupDate?.format("YYYY-MM-DD") ?? null,
-  remarks: values.remarks?.trim() ?? "",
+const toFormValues = (
+  followUp?: EmiFollowUpRow | null,
+): EmiFollowUpFormValues => ({
+  communicationType: followUp?.communicationType as CommunicationType,
+  status: followUp?.status as EmiFollowUpStatus,
+  remarks: followUp?.remarks ?? "",
+  followUpDate: followUp?.followUpDate ? dayjs(followUp.followUpDate) : null,
+  nextFollowupDate: followUp?.nextFollowupDate
+    ? dayjs(followUp.nextFollowupDate)
+    : null,
 });
 
-export const FollowUpModal: FC<FollowUpModalProps> = ({
+const toApiPayload = (values: EmiFollowUpFormValues): EmiFollowUpPayload => ({
+  communicationType: values.communicationType,
+  status: values.status,
+  remarks: values.remarks?.trim() ?? "",
+  followUpDate: values.followUpDate?.format("YYYY-MM-DD") ?? null,
+  nextFollowupDate: values.nextFollowupDate?.format("YYYY-MM-DD") ?? null,
+});
+
+export const UpdateFollowUpModal: FC<UpdateFollowUpModalProps> = ({
   data,
-  loanData,
-  refetch,
   onClose,
 }) => {
   const [form] = Form.useForm();
 
-  const { mutateAsync: createEmiFollowUp, isPending: isCreating } =
-    useCreateEmiFollowUpMutation();
+  const { mutateAsync: updateEmiFollowUp, isPending: isUpdating } =
+    useUpdateEmiFollowUpMutation();
+
+  useEffect(() => {
+    if (data) {
+      form.setFieldsValue(toFormValues(data));
+    }
+  }, [data, form]);
 
   const handleSubmit = async (values: EmiFollowUpFormValues) => {
-    const payload = toApiPayload(values, data, loanData);
+    const payload = toApiPayload(values);
+
+    if (!data) return;
 
     try {
-      const response = await createEmiFollowUp(payload);
-      if (response && response.status === 201) {
-        AppToast.success(response.data?.message ?? "EMI follow-up created");
-        await refetch();
+      const response = await updateEmiFollowUp({
+        id: data.id,
+        payload,
+      });
+      if (response && response.status === 200) {
+        AppToast.success(response.data?.message ?? "EMI follow-up updated");
         onClose();
       }
     } catch (error: any) {
       AppToast.error(
-        error?.response?.data?.message ?? "Failed to save EMI follow-up",
+        error?.response?.data?.message ?? "Failed to save EMI collection",
       );
     }
   };
 
   return (
     <div className="w-full mt-6">
-      <Form form={form} layout="vertical" onFinish={handleSubmit}>
+      <Form
+        form={form}
+        layout="vertical"
+        initialValues={toFormValues(data)}
+        onFinish={handleSubmit}
+      >
         <Row gutter={[16, 16]}>
           <Col xs={24}>
             <SelectInput
@@ -83,6 +97,16 @@ export const FollowUpModal: FC<FollowUpModalProps> = ({
               requiredMsg="Communication type is required"
               placeholder="Select communication type"
               options={followUpCommunicationTypeList || []}
+            />
+          </Col>
+          <Col xs={24}>
+            <SelectInput
+              name="status"
+              label="Status"
+              required={true}
+              requiredMsg="Status is required"
+              placeholder="Select status"
+              options={followUpStatusList || []}
             />
           </Col>
           <Col xs={24}>
@@ -129,7 +153,7 @@ export const FollowUpModal: FC<FollowUpModalProps> = ({
               type="primary"
               htmlType="submit"
               label="Save"
-              disabled={isCreating}
+              disabled={isUpdating}
               className="w-full! h-9! md:h-8 lg:h-9"
             />
           </Col>

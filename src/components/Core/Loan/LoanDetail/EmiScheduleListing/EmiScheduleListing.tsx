@@ -6,9 +6,7 @@ import {
   AppTag,
   FilterInput,
 } from "@/components/Common";
-import { emiSchedulingStatus, emiSchedulingStatusList } from "@/constants";
-import { useEmiSchedulingListing, useResponsive } from "@/hooks";
-import { EmiSchedulingRow, EmiSchedulingStatus } from "@/types";
+import { useEmiScheduleListing, useResponsive } from "@/hooks";
 import { formatters, resolveNumericId } from "@/utils";
 import { ColumnsType } from "antd/es/table";
 import { useParams } from "next/navigation";
@@ -22,13 +20,15 @@ import {
 import { CollectEmiModal } from "../CollectEmiModal";
 import { ViewEmiScheduleModal } from "../ViewEmiScheduleModal";
 import { FollowUpModal } from "../FollowUpModal";
+import { EmiScheduleRow, EmiScheduleStatus } from "@/types";
+import { emiScheduleStatus, emiScheduleStatusList } from "@/constants";
 
 type EmiModalType = "view" | "collect" | "followUp";
 
 type ModalState = {
   open: boolean;
   type: EmiModalType | null;
-  row?: EmiSchedulingRow | null;
+  row?: EmiScheduleRow | null;
 };
 
 type ModalContentConfig = {
@@ -43,11 +43,11 @@ const MODAL_TITLES: Record<EmiModalType, string> = {
   followUp: "Create Follow-up",
 };
 
-const renderStatusTag = (val?: EmiSchedulingStatus) => (
-  <AppTag value={val} options={emiSchedulingStatusList} />
+const renderStatusTag = (val?: EmiScheduleStatus) => (
+  <AppTag value={val} options={emiScheduleStatusList} />
 );
 
-export const EmiSchedulingListing = () => {
+export const EmiScheduleListing = () => {
   const params = useParams<{ id: string }>();
   const { isMobile } = useResponsive();
 
@@ -63,7 +63,7 @@ export const EmiSchedulingListing = () => {
     refetch,
     handleFilterChange,
     handleTableChange,
-  } = useEmiSchedulingListing({ loanId });
+  } = useEmiScheduleListing({ loanId });
 
   const [modalState, setModalState] = useState<ModalState>({
     open: false,
@@ -75,12 +75,9 @@ export const EmiSchedulingListing = () => {
     setModalState({ open: false, type: null, row: null });
   }, []);
 
-  const openModal = useCallback(
-    (type: EmiModalType, row?: EmiSchedulingRow) => {
-      setModalState({ open: true, type, row });
-    },
-    [],
-  );
+  const openModal = useCallback((type: EmiModalType, row?: EmiScheduleRow) => {
+    setModalState({ open: true, type, row });
+  }, []);
 
   const modalTitle = modalState.type ? MODAL_TITLES[modalState.type] : "";
 
@@ -117,32 +114,38 @@ export const EmiSchedulingListing = () => {
   const config = modalState.type ? modalContentConfig[modalState.type] : null;
 
   const renderActions = useCallback(
-    (_: unknown, row: EmiSchedulingRow) => (
-      <div className="flex flex-wrap items-center justify-between gap-2">
+    (_: unknown, row: EmiScheduleRow) => (
+      <div className="flex flex-wrap items-center gap-2">
         <AppButton
           size="small"
           label="View"
           className="rounded-md bg-blue-100! text-blue-700! hover:bg-blue-200! border-0!"
           onClick={() => openModal("view", row)}
         />
-        {row?.status !== "paid" && <AppButton
-          size="small"
-          label="Collect"
-          className="rounded-md bg-green-100! text-green-700! hover:bg-green-200! border-0!"
-          onClick={() => openModal("collect", row)}
-        />}
-        {/* <AppButton
-          size="small"
-          label="Follow-up"
-          className="rounded-md bg-amber-100! text-amber-700! hover:bg-amber-200! border-0!"
-          onClick={() => openModal("followUp", row)}
-        /> */}
+        {row?.status !== "paid" && (
+          <>
+            <AppButton
+              size="small"
+              label="Collect"
+              className="rounded-md bg-green-100! text-green-700! hover:bg-green-200! border-0!"
+              onClick={() => openModal("collect", row)}
+            />
+            {!row?.emi_followups?.length && (
+              <AppButton
+                size="small"
+                label="Follow-up"
+                className="rounded-md bg-amber-100! text-amber-700! hover:bg-amber-200! border-0!"
+                onClick={() => openModal("followUp", row)}
+              />
+            )}
+          </>
+        )}
       </div>
     ),
     [openModal],
   );
 
-  const columns = useMemo<ColumnsType<EmiSchedulingRow>>(
+  const columns = useMemo<ColumnsType<EmiScheduleRow>>(
     () => [
       {
         title: "Installment No.",
@@ -233,7 +236,7 @@ export const EmiSchedulingListing = () => {
               placeholder="All Status"
               filterKey="status"
               value={statusFilter}
-              options={emiSchedulingStatus}
+              options={emiScheduleStatus}
               className="w-full h-10!"
               onChange={handleFilterChange}
             />

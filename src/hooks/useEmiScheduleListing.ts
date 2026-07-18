@@ -1,26 +1,26 @@
 "use client";
-import { useEmiSchedulingQuery } from "@/api";
 import { TableProps } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, FILTER_KEYS } from "@/constants";
-import { EmiSchedulingListParams, EmiSchedulingRow, EmiSchedulingStatusFilter, LoanEmiApiRecord } from "@/types";
+import { EmiScheduleListParams, EmiScheduleRow, EmiScheduleStatusFilter, LoanEmiApiRecord } from "@/types";
+import { useEmiSchedulesByLoanQuery } from "@/api";
 
 const { STATUS } = FILTER_KEYS;
 
-interface UseEmiSchedulingListingParams {
+interface UseEmiScheduleListingParams {
   loanId: string | number | null;
 }
 
-export const useEmiSchedulingListing = ({
+export const useEmiScheduleListing = ({
   loanId,
-}: UseEmiSchedulingListingParams) => {
+}: UseEmiScheduleListingParams) => {
   const [statusFilter, setStatusFilter] =
-    useState<EmiSchedulingStatusFilter>("all");
+    useState<EmiScheduleStatusFilter>("all");
   const [page, setPage] = useState<number>(DEFAULT_PAGE);
   const [rowsPerPage, setRowsPerPage] = useState<number>(DEFAULT_PAGE_SIZE);
 
-  const listParams = useMemo((): EmiSchedulingListParams => {
-    const params: EmiSchedulingListParams = {
+  const listParams = useMemo((): EmiScheduleListParams => {
+    const params: EmiScheduleListParams = {
       page,
       pageSize: rowsPerPage,
     };
@@ -33,7 +33,7 @@ export const useEmiSchedulingListing = ({
   }, [page, rowsPerPage, statusFilter]);
 
   const id = Number(loanId);
-  const { data: queryData, isLoading, refetch } = useEmiSchedulingQuery(id, listParams);
+  const { data: queryData, isLoading, refetch } = useEmiSchedulesByLoanQuery(id, listParams);
 
   const loanData = queryData?.loan ?? {} as LoanEmiApiRecord;
   const data = queryData?.items ?? [];
@@ -48,7 +48,7 @@ export const useEmiSchedulingListing = ({
     [pageInfo, page, rowsPerPage, data],
   );
 
-  const handleTableChange: TableProps<EmiSchedulingRow>["onChange"] = useCallback(
+  const handleTableChange: TableProps<EmiScheduleRow>["onChange"] = useCallback(
     (pagination: any) => {
       setPage(pagination.current ?? DEFAULT_PAGE);
       setRowsPerPage(pagination.pageSize ?? DEFAULT_PAGE_SIZE);
@@ -59,7 +59,7 @@ export const useEmiSchedulingListing = ({
   const handleFilterChange = useCallback(
     (name: string, value: string | undefined) => {
       if (name === STATUS && typeof value === "string") {
-        setStatusFilter(value as EmiSchedulingStatusFilter);
+        setStatusFilter(value as EmiScheduleStatusFilter);
         setPage(DEFAULT_PAGE);
       }
     },

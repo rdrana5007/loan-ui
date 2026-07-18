@@ -358,7 +358,7 @@ export const CustomerForm: FC<CustomerFormProps> = ({ breadcrumbs }) => {
             />
           </Col>
         </Row>
-        <Row gutter={[12, 12]} justify="end" className="mt-4">
+        <Row gutter={[12, 12]} justify="end" className="mt-6">
           <Col xs={24} sm={8} md={6} lg={4}>
             <AppButton
               block

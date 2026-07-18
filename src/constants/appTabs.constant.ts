@@ -7,13 +7,13 @@ export const repaymentFrequencyTabs: TabsProps["items"] = [
 ];
 
 export const loanEmiTabs: TabsProps["items"] = [
-  { key: "scheduling", label: "EMI Scheduling" },
+  { key: "schedule", label: "EMI Schedule" },
   { key: "collection", label: "EMI Collection" },
-  // { key: "followup", label: "EMI Followup" },
+  { key: "followUp", label: "EMI Follow-up" },
 ];
 
 // export const loanEmiTabs: TabsProps["items"] = [
-//   { key: "scheduling", label: "Tab 1" },
+//   { key: "schedule", label: "Tab 1" },
 //   { key: "collection", label: "Tab 2" },
-//   // { key: "followup", label: "Tab 3" },
+//   { key: "followUp", label: "Tab 3" },
 // ];

@@ -1,20 +1,20 @@
 "use client";
 import { AppTabs } from "@/components/Common";
 import { loanEmiTabs } from "@/constants";
-import { useEmiSchedulingListing, usePageBreadcrumbs } from "@/hooks";
+import { useEmiScheduleListing, usePageBreadcrumbs } from "@/hooks";
 import { resolveNumericId } from "@/utils";
 import { useParams } from "next/navigation";
 import { ComponentType, FC, useMemo, useState } from "react";
-import { EmiSchedulingListing } from "../EmiSchedulingListing";
+import { EmiScheduleListing } from "../EmiScheduleListing";
 import { EmiCollectionListing } from "../EmiCollectionListing";
+import { EmiFollowUpListing } from "../EmiFollowUpListing";
 
-// type LoanEmiTab = "scheduling" | "collection" | "followUp";
-type LoanEmiTab = "scheduling" | "collection";
+type LoanEmiTab = "schedule" | "collection" | "followUp";
 
 const tabComponents: Record<LoanEmiTab, ComponentType> = {
-  scheduling: EmiSchedulingListing,
+  schedule: EmiScheduleListing,
   collection: EmiCollectionListing,
-  // followUp: EmifollowUpListing,
+  followUp: EmiFollowUpListing,
 };
 
 interface LoanDetailProps {
@@ -27,12 +27,12 @@ export const LoanDetail: FC<LoanDetailProps> = ({ breadcrumbs }) => {
   const id: string = params?.id;
   const loanId = useMemo(() => resolveNumericId(id), [id]);
 
-  const { loanData } = useEmiSchedulingListing({ loanId });
+  const { loanData } = useEmiScheduleListing({ loanId });
 
   const title: string = loanData?.loanNumber || "Loan Detail";
   usePageBreadcrumbs(title, breadcrumbs, "Loans");
 
-  const [activeTab, setActiveTab] = useState<LoanEmiTab>("scheduling");
+  const [activeTab, setActiveTab] = useState<LoanEmiTab>("schedule");
 
   const ActiveTabComponent = tabComponents[activeTab];
 

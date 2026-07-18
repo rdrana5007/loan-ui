@@ -71,3 +71,7 @@
 .ant-menu-light .ant-menu-item {
   color: #fff !important;
 }
+
+.ant-form-item {
+  margin-bottom: 5px !important;
+}

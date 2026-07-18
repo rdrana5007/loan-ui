@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 import { useState } from "react";
 import { DROPDOWN_ITEMS } from "@/config";
-import { useAuthentication } from "@/hooks";
+import { useAuthentication, useProfile } from "@/hooks";
 import { useRouter } from "next/navigation";
 
 const { Header } = Layout;
@@ -32,7 +32,17 @@ export const LayoutHeader = ({
     token: { colorBgContainer },
   } = theme.useToken();
   const { handleLogout } = useAuthentication();
+  const { data } = useProfile();
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+
+  const displayName = data?.fullName.trim() ?? "";
+
+  const displayRole =
+    data == null
+      ? ""
+      : "roles" in data
+        ? data.roles.name.trim()
+        : data.roleName.trim();
 
   const headerIcon =
     isMobile || collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />;
@@ -84,8 +94,8 @@ export const LayoutHeader = ({
               icon={<UserOutlined />}
             />
             <div className=" text-left md:block">
-              <div className="font-semibold leading-none">Admin</div>
-              <div className="text-xs text-gray-500">Administrator</div>
+              <div className="font-semibold leading-none">{displayName || "-"}</div>
+              <div className="text-xs text-gray-500">{displayRole || "-"}</div>
             </div>
             {isDropdownOpen ? (
               <UpOutlined className="text-sm text-gray-500" />

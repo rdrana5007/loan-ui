@@ -20,7 +20,7 @@ export default class AuthService {
   }
 
   isAuthenticated() {
-    const token = storage.getItem("token");
+    const token = storage.getItem("token") || localCookie.getItem("access_token");
     return !!token;
   }
 

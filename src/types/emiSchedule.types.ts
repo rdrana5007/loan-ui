@@ -1,7 +1,8 @@
 import { ListParams, PaginationInfo } from "./common.types";
+import { EmiFollowUpStatus } from "./emiFollowUp.types";
 
-export type EmiSchedulingStatus = "pending" | "paid" | "partial" | "overdue";
-export type EmiSchedulingStatusFilter = "all" | EmiSchedulingStatus;
+export type EmiScheduleStatus = "pending" | "paid" | "partial" | "overdue";
+export type EmiScheduleStatusFilter = "all" | EmiScheduleStatus;
 
 export interface LoanEmiApiRecord {
   id: number;
@@ -11,7 +12,12 @@ export interface LoanEmiApiRecord {
   loanNumber: string;
 }
 
-interface EmiSchedulingApiRecord {
+interface EmiFollowup {
+  id: number;
+  status: EmiFollowUpStatus;
+}
+
+interface EmiScheduleApiRecord {
   id: number;
   loanId: number;
   installmentNo: number;
@@ -20,25 +26,26 @@ interface EmiSchedulingApiRecord {
   interestAmount: string;
   paidAmount: string;
   balanceAmount: string;
-  status: EmiSchedulingStatus;
+  status: EmiScheduleStatus;
   dueDate: string;
   paidDate: string | null;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  emi_followups: EmiFollowup[];
 }
 
-export interface EmiSchedulingPaginatedResponse {
+export interface EmiSchedulePaginatedResponse {
   loan: LoanEmiApiRecord;
   page_info: PaginationInfo;
-  items: EmiSchedulingApiRecord[];
+  items: EmiScheduleApiRecord[];
 }
 
-export interface EmiSchedulingListParams extends ListParams {
-  status?: EmiSchedulingStatus;
+export interface EmiScheduleListParams extends ListParams {
+  status?: EmiScheduleStatus;
 }
 
-export type EmiSchedulingRow = {
+export type EmiScheduleRow = {
   id: number;
   loanId: number;
   installmentNo: number;
@@ -47,7 +54,8 @@ export type EmiSchedulingRow = {
   interestAmount: string;
   paidAmount: string;
   balanceAmount: string;
-  status: EmiSchedulingStatus;
+  status: EmiScheduleStatus;
   dueDate: string;
   paidDate: string | null;
+  emi_followups: EmiFollowup[];
 };

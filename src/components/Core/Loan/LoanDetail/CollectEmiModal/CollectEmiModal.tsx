@@ -1,5 +1,5 @@
 "use client";
-import { useCreateEmiCollectionMutation, useEmiSchedulingQuery } from "@/api";
+import { useCreateEmiCollectionMutation, useEmiSchedulesByLoanQuery } from "@/api";
 import {
   AppButton,
   AppToast,
@@ -9,17 +9,17 @@ import {
 import { emiPaymentMethodList } from "@/constants";
 import {
   EmiCollectionFormValues,
-  EmiSchedulingRow,
+  EmiScheduleRow,
   LoanEmiApiRecord,
 } from "@/types";
 import { handleNumericKeyDown } from "@/utils";
 import { Col, Form, Row } from "antd";
 import { FC } from "react";
 
-type RefetchType = ReturnType<typeof useEmiSchedulingQuery>["refetch"];
+type RefetchType = ReturnType<typeof useEmiSchedulesByLoanQuery>["refetch"];
 
 interface CollectEmiModalProps {
-  data?: EmiSchedulingRow | null;
+  data?: EmiScheduleRow | null;
   loanData?: LoanEmiApiRecord | null;
   refetch: RefetchType;
   onClose: () => void;
@@ -27,7 +27,7 @@ interface CollectEmiModalProps {
 
 const toApiPayload = (
   values: EmiCollectionFormValues,
-  data?: EmiSchedulingRow | null,
+  data?: EmiScheduleRow | null,
   loanData?: LoanEmiApiRecord | null,
 ): EmiCollectionFormValues => ({
   emiScheduleId: data?.id,
@@ -62,7 +62,7 @@ export const CollectEmiModal: FC<CollectEmiModalProps> = ({
       }
     } catch (error: any) {
       AppToast.error(
-        error?.response?.data?.message ?? "Failed to save emi collection",
+        error?.response?.data?.message ?? "Failed to save EMI collection",
       );
     }
   };
@@ -111,7 +111,7 @@ export const CollectEmiModal: FC<CollectEmiModalProps> = ({
             />
           </Col>
         </Row>
-        <Row gutter={[12, 12]} justify="end" className="mt-4">
+        <Row gutter={[12, 12]} justify="end" className="mt-6">
           <Col>
             <AppButton
               block

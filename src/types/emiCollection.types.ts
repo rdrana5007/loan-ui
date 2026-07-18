@@ -15,7 +15,7 @@ interface CreatedBy {
   fullName: string;
 }
 
-export interface EmiCollectionApiRecord {
+interface EmiCollectionApiRecord {
   id: number;
   emiScheduleId: number;
   loanId: number;
@@ -53,5 +53,5 @@ export interface EmiCollectionFormValues {
   collectedAmount: number;
   paymentMethod: EmiPaymentMethod;
   transactionReference: string;
-  remarks: string;
+  remarks?: string;
 }

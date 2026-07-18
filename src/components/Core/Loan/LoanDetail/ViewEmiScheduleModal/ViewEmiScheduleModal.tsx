@@ -1,18 +1,18 @@
 "use client";
 import { AppButton, AppDescriptions, AppTag } from "@/components/Common";
-import { emiSchedulingStatusList } from "@/constants";
-import { EmiSchedulingRow, EmiSchedulingStatus } from "@/types";
+import { emiScheduleStatusList } from "@/constants";
+import { EmiScheduleRow, EmiScheduleStatus } from "@/types";
 import { formatters } from "@/utils";
 import { Col, Row } from "antd";
 import { FC, useMemo } from "react";
 
 interface ViewEmiScheduleModalProps {
-  data?: EmiSchedulingRow | null;
+  data?: EmiScheduleRow | null;
   onClose: () => void;
 }
 
-const renderStatusTag = (val?: EmiSchedulingStatus) => (
-  <AppTag value={val} options={emiSchedulingStatusList} />
+const renderStatusTag = (val?: EmiScheduleStatus) => (
+  <AppTag value={val} options={emiScheduleStatusList} />
 );
 
 export const ViewEmiScheduleModal: FC<ViewEmiScheduleModalProps> = ({

@@ -120,7 +120,6 @@ export interface LoanPayload {
   installmentCount: number;
   processingFeeType: LoanProcessingFeeType;
   processingFee: number;
-  disbursedAmount?: number | null;
   repaymentFrequency: LoanRepaymentFrequency;
   startDate: string | null;
   status: LoanStatus;

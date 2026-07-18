@@ -1,7 +1,9 @@
 import {
+  CommunicationType,
   CustomerGender,
+  EmiFollowUpStatus,
   EmiPaymentMethod,
-  EmiSchedulingStatus,
+  EmiScheduleStatus,
   LoanProcessingFeeType,
   LoanRepaymentFrequency,
   LoanStatus,
@@ -61,8 +63,8 @@ export const loanRepaymentFrequencyList: OptionItem<LoanRepaymentFrequency>[] =
     { label: "Monthly", value: "monthly" },
   ];
 
-// Emi Scheduling status list
-export const emiSchedulingStatusList: OptionItem<EmiSchedulingStatus>[] = [
+// Emi Schedule status list
+export const emiScheduleStatusList: OptionItem<EmiScheduleStatus>[] = [
   { label: "Pending", value: "pending", color: "gold" },
   { label: "Paid", value: "paid", color: "green" },
   { label: "Partial", value: "partial", color: "blue" },
@@ -75,4 +77,19 @@ export const emiPaymentMethodList: OptionItem<EmiPaymentMethod>[] = [
   { label: "UPI", value: "upi", color: "blue" },
   { label: "Cheque", value: "cheque", color: "orange" },
   { label: "Bank Transfer", value: "bank", color: "purple" },
+];
+
+// Follow-up Communication type list
+export const followUpCommunicationTypeList: OptionItem<CommunicationType>[] = [
+  { label: "Call", value: "call" },
+  { label: "Visit", value: "visit" },
+  { label: "SMS", value: "sms" },
+  { label: "Email", value: "email" },
+  { label: "WhatsApp", value: "whatsapp" },
+];
+
+// Follow-up status list
+export const followUpStatusList: OptionItem<EmiFollowUpStatus>[] = [
+  { label: "Pending", value: "pending", color: "gold" },
+  { label: "Completed", value: "completed", color: "green" },
 ];

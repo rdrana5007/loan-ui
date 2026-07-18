@@ -44,11 +44,18 @@ export const loanStatus: OptionItem[] = [
   { label: "Defaulted", value: "defaulted" },
 ];
 
-// Emi Scheduling status filter
-export const emiSchedulingStatus: OptionItem[] = [
+// Emi Schedule status filter
+export const emiScheduleStatus: OptionItem[] = [
   { label: "All Status", value: "all" },
   { label: "Pending", value: "pending" },
   { label: "Paid", value: "paid" },
   { label: "Partial", value: "partial" },
   { label: "Overdue", value: "overdue" },
+];
+
+// Follow-up status filter
+export const followUpStatus: OptionItem[] = [
+  { label: "All Status", value: "all" },
+  { label: "Pending", value: "pending" },
+  { label: "Completed", value: "completed" },
 ];

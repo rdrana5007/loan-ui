@@ -1,5 +1,7 @@
 export const LOGIN_KEY = ["login"] as const;
 
+export const PROFILE_KEY = ["profile"] as const;
+
 export const USER_KEYS = {
   all: ["users"] as const,
   collectors: ["users", "collectors"] as const,
@@ -22,5 +24,8 @@ export const LOAN_KEYS = {
 
 export const EMI_COLLECTION_KEYS = {
   all: ["emi-collections"] as const,
-  detail: (id: number) => ["emi-collections", "detail", id] as const,
+};
+
+export const EMI_FOLLOWUP_KEYS = {
+  all: ["emi-followups"] as const,
 };
