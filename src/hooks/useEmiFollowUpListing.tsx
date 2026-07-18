@@ -33,7 +33,7 @@ export const useEmiFollowUpListing = ({
   }, [page, rowsPerPage, statusFilter]);
 
   const id = Number(loanId);
-  const { data: queryData, isLoading, refetch } = useEmiFollowUpsByLoanQuery(id, listParams);
+  const { data: queryData, isLoading } = useEmiFollowUpsByLoanQuery(id, listParams);
 
   const data = queryData?.items ?? [];
   const pageInfo = queryData?.page_info;
@@ -70,7 +70,6 @@ export const useEmiFollowUpListing = ({
     isLoading,
     pagination,
     statusFilter,
-    refetch,
     handleFilterChange,
     handleTableChange,
   };
