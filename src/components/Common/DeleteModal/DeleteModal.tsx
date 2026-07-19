@@ -27,7 +27,7 @@ export const DeleteModal = ({
         AppToast.success(`${entityName} deleted successfully`);
       } catch (error: any) {
         AppToast.error(error?.response?.data?.message ?? `Failed to delete ${entityName}`);
-        throw error;
+        return;
       }
     },
   });

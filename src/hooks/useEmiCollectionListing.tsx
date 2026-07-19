@@ -24,7 +24,10 @@ export const useEmiCollectionListing = ({
   }, [page, rowsPerPage]);
 
   const id = Number(loanId);
-  const { data: queryData, isLoading } = useEmiCollectionsByLoanQuery(id, listParams);
+  const { data: queryData, isLoading } = useEmiCollectionsByLoanQuery(
+    id,
+    listParams,
+  );
 
   const data = queryData?.items ?? [];
   const pageInfo = queryData?.page_info;
@@ -39,10 +42,20 @@ export const useEmiCollectionListing = ({
   );
 
   const handleTableChange: TableProps<EmiCollectionRow>["onChange"] =
-    useCallback((pagination: any) => {
-      setPage(pagination.current ?? DEFAULT_PAGE);
-      setRowsPerPage(pagination.pageSize ?? DEFAULT_PAGE_SIZE);
-    }, []);
+    useCallback(
+      (pagination: any) => {
+        const newPage = pagination.current ?? DEFAULT_PAGE;
+        const newPageSize = pagination.pageSize ?? DEFAULT_PAGE_SIZE;
+
+        if (newPageSize !== rowsPerPage) {
+          setPage(DEFAULT_PAGE);
+          setRowsPerPage(newPageSize);
+        } else {
+          setPage(newPage);
+        }
+      },
+      [rowsPerPage],
+    );
 
   return {
     data,

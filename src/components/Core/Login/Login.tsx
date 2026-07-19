@@ -98,7 +98,7 @@ export const Login = () => {
                 </Link>
               </div>
             </Form.Item> */}
-            <Form.Item>
+            <Form.Item className="mt-6!">
               <AppButton
                 type="primary"
                 size="large"
@@ -106,7 +106,7 @@ export const Login = () => {
                 block
                 label={isLoginPending ? "Signing in..." : "Sign In"}
                 disabled={isLoginPending}
-                className={`h-12! rounded-lg! font-semibold! bg-indigo-500! text-white!`}
+                className={`h-10! sm:h-12! rounded-lg! font-semibold! bg-indigo-500! text-white!`}
               />
             </Form.Item>
           </Form>

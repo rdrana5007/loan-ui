@@ -2,7 +2,12 @@
 import { TableProps } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, FILTER_KEYS } from "@/constants";
-import { EmiScheduleListParams, EmiScheduleRow, EmiScheduleStatusFilter, LoanEmiApiRecord } from "@/types";
+import {
+  EmiScheduleListParams,
+  EmiScheduleRow,
+  EmiScheduleStatusFilter,
+  LoanEmiApiRecord,
+} from "@/types";
 import { useEmiSchedulesByLoanQuery } from "@/api";
 
 const { STATUS } = FILTER_KEYS;
@@ -23,6 +28,8 @@ export const useEmiScheduleListing = ({
     const params: EmiScheduleListParams = {
       page,
       pageSize: rowsPerPage,
+      sortField: "installmentNo",
+      sortOrder: "asc",
     };
 
     if (statusFilter && statusFilter !== "all") {
@@ -33,9 +40,13 @@ export const useEmiScheduleListing = ({
   }, [page, rowsPerPage, statusFilter]);
 
   const id = Number(loanId);
-  const { data: queryData, isLoading, refetch } = useEmiSchedulesByLoanQuery(id, listParams);
+  const {
+    data: queryData,
+    isLoading,
+    refetch,
+  } = useEmiSchedulesByLoanQuery(id, listParams);
 
-  const loanData = queryData?.loan ?? {} as LoanEmiApiRecord;
+  const loanData = queryData?.loan ?? ({} as LoanEmiApiRecord);
   const data = queryData?.items ?? [];
   const pageInfo = queryData?.page_info;
 
@@ -50,10 +61,17 @@ export const useEmiScheduleListing = ({
 
   const handleTableChange: TableProps<EmiScheduleRow>["onChange"] = useCallback(
     (pagination: any) => {
-      setPage(pagination.current ?? DEFAULT_PAGE);
-      setRowsPerPage(pagination.pageSize ?? DEFAULT_PAGE_SIZE);
+      const newPage = pagination.current ?? DEFAULT_PAGE;
+      const newPageSize = pagination.pageSize ?? DEFAULT_PAGE_SIZE;
+
+      if (newPageSize !== rowsPerPage) {
+        setPage(DEFAULT_PAGE);
+        setRowsPerPage(newPageSize);
+      } else {
+        setPage(newPage);
+      }
     },
-    [],
+    [rowsPerPage],
   );
 
   const handleFilterChange = useCallback(

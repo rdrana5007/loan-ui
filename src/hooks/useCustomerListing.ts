@@ -1,18 +1,33 @@
 "use client";
-import { useCustomersQuery, useDeleteCustomerMutation, useUpdateCustomerMutation } from "@/api";
-import { CustomerListParams, CustomerRow, StatusFilter, VerificationFilter } from "@/types";
+import {
+  useCustomersQuery,
+  useDeleteCustomerMutation,
+  useUpdateCustomerMutation,
+} from "@/api";
+import {
+  CustomerListParams,
+  CustomerRow,
+  StatusFilter,
+  VerificationFilter,
+} from "@/types";
 import { TableProps } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useDebounce } from "./useDebounce";
 import { AppToast } from "@/components";
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, FILTER_KEYS, SEARCH_DEBOUNCE_MS } from "@/constants";
+import {
+  DEFAULT_PAGE,
+  DEFAULT_PAGE_SIZE,
+  FILTER_KEYS,
+  SEARCH_DEBOUNCE_MS,
+} from "@/constants";
 
 const { SEARCH, VERIFICATION, STATUS } = FILTER_KEYS;
 
 export const useCustomerListing = () => {
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search, SEARCH_DEBOUNCE_MS);
-  const [verificationFilter, setVerificationFilter] = useState<VerificationFilter>("all");
+  const [verificationFilter, setVerificationFilter] =
+    useState<VerificationFilter>("all");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [page, setPage] = useState<number>(DEFAULT_PAGE);
   const [rowsPerPage, setRowsPerPage] = useState<number>(DEFAULT_PAGE_SIZE);
@@ -22,7 +37,7 @@ export const useCustomerListing = () => {
   const listParams = useMemo((): CustomerListParams => {
     const params: CustomerListParams = {
       page,
-      pageSize: rowsPerPage
+      pageSize: rowsPerPage,
     };
 
     if (trimmedSearch.length >= 2) {
@@ -38,7 +53,8 @@ export const useCustomerListing = () => {
   }, [trimmedSearch, page, rowsPerPage, verificationFilter, statusFilter]);
 
   const { data: queryData, isLoading } = useCustomersQuery(listParams);
-  const { mutateAsync: deleteCustomer, isPending: isDeleting } = useDeleteCustomerMutation();
+  const { mutateAsync: deleteCustomer, isPending: isDeleting } =
+    useDeleteCustomerMutation();
   const { mutateAsync: updateCustomer } = useUpdateCustomerMutation();
 
   const data = queryData?.items ?? [];
@@ -48,15 +64,25 @@ export const useCustomerListing = () => {
     () => ({
       current: pageInfo?.current_page ?? page,
       pageSize: pageInfo?.page_size ?? rowsPerPage,
-      total: pageInfo?.total_count ?? data.length
+      total: pageInfo?.total_count ?? data.length,
     }),
     [pageInfo, page, rowsPerPage, data],
   );
 
-  const handleTableChange: TableProps<CustomerRow>["onChange"] = useCallback((pagination: any) => {
-    setPage(pagination.current ?? DEFAULT_PAGE);
-    setRowsPerPage(pagination.pageSize ?? DEFAULT_PAGE_SIZE);
-  }, []);
+  const handleTableChange: TableProps<CustomerRow>["onChange"] = useCallback(
+    (pagination: any) => {
+      const newPage = pagination.current ?? DEFAULT_PAGE;
+      const newPageSize = pagination.pageSize ?? DEFAULT_PAGE_SIZE;
+
+      if (newPageSize !== rowsPerPage) {
+        setPage(DEFAULT_PAGE);
+        setRowsPerPage(newPageSize);
+      } else {
+        setPage(newPage);
+      }
+    },
+    [rowsPerPage],
+  );
 
   const handleFilterChange = useCallback(
     (name: string, value: string | undefined) => {
@@ -80,7 +106,7 @@ export const useCustomerListing = () => {
     async (id: number) => {
       await deleteCustomer(id);
     },
-    [deleteCustomer]
+    [deleteCustomer],
   );
 
   const handleToggle = useCallback(
@@ -94,12 +120,14 @@ export const useCustomerListing = () => {
           payload: formData,
         });
 
-        AppToast.success(isActive ? "Customer activated" : "Customer deactivated");
+        AppToast.success(
+          isActive ? "Customer activated" : "Customer deactivated",
+        );
       } catch {
         AppToast.error("Failed to update customer status");
       }
     },
-    [updateCustomer]
+    [updateCustomer],
   );
 
   return {
@@ -113,6 +141,6 @@ export const useCustomerListing = () => {
     handleFilterChange,
     handleTableChange,
     handleDelete,
-    handleToggle
+    handleToggle,
   };
 };

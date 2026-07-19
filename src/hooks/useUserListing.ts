@@ -1,11 +1,20 @@
 "use client";
-import { useDeleteUserMutation, useUpdateUserMutation, useUsersQuery } from "@/api";
+import {
+  useDeleteUserMutation,
+  useUpdateUserMutation,
+  useUsersQuery,
+} from "@/api";
 import { RoleFilter, StatusFilter, UserListParams, UserRow } from "@/types";
 import { TableProps } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useDebounce } from "./useDebounce";
 import { AppToast } from "@/components";
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, FILTER_KEYS, SEARCH_DEBOUNCE_MS } from "@/constants";
+import {
+  DEFAULT_PAGE,
+  DEFAULT_PAGE_SIZE,
+  FILTER_KEYS,
+  SEARCH_DEBOUNCE_MS,
+} from "@/constants";
 
 const { SEARCH, ROLE, STATUS } = FILTER_KEYS;
 
@@ -22,7 +31,7 @@ export const useUserListing = () => {
   const listParams = useMemo((): UserListParams => {
     const params: UserListParams = {
       page,
-      pageSize: rowsPerPage
+      pageSize: rowsPerPage,
     };
 
     if (trimmedSearch.length >= 2) {
@@ -37,7 +46,8 @@ export const useUserListing = () => {
   }, [trimmedSearch, page, rowsPerPage, roleFilter, statusFilter]);
 
   const { data: queryData, isLoading } = useUsersQuery(listParams);
-  const { mutateAsync: deleteUser, isPending: isDeleting } = useDeleteUserMutation();
+  const { mutateAsync: deleteUser, isPending: isDeleting } =
+    useDeleteUserMutation();
   const { mutateAsync: updateUser } = useUpdateUserMutation();
 
   const data = queryData?.items ?? [];
@@ -47,15 +57,25 @@ export const useUserListing = () => {
     () => ({
       current: pageInfo?.current_page ?? page,
       pageSize: pageInfo?.page_size ?? rowsPerPage,
-      total: pageInfo?.total_count ?? data.length
+      total: pageInfo?.total_count ?? data.length,
     }),
     [pageInfo, page, rowsPerPage, data],
   );
 
-  const handleTableChange: TableProps<UserRow>["onChange"] = useCallback((pagination: any) => {
-    setPage(pagination.current ?? DEFAULT_PAGE);
-    setRowsPerPage(pagination.pageSize ?? DEFAULT_PAGE_SIZE);
-  }, []);
+  const handleTableChange: TableProps<UserRow>["onChange"] = useCallback(
+    (pagination: any) => {
+      const newPage = pagination.current ?? DEFAULT_PAGE;
+      const newPageSize = pagination.pageSize ?? DEFAULT_PAGE_SIZE;
+
+      if (newPageSize !== rowsPerPage) {
+        setPage(DEFAULT_PAGE);
+        setRowsPerPage(newPageSize);
+      } else {
+        setPage(newPage);
+      }
+    },
+    [rowsPerPage],
+  );
 
   const handleFilterChange = useCallback(
     (name: string, value: string | undefined) => {
@@ -79,7 +99,7 @@ export const useUserListing = () => {
     async (id: number) => {
       await deleteUser(id);
     },
-    [deleteUser]
+    [deleteUser],
   );
 
   const handleToggle = useCallback(
@@ -94,7 +114,7 @@ export const useUserListing = () => {
         AppToast.error("Failed to update user status");
       }
     },
-    [updateUser]
+    [updateUser],
   );
 
   return {
@@ -108,6 +128,6 @@ export const useUserListing = () => {
     handleFilterChange,
     handleTableChange,
     handleDelete,
-    handleToggle
+    handleToggle,
   };
 };

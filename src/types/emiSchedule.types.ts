@@ -43,6 +43,8 @@ export interface EmiSchedulePaginatedResponse {
 
 export interface EmiScheduleListParams extends ListParams {
   status?: EmiScheduleStatus;
+  sortField?: string;
+  sortOrder?: "asc" | "desc";
 }
 
 export type EmiScheduleRow = {

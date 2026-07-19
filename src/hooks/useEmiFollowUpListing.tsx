@@ -2,7 +2,11 @@
 import { TableProps } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, FILTER_KEYS } from "@/constants";
-import { EmiFollowUpListParams, EmiFollowUpRow, EmiFollowUpStatusFilter } from "@/types";
+import {
+  EmiFollowUpListParams,
+  EmiFollowUpRow,
+  EmiFollowUpStatusFilter,
+} from "@/types";
 import { useEmiFollowUpsByLoanQuery } from "@/api";
 
 const { STATUS } = FILTER_KEYS;
@@ -33,7 +37,10 @@ export const useEmiFollowUpListing = ({
   }, [page, rowsPerPage, statusFilter]);
 
   const id = Number(loanId);
-  const { data: queryData, isLoading } = useEmiFollowUpsByLoanQuery(id, listParams);
+  const { data: queryData, isLoading } = useEmiFollowUpsByLoanQuery(
+    id,
+    listParams,
+  );
 
   const data = queryData?.items ?? [];
   const pageInfo = queryData?.page_info;
@@ -49,10 +56,17 @@ export const useEmiFollowUpListing = ({
 
   const handleTableChange: TableProps<EmiFollowUpRow>["onChange"] = useCallback(
     (pagination: any) => {
-      setPage(pagination.current ?? DEFAULT_PAGE);
-      setRowsPerPage(pagination.pageSize ?? DEFAULT_PAGE_SIZE);
+      const newPage = pagination.current ?? DEFAULT_PAGE;
+      const newPageSize = pagination.pageSize ?? DEFAULT_PAGE_SIZE;
+
+      if (newPageSize !== rowsPerPage) {
+        setPage(DEFAULT_PAGE);
+        setRowsPerPage(newPageSize);
+      } else {
+        setPage(newPage);
+      }
     },
-    [],
+    [rowsPerPage],
   );
 
   const handleFilterChange = useCallback(
