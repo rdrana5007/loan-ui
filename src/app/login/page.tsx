@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Login",
-  description: "User module for managing and organizing data efficiently.",
+  description: "Sign in to access the HNH Loan Portal.",
   robots: {
     index: false,
     follow: false

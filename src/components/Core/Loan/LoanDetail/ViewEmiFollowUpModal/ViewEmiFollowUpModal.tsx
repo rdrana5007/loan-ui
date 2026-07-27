@@ -24,6 +24,7 @@ export const ViewEmiFollowUpModal: FC<ViewEmiFollowUpModalProps> = ({
   if (!data) return null;
 
   const {
+    emi_schedules,
     communicationType,
     remarks,
     followUpDate,
@@ -35,10 +36,14 @@ export const ViewEmiFollowUpModal: FC<ViewEmiFollowUpModalProps> = ({
   const items = useMemo(
     () => [
       {
+        key: "installmentNo",
+        label: "Installment",
+        children: formatters.installmentNo(emi_schedules.installmentNo),
+      },
+      {
         key: "communicationType",
         label: "Communication type",
         children: COMMUNICATION_TYPE_MAP[communicationType] ?? "--",
-        span: { xs: 1, sm: 1, md: 2 },
       },
       {
         key: "remarks",

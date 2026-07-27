@@ -8,7 +8,7 @@ type AppTableProps<T extends object> = TableProps<T> & {
   tableColumns: ColumnsType<T>;
   tableData: T[];
   pagination: TablePaginationConfig;
-  onChange: TableProps<T>["onChange"];
+  onChange?: TableProps<T>["onChange"];
   loading?: boolean;
 };
 
@@ -31,10 +31,12 @@ export const AppTable = <T extends object>({
 
   const skeletonData = useMemo(
     () =>
-      Array.from({ length: pagination.pageSize || 10 }).map((_, index) => ({
-        id: `skeleton-${index}`,
-      })) as T[],
-    [pagination.pageSize],
+      Array.from({ length: pagination ? (pagination.pageSize ?? 10) : 5 }).map(
+        (_, index) => ({
+          id: `skeleton-${index}`,
+        }),
+      ) as T[],
+    [pagination?.pageSize],
   );
 
   return (
@@ -45,7 +47,9 @@ export const AppTable = <T extends object>({
       pagination={
         loading
           ? false
-          : { ...pagination, responsive: true, showSizeChanger: true }
+          : pagination
+            ? { ...pagination, responsive: true, showSizeChanger: true }
+            : false
       }
       onChange={onChange}
       scroll={{ x: "max-content" }}

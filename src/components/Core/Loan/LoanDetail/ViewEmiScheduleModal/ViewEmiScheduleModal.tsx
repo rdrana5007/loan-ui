@@ -37,8 +37,8 @@ export const ViewEmiScheduleModal: FC<ViewEmiScheduleModalProps> = ({
     () => [
       {
         key: "installmentNo",
-        label: "Installment no.",
-        children: formatters.value(installmentNo),
+        label: "Installment",
+        children: formatters.installmentNo(installmentNo),
       },
       {
         key: "emiScheduleAmount",

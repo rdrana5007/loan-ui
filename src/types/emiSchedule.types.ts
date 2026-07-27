@@ -32,7 +32,7 @@ interface EmiScheduleApiRecord {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  emi_followups: EmiFollowup[];
+  emi_followups: EmiFollowup | null;
 }
 
 export interface EmiSchedulePaginatedResponse {
@@ -59,5 +59,5 @@ export type EmiScheduleRow = {
   status: EmiScheduleStatus;
   dueDate: string;
   paidDate: string | null;
-  emi_followups: EmiFollowup[];
+  emi_followups: EmiFollowup | null;
 };

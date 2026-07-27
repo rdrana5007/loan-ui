@@ -2,8 +2,8 @@ import { LoanFormContainer } from "@/components";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Loans",
-  description: "Loan module for managing and organizing data efficiently.",
+  title: "Update Loan",
+  description: "Loan module for view, manage and update loan details.",
   robots: {
     index: false,
     follow: false

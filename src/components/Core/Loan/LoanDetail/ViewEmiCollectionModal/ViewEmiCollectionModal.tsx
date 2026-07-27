@@ -1,9 +1,19 @@
 "use client";
-import { AppButton, AppDescriptions, AppTag } from "@/components/Common";
+import {
+  AppButton,
+  AppDescriptions,
+  AppTable,
+  AppTag,
+} from "@/components/Common";
 import { emiPaymentMethodList } from "@/constants";
-import { EmiCollectionRow, EmiPaymentMethod } from "@/types";
+import {
+  EmiCollectionItemRow,
+  EmiCollectionRow,
+  EmiPaymentMethod,
+} from "@/types";
 import { formatters } from "@/utils";
 import { Col, Row } from "antd";
+import { ColumnsType } from "antd/es/table";
 import { FC, useMemo } from "react";
 
 interface ViewEmiCollectionModalProps {
@@ -21,9 +31,11 @@ export const ViewEmiCollectionModal: FC<ViewEmiCollectionModalProps> = ({
 }) => {
   if (!data) return null;
 
+  const emiCollectionItemData = data?.emi_collection_items;
+
   const {
     id,
-    collectedAmount,
+    totalAmount,
     paymentMethod,
     transactionReference,
     remarks,
@@ -38,9 +50,9 @@ export const ViewEmiCollectionModal: FC<ViewEmiCollectionModalProps> = ({
         children: formatters.receiptNo(id),
       },
       {
-        key: "collectedAmount",
+        key: "totalAmount",
         label: "Collected amount",
-        children: formatters.currency(collectedAmount),
+        children: formatters.currency(totalAmount),
       },
       {
         key: "paymentMethod",
@@ -68,9 +80,52 @@ export const ViewEmiCollectionModal: FC<ViewEmiCollectionModalProps> = ({
     [data],
   );
 
+  const columns = useMemo<ColumnsType<EmiCollectionItemRow>>(
+    () => [
+      {
+        title: "Installment",
+        dataIndex: "emiScheduleId",
+        key: "emiScheduleId",
+        width: 50,
+        render: formatters.installmentNo,
+      },
+      {
+        title: "Due Date",
+        dataIndex: ["emi_schedules", "dueDate"],
+        key: "createdAt",
+        width: 120,
+        render: formatters.date,
+      },
+      {
+        title: "EMI Amount",
+        dataIndex: ["emi_schedules", "emiScheduleAmount"],
+        key: "emiScheduleAmount",
+        width: 120,
+        render: formatters.currency,
+      },
+      {
+        title: "Paid in This Collection",
+        dataIndex: "amount",
+        key: "amount",
+        width: 200,
+        render: formatters.currency,
+      },
+    ],
+    [],
+  );
+
   return (
     <div className="mt-6">
       <AppDescriptions items={items} />
+      <div className="mt-6 mb-2">
+        <h3 className="text-base font-semibold">EMI Collection Items</h3>
+      </div>
+      <AppTable
+        rowKey={(record: any) => record.id}
+        tableColumns={columns}
+        tableData={emiCollectionItemData}
+        pagination={false}
+      />
       <Row justify="end" className="mt-6">
         <Col>
           <AppButton

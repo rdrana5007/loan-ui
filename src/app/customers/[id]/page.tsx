@@ -2,8 +2,8 @@ import { CustomerFormContainer } from "@/components";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Customers",
-  description: "Customer module for managing and organizing data efficiently.",
+  title: "Update Customer",
+  description: "Customer module for view, manage and update customer details.",
   robots: {
     index: false,
     follow: false

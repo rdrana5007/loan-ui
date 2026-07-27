@@ -5,6 +5,11 @@ export type EmiFollowUpStatus = "pending" | "completed";
 export type EmiFollowUpStatusFilter = "all" | EmiFollowUpStatus;
 export type CommunicationType = "call" | "visit" | "sms" | "email" | "whatsapp";
 
+interface EmiSchedule {
+  id: number;
+  installmentNo: number;
+}
+
 interface Customer {
   id: number;
   customerCode: string;
@@ -32,6 +37,7 @@ interface EmiFollowUpApiRecord {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  emi_schedules: EmiSchedule;
   customers: Customer;
   created_by: CreatedBy;
 }
@@ -53,6 +59,7 @@ export type EmiFollowUpRow = {
   nextFollowupDate: string;
   remarks: string;
   createdAt: string;
+  emi_schedules: EmiSchedule;
 };
 
 export interface EmiFollowUpPayload {

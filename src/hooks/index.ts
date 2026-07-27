@@ -6,6 +6,7 @@ export * from "./useInfiniteSelectData";
 export * from "./useInfiniteSelectService";
 export * from "./useAuthentication";
 export * from "./useProfile";
+export * from "./useDashboard";
 export * from "./useUserListing";
 export * from "./useCustomerListing";
 export * from "./useLoanListing";

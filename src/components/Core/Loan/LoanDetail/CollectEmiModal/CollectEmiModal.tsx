@@ -1,5 +1,8 @@
 "use client";
-import { useCreateEmiCollectionMutation, useEmiSchedulesByLoanQuery } from "@/api";
+import {
+  useCreateEmiCollectionMutation,
+  useEmiSchedulesByLoanQuery,
+} from "@/api";
 import {
   AppButton,
   AppToast,
@@ -7,11 +10,7 @@ import {
   TextInput,
 } from "@/components/Common";
 import { emiPaymentMethodList } from "@/constants";
-import {
-  EmiCollectionFormValues,
-  EmiScheduleRow,
-  LoanEmiApiRecord,
-} from "@/types";
+import { EmiCollectionFormValues, LoanEmiApiRecord } from "@/types";
 import { handleNumericKeyDown } from "@/utils";
 import { Col, Form, Row } from "antd";
 import { FC } from "react";
@@ -19,7 +18,6 @@ import { FC } from "react";
 type RefetchType = ReturnType<typeof useEmiSchedulesByLoanQuery>["refetch"];
 
 interface CollectEmiModalProps {
-  data?: EmiScheduleRow | null;
   loanData?: LoanEmiApiRecord | null;
   refetch: RefetchType;
   onClose: () => void;
@@ -27,20 +25,17 @@ interface CollectEmiModalProps {
 
 const toApiPayload = (
   values: EmiCollectionFormValues,
-  data?: EmiScheduleRow | null,
   loanData?: LoanEmiApiRecord | null,
 ): EmiCollectionFormValues => ({
-  emiScheduleId: data?.id,
-  loanId: data?.loanId,
+  loanId: loanData?.id,
   customerId: loanData?.customerId,
-  collectedAmount: Number(values.collectedAmount),
+  totalAmount: Number(values.totalAmount),
   paymentMethod: values.paymentMethod,
   transactionReference: values.transactionReference.trim(),
   remarks: values.remarks?.trim() || "",
 });
 
 export const CollectEmiModal: FC<CollectEmiModalProps> = ({
-  data,
   loanData,
   refetch,
   onClose,
@@ -51,7 +46,7 @@ export const CollectEmiModal: FC<CollectEmiModalProps> = ({
     useCreateEmiCollectionMutation();
 
   const handleSubmit = async (values: EmiCollectionFormValues) => {
-    const payload = toApiPayload(values, data, loanData);
+    const payload = toApiPayload(values, loanData);
 
     try {
       const response = await createEmiCollection(payload);
@@ -73,11 +68,11 @@ export const CollectEmiModal: FC<CollectEmiModalProps> = ({
         <Row gutter={[16, 16]}>
           <Col xs={24}>
             <TextInput
-              name="collectedAmount"
-              label="Amount"
+              name="totalAmount"
+              label="Collected amount"
               required
-              requiredMsg="Amount is required"
-              placeholder="Enter amount"
+              requiredMsg="Collected amount is required"
+              placeholder="Enter collected amount"
               onKeyDown={(e) => handleNumericKeyDown(e)}
             />
           </Col>

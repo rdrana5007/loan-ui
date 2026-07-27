@@ -14,10 +14,14 @@ const formatDateValue = (value?: string): string => {
 };
 
 const formatCurrency = (value: string | number) =>
-  new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-  }).format(Number(value));
+  value
+    ? new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+      }).format(Number(value))
+    : "--";
+
+const formatInstallmentNo = (value?: number) => (value ? `EMI ${value}` : "--");
 
 const formatReceiptNo = (value?: number) =>
   value ? `RCPT-${String(value).padStart(3, "0")}` : "--";
@@ -27,5 +31,6 @@ export const formatters = {
   dateTime: formatDateTimeValue,
   date: formatDateValue,
   currency: formatCurrency,
+  installmentNo: formatInstallmentNo,
   receiptNo: formatReceiptNo,
 };

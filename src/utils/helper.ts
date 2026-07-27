@@ -54,3 +54,21 @@ export const createOptionMap = <T extends OptionItem>(
     list.map((item) => [item.value, item.label]),
   ) as any;
 };
+
+export const getInstallmentDisplay = (installmentNos: number[]) => {
+  if (!installmentNos?.length) return "-";
+
+  const sorted = [...installmentNos].sort((a, b) => a - b);
+
+  if (sorted.length === 1) {
+    return `EMI ${sorted[0]}`;
+  }
+
+  const isContinuous = sorted.every(
+    (num, index) => index === 0 || num === sorted[index - 1] + 1,
+  );
+
+  return isContinuous
+    ? `EMI ${sorted[0]}-${sorted[sorted.length - 1]}`
+    : `EMI ${sorted.join(", ")}`;
+};

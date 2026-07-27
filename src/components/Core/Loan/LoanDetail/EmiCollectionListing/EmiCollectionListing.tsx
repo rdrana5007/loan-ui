@@ -3,7 +3,7 @@ import { AppButton, AppModal, AppTable, AppTag } from "@/components/Common";
 import { emiPaymentMethodList } from "@/constants";
 import { useEmiCollectionListing, useResponsive } from "@/hooks";
 import { EmiCollectionRow, EmiPaymentMethod } from "@/types";
-import { formatters, resolveNumericId } from "@/utils";
+import { formatters, getInstallmentDisplay, resolveNumericId } from "@/utils";
 import { ColumnsType } from "antd/es/table";
 import { useParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
@@ -41,6 +41,16 @@ export const EmiCollectionListing = () => {
     setModalState({ open: true, row });
   }, []);
 
+  const renderInstallments = useCallback(
+    (_: unknown, row: EmiCollectionRow) =>
+      getInstallmentDisplay(
+        row.emi_collection_items?.map(
+          (item) => item.emi_schedules?.installmentNo,
+        ),
+      ),
+    [],
+  );
+
   const renderActions = useCallback(
     (_: unknown, row: EmiCollectionRow) => (
       <div className="flex justify-center">
@@ -62,13 +72,20 @@ export const EmiCollectionListing = () => {
         dataIndex: "id",
         key: "id",
         fixed: !isMobile ? "left" : undefined,
-        width: 130,
+        width: 120,
         render: formatters.receiptNo,
       },
       {
+        title: "Installments",
+        key: "installments",
+        fixed: !isMobile ? "left" : undefined,
+        width: 100,
+        render: renderInstallments,
+      },
+      {
         title: "Collected Amount",
-        dataIndex: "collectedAmount",
-        key: "collectedAmount",
+        dataIndex: "totalAmount",
+        key: "totalAmount",
         width: 180,
         render: formatters.currency,
       },

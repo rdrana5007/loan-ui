@@ -22,6 +22,7 @@ import { ViewEmiScheduleModal } from "../ViewEmiScheduleModal";
 import { FollowUpModal } from "../FollowUpModal";
 import { EmiScheduleRow, EmiScheduleStatus } from "@/types";
 import { emiScheduleStatus, emiScheduleStatusList } from "@/constants";
+import { PlusOutlined } from "@ant-design/icons";
 
 type EmiModalType = "view" | "collect" | "followUp";
 
@@ -92,7 +93,6 @@ export const EmiScheduleListing = () => {
     collect: {
       component: (
         <CollectEmiModal
-          data={modalState.row}
           loanData={loanData}
           refetch={refetch}
           onClose={closeModal}
@@ -102,7 +102,7 @@ export const EmiScheduleListing = () => {
     followUp: {
       component: (
         <FollowUpModal
-          data={modalState.row}
+          emiId={modalState.row?.id}
           loanData={loanData}
           refetch={refetch}
           onClose={closeModal}
@@ -124,13 +124,13 @@ export const EmiScheduleListing = () => {
         />
         {row?.status !== "paid" && (
           <>
-            <AppButton
+            {/* <AppButton
               size="small"
               label="Collect"
               className="rounded-md bg-green-100! text-green-700! hover:bg-green-200! border-0!"
               onClick={() => openModal("collect", row)}
-            />
-            {!row?.emi_followups?.length && (
+            /> */}
+            {!row?.emi_followups && (
               <AppButton
                 size="small"
                 label="Follow-up"
@@ -148,12 +148,12 @@ export const EmiScheduleListing = () => {
   const columns = useMemo<ColumnsType<EmiScheduleRow>>(
     () => [
       {
-        title: "Installment No.",
+        title: "Installment",
         dataIndex: "installmentNo",
         key: "installmentNo",
         fixed: !isMobile ? "left" : undefined,
-        width: 130,
-        render: formatters.value,
+        width: 100,
+        render: formatters.installmentNo,
       },
       {
         title: "EMI Amount",
@@ -226,7 +226,7 @@ export const EmiScheduleListing = () => {
   return (
     <>
       <div className="mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-3">
           <h2 className="text-lg md:text-xl font-semibold">
             EMI Schedule Listing
             {/* Listing */}
@@ -241,6 +241,14 @@ export const EmiScheduleListing = () => {
               onChange={handleFilterChange}
             />
           </div>
+        </div>
+        <div className="w-full sm:w-auto sm:ml-auto text-right">
+          <AppButton
+            icon={<PlusOutlined />}
+            label="Collect EMI"
+            className="w-full sm:w-auto h-10! px-4 shrink-0 whitespace-nowrap"
+            onClick={() => openModal("collect")}
+          />
         </div>
       </div>
       <AppTable

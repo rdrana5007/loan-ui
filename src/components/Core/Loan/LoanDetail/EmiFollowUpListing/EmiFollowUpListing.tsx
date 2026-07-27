@@ -131,6 +131,14 @@ export const EmiFollowUpListing = () => {
   const columns = useMemo<ColumnsType<EmiFollowUpRow>>(
     () => [
       {
+        title: "Installment",
+        dataIndex: ["emi_schedules", "installmentNo"],
+        key: "installmentNo",
+        fixed: !isMobile ? "left" : undefined,
+        width: 100,
+        render: formatters.installmentNo,
+      },
+      {
         title: "Communication Type",
         dataIndex: "communicationType",
         key: "communicationType",

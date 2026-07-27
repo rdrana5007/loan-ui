@@ -14,7 +14,6 @@ import { followUpCommunicationTypeList } from "@/constants";
 import {
   EmiFollowUpFormValues,
   EmiFollowUpPayload,
-  EmiScheduleRow,
   LoanEmiApiRecord,
 } from "@/types";
 import { Col, Form, Row } from "antd";
@@ -23,7 +22,7 @@ import { FC } from "react";
 type RefetchType = ReturnType<typeof useEmiSchedulesByLoanQuery>["refetch"];
 
 interface FollowUpModalProps {
-  data?: EmiScheduleRow | null;
+  emiId?: number;
   loanData?: LoanEmiApiRecord | null;
   refetch: RefetchType;
   onClose: () => void;
@@ -31,11 +30,11 @@ interface FollowUpModalProps {
 
 const toApiPayload = (
   values: EmiFollowUpFormValues,
-  data?: EmiScheduleRow | null,
+  emiId?: number,
   loanData?: LoanEmiApiRecord | null,
 ): EmiFollowUpPayload => ({
-  emiScheduleId: data?.id,
-  loanId: data?.loanId,
+  emiScheduleId: emiId,
+  loanId: loanData?.id,
   customerId: loanData?.customerId,
   communicationType: values.communicationType,
   followUpDate: values.followUpDate?.format("YYYY-MM-DD") ?? null,
@@ -44,7 +43,7 @@ const toApiPayload = (
 });
 
 export const FollowUpModal: FC<FollowUpModalProps> = ({
-  data,
+  emiId,
   loanData,
   refetch,
   onClose,
@@ -55,7 +54,7 @@ export const FollowUpModal: FC<FollowUpModalProps> = ({
     useCreateEmiFollowUpMutation();
 
   const handleSubmit = async (values: EmiFollowUpFormValues) => {
-    const payload = toApiPayload(values, data, loanData);
+    const payload = toApiPayload(values, emiId, loanData);
 
     try {
       const response = await createEmiFollowUp(payload);
