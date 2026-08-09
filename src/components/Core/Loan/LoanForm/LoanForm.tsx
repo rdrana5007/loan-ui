@@ -9,6 +9,7 @@ import {
   AppToast,
   DateInput,
   FormSkeleton,
+  InputSkeleton,
   RadioInput,
   SelectInput,
   TextInput,
@@ -83,7 +84,8 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
 
   const isSubmitting: boolean = isCreating || isUpdating;
 
-  const title: string = isEdit ? data?.loanNumber || "" : "Add Loan";
+  const loanNumber = isLoading ? <InputSkeleton /> : data?.loanNumber || "";
+  const title: any = isEdit ? loanNumber : "Add Loan";
   usePageBreadcrumbs(title, breadcrumbs, "Loans");
 
   useEffect(() => {

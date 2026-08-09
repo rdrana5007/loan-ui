@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "My Profile",
-  description: "View and manage your profile information.",
+  description: "Profile module for viewing and managing your personal profile information.",
   robots: {
     index: false,
     follow: false

@@ -1,6 +1,7 @@
 "use client";
 import { Breadcrumb, BreadcrumbProps, Layout } from "antd";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ReactNode, useMemo } from "react";
 
 const { Content } = Layout;
@@ -9,7 +10,7 @@ const BREADCRUMB_PATHS: Record<string, string> = {
   Home: "/",
   Users: "/users",
   Customers: "/customers",
-  Loans: "/loans"
+  Loans: "/loans",
 };
 
 interface LayoutContentProps {
@@ -21,8 +22,11 @@ export const LayoutContent = ({
   children,
   breadcrumbs,
 }: LayoutContentProps) => {
+  const pathname = usePathname();
+
   const breadcrumbItems = useMemo<BreadcrumbProps["items"]>(() => {
-    const allBreadcrumbs = ["Home", ...(breadcrumbs ?? [])];
+    const allBreadcrumbs =
+      pathname === "/" ? (breadcrumbs ?? []) : ["Home", ...(breadcrumbs ?? [])];
 
     return allBreadcrumbs.map((crumb, index) => {
       const isLast = index === allBreadcrumbs.length - 1;

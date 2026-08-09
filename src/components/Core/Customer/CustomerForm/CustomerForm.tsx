@@ -9,6 +9,7 @@ import {
   AppSwitch,
   AppToast,
   FormSkeleton,
+  InputSkeleton,
   RadioInput,
   SelectInput,
   TextInput,
@@ -135,7 +136,8 @@ export const CustomerForm: FC<CustomerFormProps> = ({ breadcrumbs }) => {
 
   const isSubmitting: boolean = isCreating || isUpdating;
 
-  const title: string = isEdit ? data?.customerCode || "" : "Add Customer";
+  const customerCode = isLoading ? <InputSkeleton /> : data?.customerCode || "";
+  const title: any = isEdit ? customerCode : "Add Customer";
   usePageBreadcrumbs(title, breadcrumbs, "Customers");
 
   useEffect(() => {

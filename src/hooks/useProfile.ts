@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 const authService = new AuthService();
 
 export const useProfile = () => {
-  const { data: profileData } = useProfileQuery();
+  const { data: profileData, isPending } = useProfileQuery();
   const [localProfile, setLocalProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
@@ -15,5 +15,5 @@ export const useProfile = () => {
     setLocalProfile(profile || null);
   }, []);
 
-  return { data: profileData ?? localProfile };
+  return { data: profileData ?? localProfile, isPending };
 };

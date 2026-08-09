@@ -1,5 +1,5 @@
 "use client";
-import { AppTabs } from "@/components/Common";
+import { AppTabs, InputSkeleton } from "@/components/Common";
 import { loanEmiTabs } from "@/constants";
 import { useEmiScheduleListing, usePageBreadcrumbs } from "@/hooks";
 import { resolveNumericId } from "@/utils";
@@ -27,9 +27,10 @@ export const LoanDetail: FC<LoanDetailProps> = ({ breadcrumbs }) => {
   const id: string = params?.id;
   const loanId = useMemo(() => resolveNumericId(id), [id]);
 
-  const { loanData } = useEmiScheduleListing({ loanId });
+  const { loanData, isLoading } = useEmiScheduleListing({ loanId });
 
-  const title: string = loanData?.loanNumber || "Loan Detail";
+  const loanNumber = isLoading ? <InputSkeleton /> : loanData?.loanNumber || "Loan Detail";
+  const title: any = loanNumber;
   usePageBreadcrumbs(title, breadcrumbs, "Loans");
 
   const [activeTab, setActiveTab] = useState<LoanEmiTab>("schedule");

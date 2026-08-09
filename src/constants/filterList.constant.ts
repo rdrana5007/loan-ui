@@ -9,7 +9,19 @@ export const FILTER_KEYS = {
   VERIFICATION: "verification",
   FROM_DATE: "fromDate",
   TO_DATE: "toDate",
+  TIME_FILTER: "timePeriod",
 } as const;
+
+// Dashboard time period filter
+export const timePeriod: OptionItem[] = [
+  { label: "Today", value: "today" },
+  { label: "Last Week", value: "last_week" },
+  { label: "Last 15 Days", value: "last_15_days" },
+  { label: "Last Month", value: "last_month" },
+  { label: "Last 3 Months", value: "last_3_months" },
+  { label: "Last 6 Months", value: "last_6_months" },
+  { label: "Last Year", value: "last_year" },
+];
 
 // User role filter
 export const userRole: OptionItem[] = [

@@ -1,6 +1,7 @@
 export * from "./common.types";
 export * from "./auth.types";
 export * from "./profile.types";
+export * from "./dashboard.types";
 export * from "./user.types";
 export * from "./customer.types";
 export * from "./loan.types";

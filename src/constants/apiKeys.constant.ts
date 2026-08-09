@@ -2,6 +2,12 @@ export const LOGIN_KEY = ["login"] as const;
 
 export const PROFILE_KEY = ["profile"] as const;
 
+export const DASHBOARD_KEYS = {
+  summary: ["dashboard", "summary", "filter"] as const,
+  status: ["dashboard", "status", "summary", "filter"] as const,
+  expense_income: ["dashboard", "expense_income", "summary"] as const,
+};
+
 export const USER_KEYS = {
   all: ["users"] as const,
   collectors: ["users", "collectors"] as const,

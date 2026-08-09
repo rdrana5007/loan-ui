@@ -9,6 +9,7 @@ import {
   AppSwitch,
   AppToast,
   FormSkeleton,
+  InputSkeleton,
   SelectInput,
   TextInput,
 } from "@/components/Common";
@@ -53,9 +54,6 @@ export const UserForm: FC<UserFormProps> = ({ breadcrumbs }) => {
 
   const isEdit: boolean = !!numericId;
 
-  const title: string = isEdit ? `User-${id}` || "" : "Add User";
-  usePageBreadcrumbs(title, breadcrumbs, "Users");
-
   const { data, isLoading } = useUserQuery(numericId!);
   const { mutateAsync: createUser, isPending: isCreating } =
     useCreateUserMutation();
@@ -63,6 +61,10 @@ export const UserForm: FC<UserFormProps> = ({ breadcrumbs }) => {
     useUpdateUserMutation();
 
   const isSubmitting: boolean = isCreating || isUpdating;
+
+  const userId = isLoading ? <InputSkeleton /> : `User-${id}` || "";
+  const title: any = isEdit ? userId : "Add User";
+  usePageBreadcrumbs(title, breadcrumbs, "Users");
 
   useEffect(() => {
     if (data) {

@@ -2,5 +2,5 @@
 import { Dashboard } from "@/components";
 
 export const DashboardContainer = () => {
-  return <Dashboard />;
+  return <Dashboard title="Dashboard" />;
 };
