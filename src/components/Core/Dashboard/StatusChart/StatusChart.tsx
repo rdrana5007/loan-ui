@@ -3,8 +3,9 @@ import { StatusChartItem } from "@/types";
 import { Pie } from "@ant-design/plots";
 import { Card } from "antd";
 import { FC, useMemo } from "react";
-import { ChartSkeleton } from "../ChartSkeleton";
+import { PieChartSkeleton } from "../ChartSkeleton";
 import { EMPTY_CHART } from "@/constants";
+import { TooltipEllipsis } from "@/components/Common";
 
 interface StatusChartProps {
   title: string;
@@ -73,11 +74,11 @@ export const StatusChart: FC<StatusChartProps> = ({
     [data, colorDomain, colorRange, isEmpty],
   );
 
-  if (isLoading) return <ChartSkeleton />;
+  if (isLoading) return <PieChartSkeleton />;
 
   return (
     <Card
-      title={title}
+      title={<TooltipEllipsis>{title}</TooltipEllipsis>}
       style={{ borderRadius: 8 }}
       styles={{ body: { padding: 8 } }}
     >

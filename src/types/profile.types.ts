@@ -12,8 +12,8 @@ export interface ProfileResponse {
   phone: string;
   signInProvider: string | null;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string | null;
   roles: Role;
 };

@@ -8,14 +8,25 @@ import {
   FilterInput,
   SearchInput,
 } from "@/components/Common";
-import { loanStatus, loanStatusList, repaymentFrequencyTabs } from "@/constants";
-import { useLoanListing, usePageBreadcrumbs, useResponsive } from "@/hooks";
+import { ROLES } from "@/config";
+import {
+  loanStatus,
+  loanStatusList,
+  repaymentFrequencyTabs,
+} from "@/constants";
+import {
+  useAuthorization,
+  useLoanListing,
+  usePageBreadcrumbs,
+  useResponsive,
+} from "@/hooks";
 import { LoanRepaymentFrequency, LoanRow, LoanStatus } from "@/types";
 import { formatters } from "@/utils";
 import {
   DeleteOutlined,
   EditOutlined,
   EyeOutlined,
+  FileSearchOutlined,
   PlusOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
@@ -40,6 +51,8 @@ interface LoanListingProps {
 export const LoanListing: FC<LoanListingProps> = ({ title, breadcrumbs }) => {
   const router = useRouter();
   const { isMobile } = useResponsive();
+  const { hasRole } = useAuthorization();
+  const canManageLoans: boolean = hasRole([ROLES.ADMIN, ROLES.MANAGER]);
   usePageBreadcrumbs(title, breadcrumbs);
   const {
     data,
@@ -87,18 +100,27 @@ export const LoanListing: FC<LoanListingProps> = ({ title, breadcrumbs }) => {
             className="cursor-pointer text-green-500! hover:bg-green-50! hover:text-green-600! p-2 rounded-full text-lg md:text-xl transition-all"
           />
         )}
-        <EditOutlined
-          onClick={() => router.push(`/loans/${row.id}`)}
-          className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
-        />
-        <DeleteOutlined
-          disabled={isDeleting}
-          onClick={() => openDeleteModal(row)}
-          className="cursor-pointer text-red-500! hover:bg-red-50! hover:text-red-600! p-2 rounded-full text-lg md:text-xl transition-all"
-        />
+        {canManageLoans ? (
+          <EditOutlined
+            onClick={() => router.push(`/loans/${row.id}`)}
+            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        ) : (
+          <FileSearchOutlined
+            onClick={() => router.push(`/loans/${row.id}`)}
+            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        )}
+        {canManageLoans && (
+          <DeleteOutlined
+            disabled={isDeleting}
+            onClick={() => openDeleteModal(row)}
+            className="cursor-pointer text-red-500! hover:bg-red-50! hover:text-red-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        )}
       </div>
     ),
-    [router, isDeleting, openDeleteModal],
+    [router, canManageLoans, isDeleting, openDeleteModal, shouldShowLoanDetail],
   );
 
   const columns = useMemo<ColumnsType<LoanRow>>(
@@ -235,21 +257,28 @@ export const LoanListing: FC<LoanListingProps> = ({ title, breadcrumbs }) => {
                 onChange={handleFilterChange}
               />
             </div>
-            <div className="w-full sm:w-auto xl:ml-auto text-right">
-              <AppButton
-                icon={<PlusOutlined />}
-                label="New Loan"
-                className="w-full sm:w-auto h-10! px-4 whitespace-nowrap"
-                onClick={() => router.push("/loans/add-loan")}
-              />
-            </div>
+            {canManageLoans && (
+              <div className="w-full sm:w-auto xl:ml-auto text-right">
+                <AppButton
+                  icon={<PlusOutlined />}
+                  label="New Loan"
+                  className="w-full sm:w-auto h-10! px-4 whitespace-nowrap"
+                  onClick={() => router.push("/loans/add-loan")}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
       <AppTabs
         items={repaymentFrequencyTabs}
         activeKey={repaymentFrequencyFilter}
-        onChange={(key) => handleFilterChange("repaymentFrequency", key as LoanRepaymentFrequency)}
+        onChange={(key) =>
+          handleFilterChange(
+            "repaymentFrequency",
+            key as LoanRepaymentFrequency,
+          )
+        }
       />
       <AppTable
         rowKey={(record: any) => record.id}

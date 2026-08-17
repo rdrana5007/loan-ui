@@ -5,6 +5,7 @@ export * from "./useInfiniteList";
 export * from "./useInfiniteSelectData";
 export * from "./useInfiniteSelectService";
 export * from "./useAuthentication";
+export * from "./useAuthorization";
 export * from "./useProfile";
 export * from "./useDashboard";
 export * from "./useUserListing";

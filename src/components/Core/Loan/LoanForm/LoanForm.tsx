@@ -14,8 +14,17 @@ import {
   SelectInput,
   TextInput,
 } from "@/components/Common";
-import { loanProcessingFeeTypeOptions, loanRepaymentFrequencyList, loanStatusList } from "@/constants";
-import { useInfiniteSelectService, usePageBreadcrumbs } from "@/hooks";
+import { ROLES } from "@/config";
+import {
+  loanProcessingFeeTypeOptions,
+  loanRepaymentFrequencyList,
+  loanStatusList,
+} from "@/constants";
+import {
+  useAuthorization,
+  useInfiniteSelectService,
+  usePageBreadcrumbs,
+} from "@/hooks";
 import {
   LoanFormValues,
   LoanPayload,
@@ -69,11 +78,14 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const [form] = Form.useForm();
+  const { hasRole } = useAuthorization();
 
   const id: string = params?.id;
   const numericId = useMemo(() => resolveNumericId(id), [id]);
 
   const isEdit: boolean = !!numericId;
+
+  const canManageLoans: boolean = hasRole([ROLES.ADMIN, ROLES.MANAGER]);
 
   const { customers, collectors } = useInfiniteSelectService();
   const { data, isLoading } = useLoanQuery(numericId!);
@@ -114,7 +126,13 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
 
     try {
       if (isEdit && data?.id) {
-        const { customerId, loanAmount, processingFee, processingFeeType, ...updatePayload } = payload;
+        const {
+          customerId,
+          loanAmount,
+          processingFee,
+          processingFeeType,
+          ...updatePayload
+        } = payload;
 
         if (!shouldShowRejectionReason) delete updatePayload.rejectionReason;
 
@@ -147,7 +165,11 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
   return (
     <div className="w-full">
       <h2 className="text-lg md:text-xl font-semibold mb-6">
-        {isEdit ? "Update Loan" : "Create Loan"}
+        {isEdit
+          ? canManageLoans
+            ? "Update Loan"
+            : "Loan Details"
+          : "Create Loan"}
       </h2>
       <Form
         form={form}
@@ -314,26 +336,28 @@ export const LoanForm: FC<LoanFormProps> = ({ breadcrumbs }) => {
             </Col>
           )}
         </Row>
-        <Row gutter={[12, 12]} justify="end" className="mt-6">
-          <Col xs={24} sm={8} md={6} lg={4}>
-            <AppButton
-              block
-              label="Reset"
-              onClick={() => form.resetFields()}
-              className="w-full! h-10! md:h-8 lg:h-10"
-            />
-          </Col>
-          <Col xs={24} sm={8} md={6} lg={4}>
-            <AppButton
-              block
-              type="primary"
-              htmlType="submit"
-              label="Save"
-              disabled={isSubmitting}
-              className="w-full! h-10! md:h-8 lg:h-10"
-            />
-          </Col>
-        </Row>
+        {canManageLoans && (
+          <Row gutter={[12, 12]} justify="end" className="mt-6">
+            <Col xs={24} sm={8} md={6} lg={4}>
+              <AppButton
+                block
+                label="Reset"
+                onClick={() => form.resetFields()}
+                className="w-full! h-10! md:h-8 lg:h-10"
+              />
+            </Col>
+            <Col xs={24} sm={8} md={6} lg={4}>
+              <AppButton
+                block
+                type="primary"
+                htmlType="submit"
+                label="Save"
+                disabled={isSubmitting}
+                className="w-full! h-10! md:h-8 lg:h-10"
+              />
+            </Col>
+          </Row>
+        )}
       </Form>
     </div>
   );

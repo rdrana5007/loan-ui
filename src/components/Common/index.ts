@@ -16,3 +16,4 @@ export * from "./DeleteModal";
 export * from "./AppModal";
 export * from "./AppTabs";
 export * from "./AppDescriptions";
+export * from "./TooltipEllipsis";

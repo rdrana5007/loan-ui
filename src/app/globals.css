@@ -75,3 +75,7 @@
 .ant-form-item {
   margin-bottom: 5px !important;
 }
+
+.ant-g2-chart canvas, canvas {
+  touch-action: pan-y !important;
+}

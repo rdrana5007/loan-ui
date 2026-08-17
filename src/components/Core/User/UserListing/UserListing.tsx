@@ -7,8 +7,14 @@ import {
   FilterInput,
   SearchInput,
 } from "@/components/Common";
+import { ROLES } from "@/config";
 import { roleList, userRole, userStatus } from "@/constants";
-import { usePageBreadcrumbs, useResponsive, useUserListing } from "@/hooks";
+import {
+  useAuthorization,
+  usePageBreadcrumbs,
+  useResponsive,
+  useUserListing,
+} from "@/hooks";
 import { UserRow } from "@/types";
 import { createOptionMap, formatters } from "@/utils";
 import {
@@ -31,6 +37,7 @@ interface UserListingProps {
 export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
   const router = useRouter();
   const { isMobile } = useResponsive();
+  const { isAdmin, isManager } = useAuthorization();
   usePageBreadcrumbs(title, breadcrumbs);
   const {
     data,
@@ -45,6 +52,15 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
     handleDelete,
     handleToggle,
   } = useUserListing();
+
+  const canEditUser = useCallback(
+    (roleName?: string) => {
+      if (isAdmin) return true;
+      if (isManager) return roleName === ROLES.COLLECTOR;
+      return false;
+    },
+    [isAdmin, isManager],
+  );
 
   const handleSearch = useCallback(
     (value: string) => {
@@ -77,18 +93,22 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
   const renderActions = useCallback(
     (_: unknown, row: UserRow) => (
       <div className="flex items-center justify-center">
-        <EditOutlined
-          onClick={() => router.push(`/users/${row.id}`)}
-          className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
-        />
-        <DeleteOutlined
-          disabled={isDeleting}
-          onClick={() => openDeleteModal(row)}
-          className="cursor-pointer text-red-500! hover:bg-red-50! hover:text-red-600! p-2 rounded-full text-lg md:text-xl transition-all"
-        />
+        {canEditUser(row?.roles?.name) && (
+          <EditOutlined
+            onClick={() => router.push(`/users/${row.id}`)}
+            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        )}
+        {isAdmin && (
+          <DeleteOutlined
+            disabled={isDeleting}
+            onClick={() => openDeleteModal(row)}
+            className="cursor-pointer text-red-500! hover:bg-red-50! hover:text-red-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        )}
       </div>
     ),
-    [router, isDeleting, openDeleteModal],
+    [router, isAdmin, isDeleting, openDeleteModal, canEditUser],
   );
 
   const columns = useMemo<ColumnsType<UserRow>>(

@@ -1,45 +1,49 @@
 "use client";
-import type { MenuProps } from "antd";
 import {
   BankOutlined,
   DashboardOutlined,
-  MoneyCollectOutlined,
-  ScheduleOutlined,
   SolutionOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
+import { ROLES, UserRole } from "./permission.config";
+import type { MenuItemType } from "antd/es/menu/interface";
 
-export const SIDEBAR_MENU_ITEMS: MenuProps['items'] = [
+export type SidebarMenuItem = MenuItemType & {
+  roles?: readonly UserRole[];
+  children?: SidebarMenuItem[];
+};
+
+const ALL_ROLES: readonly UserRole[] = [
+  ROLES.ADMIN,
+  ROLES.MANAGER,
+  ROLES.COLLECTOR,
+];
+
+export const SIDEBAR_MENU_ITEMS: SidebarMenuItem[] = [
   {
     key: "1",
     icon: <DashboardOutlined className="text-lg!" />,
     label: <Link href="/">Dashboard</Link>,
+    roles: ALL_ROLES,
   },
   {
     key: "2",
     icon: <UserOutlined className="text-lg!" />,
     label: <Link href="/users">Users</Link>,
+    roles: [ROLES.ADMIN, ROLES.MANAGER],
   },
   {
     key: "3",
     icon: <SolutionOutlined className="text-lg!" />,
     label: <Link href="/customers">Customers</Link>,
+    roles: ALL_ROLES,
   },
   {
     key: "4",
     icon: <BankOutlined className="text-lg!" />,
     label: <Link href="/loans">Loans</Link>,
     // label: <Link href="/loans">Users</Link>,
+    roles: ALL_ROLES,
   },
-  // {
-  //   key: "5",
-  //   icon: <MoneyCollectOutlined className="text-lg!" />,
-  //   label: <Link href="/emi-collections">Emi Collections</Link>,
-  // },
-  // {
-  //   key: "6",
-  //   icon: <ScheduleOutlined className="text-lg!" />,
-  //   label: <Link href="/emi-followups">Emi Followups</Link>,
-  // }
 ];

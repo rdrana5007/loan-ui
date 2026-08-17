@@ -3,6 +3,9 @@ import { Card } from "antd";
 import { FC } from "react";
 import { Column } from "@ant-design/plots";
 import { IncomeExpenseChartItem } from "@/types";
+import { ColumnChartSkeleton } from "../ChartSkeleton";
+import { useResponsive } from "@/hooks";
+import { TooltipEllipsis } from "@/components/Common";
 
 interface TooltipItem {
   name: string;
@@ -26,6 +29,8 @@ export const IncomeExpenseChart: FC<IncomeExpenseChartProps> = ({
   data,
   isLoading,
 }) => {
+  const { isXL } = useResponsive();
+
   const config = {
     data,
     xField: "month",
@@ -34,6 +39,21 @@ export const IncomeExpenseChart: FC<IncomeExpenseChartProps> = ({
     stack: true,
     autoFit: true,
     padding: [10, 10, 10, 10],
+    axis: {
+      x: !isXL
+        ? {
+            overlapHide: true,
+            overlapRotate: false,
+            labelTransform: "rotate(-45)",
+            labelMaxLength: 10,
+          }
+        : {
+            overlapHide: false,
+            overlapRotate: true,
+            labelTransform: "none",
+            labelMaxLength: 100,
+          },
+    },
     interaction: {
       tooltip: {
         render: (_: unknown, { title, items }: TooltipRenderProps) => {
@@ -75,9 +95,11 @@ export const IncomeExpenseChart: FC<IncomeExpenseChartProps> = ({
     },
   };
 
+  if (isLoading) return <ColumnChartSkeleton />;
+
   return (
     <Card
-      title={title}
+      title={<TooltipEllipsis>{title}</TooltipEllipsis>}
       style={{ borderRadius: 8 }}
       styles={{ body: { padding: 8 } }}
     >

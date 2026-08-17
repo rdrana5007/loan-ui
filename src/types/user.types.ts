@@ -52,6 +52,7 @@ export type UserRow = {
   phone: string;
   isActive: boolean;
   createdAt: string;
+  roles: UserRole;
 };
 
 export interface UserFormValues {
@@ -60,6 +61,6 @@ export interface UserFormValues {
   email: string;
   phone: string;
   password?: string;
-  roleId: number | undefined;
-  isActive: boolean;
+  roleId?: number | undefined;
+  isActive?: boolean;
 };

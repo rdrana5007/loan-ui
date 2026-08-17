@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { COOKIE_NAMESPACE, storageKeys } from "./constants";
-// import { canAccessRoute } from "@/utils/routePermissions";
+import { UserRole } from "./config";
+import { canAccessRoute } from "./utils";
 
-const publicRoutes = ["/login", "/my-profile"];
+const publicRoutes = ["/login", "/profile"];
 
 const getNamespacedCookieName = (key: string) => `${COOKIE_NAMESPACE}__${key}`;
 
@@ -33,10 +34,10 @@ export function proxy(request: NextRequest) {
 
   const accessToken = getCookieValue<string>(request, storageKeys.ACCESS_TOKEN);
   const hasValidToken = Boolean(accessToken);
-  // const userRole = getCookieValue<{ role?: UserRole }>(
-  //   request,
-  //   storageKeys.USER_PROFILE,
-  // )?.role;
+  const userRole = getCookieValue<{ roleName?: UserRole }>(
+    request,
+    storageKeys.USER_PROFILE,
+  )?.roleName;
 
   if (!isPublicRoute(pathname) && !hasValidToken) {
     const loginUrl = request.nextUrl.clone();
@@ -50,12 +51,25 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(homeUrl);
   }
 
-  // if (hasValidToken && !isPublicRoute(pathname) && userRole) {
-  //   // if (!canAccessRoute(userRole, pathname)) {
-  //     const redirectPath = pathname === "/" ? "/login" : "/";
-  //     return NextResponse.redirect(new URL(redirectPath, request.url));
-  //   // }
-  // }
+  if (hasValidToken && !isPublicRoute(pathname)) {
+    if (!userRole) {
+      const homeUrl = request.nextUrl.clone();
+      homeUrl.pathname = "/";
+      return NextResponse.redirect(homeUrl);
+    }
+
+    if (!canAccessRoute(pathname, userRole)) {
+      const unauthorizedUrl = request.nextUrl.clone();
+      const fallbackPath = pathname === "/" ? "/login" : "/forbidden";
+
+      if (pathname === "/" && fallbackPath === "/login") {
+        return NextResponse.redirect("/login");
+      }
+
+      unauthorizedUrl.pathname = fallbackPath;
+      return NextResponse.redirect(unauthorizedUrl);
+    }
+  }
 
   return NextResponse.next();
 }

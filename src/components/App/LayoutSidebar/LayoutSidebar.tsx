@@ -1,10 +1,10 @@
 "use client";
-import { SIDEBAR_MENU_ITEMS } from "@/config";
 import { Drawer, Layout, Menu } from "antd";
 import Image from "next/image";
 import Logo from "@/assets/Logo1.png";
 import { AppButton } from "../../Common";
 import { CloseOutlined } from "@ant-design/icons";
+import { useAuthorization } from "@/hooks";
 
 const { Sider } = Layout;
 
@@ -106,25 +106,27 @@ const MobileDrawer = ({
           onClick={onClose}
         />
       </div>
-      <SidebarMenu
-        selectedKey={selectedKey}
-        mobile
-        onClose={onClose}
-      />
+      <SidebarMenu selectedKey={selectedKey} mobile onClose={onClose} />
     </Drawer>
   </div>
 );
 
-const SidebarMenu = ({ selectedKey, mobile, onClose }: SidebarMenuProps) => (
-  <Menu
-    mode="inline"
-    items={SIDEBAR_MENU_ITEMS}
-    selectedKeys={selectedKey}
-    onClick={mobile ? onClose : undefined}
-    theme={mobile ? "light" : "dark"}
-    className="bg-transparent! text-white! text-base! font-medium"
-  />
-);
+const SidebarMenu = ({ selectedKey, mobile, onClose }: SidebarMenuProps) => {
+  const { menuItems, isLoading } = useAuthorization();
+
+  if (isLoading) return null;
+
+  return (
+    <Menu
+      mode="inline"
+      items={menuItems}
+      selectedKeys={selectedKey}
+      onClick={mobile ? onClose : undefined}
+      theme={mobile ? "light" : "dark"}
+      className="bg-transparent! text-white! text-base! font-medium"
+    />
+  );
+};
 
 const AppLogo = ({ collapsed }: AppLogoProps) => (
   <Image
