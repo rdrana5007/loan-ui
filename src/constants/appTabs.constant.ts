@@ -1,5 +1,10 @@
 import { TabsProps } from "antd";
 
+export const userRoleTabs: TabsProps["items"] = [
+  { key: "isManager", label: "Managers" },
+  { key: "isCollector", label: "Collectors" }
+];
+
 export const repaymentFrequencyTabs: TabsProps["items"] = [
   { key: "daily", label: "Daily" },
   { key: "weekly", label: "Weekly" },

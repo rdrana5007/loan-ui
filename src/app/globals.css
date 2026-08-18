@@ -79,3 +79,9 @@
 .ant-g2-chart canvas, canvas {
   touch-action: pan-y !important;
 }
+
+/* @media (max-width: 575px) {
+  .ant-pagination-options {
+    display: inline-flex !important;
+  }
+} */

@@ -7,7 +7,7 @@ import {
   SelectInput,
   TextInput,
 } from "@/components/Common";
-import { roleList } from "@/constants";
+import { allRoleList } from "@/constants";
 import { useProfile } from "@/hooks";
 import { ProfileResponse, UserFormValues, UserProfile } from "@/types";
 import { handleNumericKeyDown } from "@/utils";
@@ -122,7 +122,7 @@ export const Profile = () => {
               required={true}
               requiredMsg="Role is required"
               placeholder="Select role"
-              options={roleList || []}
+              options={allRoleList || []}
               disabled
             />
           </Col>

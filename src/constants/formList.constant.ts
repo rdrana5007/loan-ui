@@ -17,6 +17,13 @@ type Role = {
   value: number;
 };
 
+// All User role list
+export const allRoleList: Role[] = [
+  { id: 1, label: "Admin", value: 1 },
+  { id: 2, label: "Manager", value: 2 },
+  { id: 3, label: "Collector", value: 3 },
+];
+
 // User role list
 export const roleList: Role[] = [
   { id: 1, label: "Manager", value: 2 },

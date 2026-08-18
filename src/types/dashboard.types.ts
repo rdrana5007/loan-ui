@@ -78,6 +78,7 @@ export interface DashboardCardItem {
   title: string;
   count: number;
   icon: ComponentType<{ className?: string }>;
+  prefix?: string;
 }
 
 export interface StatusChartItem {

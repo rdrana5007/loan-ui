@@ -1,10 +1,11 @@
 "use client";
 import { AppButton, AppTable } from "@/components/Common";
+import { ROLES } from "@/config";
 import { roleList } from "@/constants";
-import { useDashboard, useResponsive } from "@/hooks";
+import { useAuthorization, useDashboard, useResponsive } from "@/hooks";
 import { UserRow } from "@/types";
 import { createOptionMap, formatters } from "@/utils";
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, FileSearchOutlined } from "@ant-design/icons";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
@@ -14,18 +15,32 @@ const ROLE_MAP = createOptionMap(roleList);
 export const RecentUserTable = () => {
   const router = useRouter();
   const { isMobile } = useResponsive();
+  const { isAdmin, isManager } = useAuthorization();
   const { users, isLoading } = useDashboard();
+
+  const canManageUsers = useCallback(
+    (roleName?: string) =>
+      isAdmin || (isManager && roleName === ROLES.COLLECTOR),
+    [isAdmin, isManager],
+  );
 
   const renderActions = useCallback(
     (_: unknown, row: UserRow) => (
       <div className="flex items-center justify-center">
-        <EditOutlined
-          onClick={() => router.push(`/users/${row.id}`)}
-          className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
-        />
+        {canManageUsers(row?.roles?.name) ? (
+          <EditOutlined
+            onClick={() => router.push(`/users/${row.id}`)}
+            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        ) : (
+          <FileSearchOutlined
+            onClick={() => router.push(`/users/${row.id}`)}
+            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        )}
       </div>
     ),
-    [router],
+    [router, canManageUsers],
   );
 
   const columns = useMemo<ColumnsType<UserRow>>(

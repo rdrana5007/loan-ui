@@ -3,31 +3,31 @@ import {
   AppButton,
   AppSwitch,
   AppTable,
+  AppTabs,
   DeleteModal,
   FilterInput,
   SearchInput,
 } from "@/components/Common";
 import { ROLES } from "@/config";
-import { roleList, userRole, userStatus } from "@/constants";
+import { userRoleTabs, userStatus } from "@/constants";
 import {
   useAuthorization,
   usePageBreadcrumbs,
   useResponsive,
   useUserListing,
 } from "@/hooks";
-import { UserRow } from "@/types";
-import { createOptionMap, formatters } from "@/utils";
+import { RoleFilter, UserRow } from "@/types";
+import { formatters } from "@/utils";
 import {
   DeleteOutlined,
   EditOutlined,
+  FileSearchOutlined,
   PlusOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import { FC, useCallback, useMemo } from "react";
-
-const ROLE_MAP = createOptionMap(roleList);
 
 interface UserListingProps {
   title: string;
@@ -37,7 +37,8 @@ interface UserListingProps {
 export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
   const router = useRouter();
   const { isMobile } = useResponsive();
-  const { isAdmin, isManager } = useAuthorization();
+  const { isAdmin, isManager, hasRole } = useAuthorization();
+  const canAddUsers: boolean = hasRole([ROLES.ADMIN, ROLES.MANAGER]);
   usePageBreadcrumbs(title, breadcrumbs);
   const {
     data,
@@ -53,12 +54,9 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
     handleToggle,
   } = useUserListing();
 
-  const canEditUser = useCallback(
-    (roleName?: string) => {
-      if (isAdmin) return true;
-      if (isManager) return roleName === ROLES.COLLECTOR;
-      return false;
-    },
+  const canManageUsers = useCallback(
+    (roleName?: string) =>
+      isAdmin || (isManager && roleName === ROLES.COLLECTOR),
     [isAdmin, isManager],
   );
 
@@ -81,20 +79,39 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
   );
 
   const renderActive = useCallback(
-    (val: boolean, row: UserRow) => (
-      <AppSwitch
-        checked={val}
-        onChange={(checked) => handleToggle(row.id, checked)}
-      />
-    ),
-    [handleToggle],
+    (val: boolean, row: UserRow) => {
+      if (!canManageUsers(row?.roles?.name)) {
+        return (
+          <span
+            className={
+              val ? "font-medium text-green-600" : "font-medium text-red-500"
+            }
+          >
+            {val ? "Active" : "Inactive"}
+          </span>
+        );
+      }
+
+      return (
+        <AppSwitch
+          checked={val}
+          onChange={(checked) => handleToggle(row.id, checked)}
+        />
+      );
+    },
+    [canManageUsers, handleToggle],
   );
 
   const renderActions = useCallback(
     (_: unknown, row: UserRow) => (
       <div className="flex items-center justify-center">
-        {canEditUser(row?.roles?.name) && (
+        {canManageUsers(row?.roles?.name) ? (
           <EditOutlined
+            onClick={() => router.push(`/users/${row.id}`)}
+            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        ) : (
+          <FileSearchOutlined
             onClick={() => router.push(`/users/${row.id}`)}
             className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
           />
@@ -108,7 +125,7 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
         )}
       </div>
     ),
-    [router, isAdmin, isDeleting, openDeleteModal, canEditUser],
+    [router, isAdmin, isDeleting, openDeleteModal, canManageUsers],
   );
 
   const columns = useMemo<ColumnsType<UserRow>>(
@@ -137,13 +154,6 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
         render: formatters.value,
       },
       {
-        title: "Role",
-        dataIndex: "roleId",
-        key: "roleId",
-        width: 180,
-        render: (val) => ROLE_MAP[val] ?? "--",
-      },
-      {
         title: "Created Date",
         dataIndex: "createdAt",
         key: "createdAt",
@@ -151,7 +161,7 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
         render: formatters.dateTime,
       },
       {
-        title: "Active",
+        title: "Status",
         dataIndex: "isActive",
         key: "isActive",
         width: 180,
@@ -185,40 +195,35 @@ export const UserListing: FC<UserListingProps> = ({ title, breadcrumbs }) => {
               />
             </div>
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="w-full sm:w-40 md:w-30 lg:w-40">
-                  <FilterInput
-                    placeholder="All Users"
-                    filterKey="role"
-                    value={roleFilter}
-                    options={userRole}
-                    className="w-full h-10!"
-                    onChange={handleFilterChange}
-                  />
-                </div>
-                <div className="w-full sm:w-40 md:w-30 lg:w-40">
-                  <FilterInput
-                    placeholder="All Status"
-                    filterKey="status"
-                    value={statusFilter}
-                    options={userStatus}
-                    className="w-full h-10!"
-                    onChange={handleFilterChange}
-                  />
-                </div>
-              </div>
-              <div className="w-full sm:w-auto sm:ml-auto">
-                <AppButton
-                  icon={<PlusOutlined />}
-                  label="New User"
-                  className="w-full sm:w-auto h-10! px-4 shrink-0 whitespace-nowrap"
-                  onClick={() => router.push("/users/add-user")}
+              <div className="w-full sm:w-40">
+                <FilterInput
+                  placeholder="All Status"
+                  filterKey="status"
+                  value={statusFilter}
+                  options={userStatus}
+                  className="w-full h-10!"
+                  onChange={handleFilterChange}
                 />
               </div>
+              {canAddUsers && (
+                <div className="w-full sm:w-auto sm:ml-auto">
+                  <AppButton
+                    icon={<PlusOutlined />}
+                    label="New User"
+                    className="w-full sm:w-auto h-10! px-4 shrink-0 whitespace-nowrap"
+                    onClick={() => router.push("/users/add-user")}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+      <AppTabs
+        items={userRoleTabs}
+        activeKey={roleFilter}
+        onChange={(key) => handleFilterChange("role", key as RoleFilter)}
+      />
       <AppTable
         rowKey={(record: any) => record.id}
         tableColumns={columns}

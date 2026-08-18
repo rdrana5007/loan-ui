@@ -144,6 +144,7 @@ export const useDashboard = () => {
         title: "EMI Collected",
         count: summary?.emiCollected ?? 0,
         icon: MoneyCollectOutlined,
+        prefix: "₹",
       },
     ],
     [summary],

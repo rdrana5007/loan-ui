@@ -15,11 +15,12 @@ import {
   TextInput,
   UploadInput,
 } from "@/components/Common";
+import { ROLES } from "@/config";
 import {
   customerGenderOptions,
   customerVerificationStatusList,
 } from "@/constants";
-import { usePageBreadcrumbs } from "@/hooks";
+import { useAuthorization, usePageBreadcrumbs } from "@/hooks";
 import {
   CustomerFormValues,
   CustomerGender,
@@ -122,11 +123,14 @@ export const CustomerForm: FC<CustomerFormProps> = ({ breadcrumbs }) => {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const [form] = Form.useForm();
+  const { hasRole } = useAuthorization();
 
   const id: string = params?.id;
   const numericId = useMemo(() => resolveNumericId(id), [id]);
 
   const isEdit: boolean = !!numericId;
+
+  const canManageCustomers: boolean = hasRole([ROLES.ADMIN, ROLES.MANAGER]);
 
   const { data, isLoading } = useCustomerQuery(numericId!);
   const { mutateAsync: createCustomer, isPending: isCreating } =
@@ -182,7 +186,11 @@ export const CustomerForm: FC<CustomerFormProps> = ({ breadcrumbs }) => {
   return (
     <div className="w-full">
       <h2 className="text-lg md:text-xl font-semibold mb-6">
-        {isEdit ? "Update Customer" : "Create Customer"}
+        {isEdit
+          ? canManageCustomers
+            ? "Update Customer"
+            : "Customer Details"
+          : "Create Customer"}
       </h2>
       <Form
         form={form}
@@ -331,7 +339,11 @@ export const CustomerForm: FC<CustomerFormProps> = ({ breadcrumbs }) => {
             />
           </Col>
           <Col xs={24} sm={12}>
-            <UploadInput name="aadhaarFile" label="Aadhaar file" isEdit={isEdit} />
+            <UploadInput
+              name="aadhaarFile"
+              label="Aadhaar file"
+              isEdit={isEdit}
+            />
           </Col>
           <Col xs={24} sm={12}>
             <UploadInput name="panFile" label="Pan file" isEdit={isEdit} />
@@ -360,26 +372,28 @@ export const CustomerForm: FC<CustomerFormProps> = ({ breadcrumbs }) => {
             />
           </Col>
         </Row>
-        <Row gutter={[12, 12]} justify="end" className="mt-6">
-          <Col xs={24} sm={8} md={6} lg={4}>
-            <AppButton
-              block
-              label="Reset"
-              onClick={() => form.resetFields()}
-              className="w-full! h-10! md:h-8 lg:h-10"
-            />
-          </Col>
-          <Col xs={24} sm={8} md={6} lg={4}>
-            <AppButton
-              block
-              type="primary"
-              htmlType="submit"
-              label="Save"
-              disabled={isSubmitting}
-              className="w-full! h-10! md:h-8 lg:h-10"
-            />
-          </Col>
-        </Row>
+        {canManageCustomers && (
+          <Row gutter={[12, 12]} justify="end" className="mt-6">
+            <Col xs={24} sm={8} md={6} lg={4}>
+              <AppButton
+                block
+                label="Reset"
+                onClick={() => form.resetFields()}
+                className="w-full! h-10! md:h-8 lg:h-10"
+              />
+            </Col>
+            <Col xs={24} sm={8} md={6} lg={4}>
+              <AppButton
+                block
+                type="primary"
+                htmlType="submit"
+                label="Save"
+                disabled={isSubmitting}
+                className="w-full! h-10! md:h-8 lg:h-10"
+              />
+            </Col>
+          </Row>
+        )}
       </Form>
     </div>
   );

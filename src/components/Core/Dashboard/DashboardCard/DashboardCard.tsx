@@ -11,7 +11,7 @@ interface DashboardCardProps {
 }
 
 export const DashboardCard: FC<DashboardCardProps> = ({ data, isLoading }) => {
-  const { title, count, icon: Icon } = data;
+  const { title, count, icon: Icon, prefix } = data;
 
   return (
     <>
@@ -36,7 +36,7 @@ export const DashboardCard: FC<DashboardCardProps> = ({ data, isLoading }) => {
                   {title}
                 </Title>
                 <Text className="block text-xl! sm:text-2xl! lg:text-3xl! font-bold! text-white!">
-                  {count}
+                  {prefix ? `${prefix} ${count}` : count}
                 </Text>
               </div>
               <Avatar

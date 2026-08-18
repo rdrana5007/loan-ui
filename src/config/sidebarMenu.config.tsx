@@ -6,19 +6,13 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
-import { ROLES, UserRole } from "./permission.config";
+import { ALL_ROLES, UserRole } from "./permission.config";
 import type { MenuItemType } from "antd/es/menu/interface";
 
 export type SidebarMenuItem = MenuItemType & {
   roles?: readonly UserRole[];
   children?: SidebarMenuItem[];
 };
-
-const ALL_ROLES: readonly UserRole[] = [
-  ROLES.ADMIN,
-  ROLES.MANAGER,
-  ROLES.COLLECTOR,
-];
 
 export const SIDEBAR_MENU_ITEMS: SidebarMenuItem[] = [
   {
@@ -31,7 +25,7 @@ export const SIDEBAR_MENU_ITEMS: SidebarMenuItem[] = [
     key: "2",
     icon: <UserOutlined className="text-lg!" />,
     label: <Link href="/users">Users</Link>,
-    roles: [ROLES.ADMIN, ROLES.MANAGER],
+    roles: ALL_ROLES,
   },
   {
     key: "3",

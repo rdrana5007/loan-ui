@@ -1,9 +1,10 @@
 "use client";
 import { AppButton, AppTable } from "@/components/Common";
-import { useDashboard, useResponsive } from "@/hooks";
+import { ROLES } from "@/config";
+import { useAuthorization, useDashboard, useResponsive } from "@/hooks";
 import { CustomerRow } from "@/types";
 import { formatters } from "@/utils";
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, FileSearchOutlined } from "@ant-design/icons";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
@@ -14,18 +15,28 @@ const renderFullName = (record: CustomerRow) =>
 export const RecentCustomerTable = () => {
   const router = useRouter();
   const { isMobile } = useResponsive();
+  const { hasRole } = useAuthorization();
   const { customers, isLoading } = useDashboard();
+
+  const canManageCustomers: boolean = hasRole([ROLES.ADMIN, ROLES.MANAGER]);
 
   const renderActions = useCallback(
     (_: unknown, row: CustomerRow) => (
       <div className="flex items-center justify-center">
-        <EditOutlined
-          onClick={() => router.push(`/customers/${row.id}`)}
-          className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
-        />
+        {canManageCustomers ? (
+          <EditOutlined
+            onClick={() => router.push(`/customers/${row.id}`)}
+            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        ) : (
+          <FileSearchOutlined
+            onClick={() => router.push(`/customers/${row.id}`)}
+            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        )}
       </div>
     ),
-    [router],
+    [router, canManageCustomers],
   );
 
   const columns = useMemo<ColumnsType<CustomerRow>>(

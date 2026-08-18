@@ -1,9 +1,10 @@
 "use client";
 import { AppButton, AppTable } from "@/components/Common";
-import { useDashboard, useResponsive } from "@/hooks";
+import { ROLES } from "@/config";
+import { useAuthorization, useDashboard, useResponsive } from "@/hooks";
 import { LoanRow } from "@/types";
 import { formatters } from "@/utils";
-import { EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { EditOutlined, EyeOutlined, FileSearchOutlined } from "@ant-design/icons";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
@@ -16,7 +17,10 @@ const renderFullName = (record: LoanRow) =>
 export const RecentLoanTable = () => {
   const router = useRouter();
   const { isMobile } = useResponsive();
+  const { hasRole } = useAuthorization();
   const { loans, isLoading } = useDashboard();
+
+  const canManageLoans: boolean = hasRole([ROLES.ADMIN, ROLES.MANAGER]);
 
   const renderActions = useCallback(
     (_: unknown, row: LoanRow) => (
@@ -25,13 +29,20 @@ export const RecentLoanTable = () => {
           onClick={() => router.push(`/loans/${row.id}/loan-detail`)}
           className="cursor-pointer text-green-500! hover:bg-green-50! hover:text-green-600! p-2 rounded-full text-lg md:text-xl transition-all"
         />
-        <EditOutlined
-          onClick={() => router.push(`/loans/${row.id}`)}
-          className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
-        />
+        {canManageLoans ? (
+          <EditOutlined
+            onClick={() => router.push(`/loans/${row.id}`)}
+            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        ) : (
+          <FileSearchOutlined
+            onClick={() => router.push(`/loans/${row.id}`)}
+            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        )}
       </div>
     ),
-    [router],
+    [router, canManageLoans],
   );
 
   const columns = useMemo<ColumnsType<LoanRow>>(

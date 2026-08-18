@@ -8,17 +8,24 @@ import {
   FilterInput,
   SearchInput,
 } from "@/components/Common";
+import { ROLES } from "@/config";
 import {
   customerVerificationStatus,
   customerVerificationStatusList,
   userStatus,
 } from "@/constants";
-import { useCustomerListing, usePageBreadcrumbs, useResponsive } from "@/hooks";
+import {
+  useAuthorization,
+  useCustomerListing,
+  usePageBreadcrumbs,
+  useResponsive,
+} from "@/hooks";
 import { CustomerRow, VerificationStatus } from "@/types";
 import { formatters } from "@/utils";
 import {
   DeleteOutlined,
   EditOutlined,
+  FileSearchOutlined,
   PlusOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
@@ -44,6 +51,8 @@ export const CustomerListing: FC<CustomerListingProps> = ({
 }) => {
   const router = useRouter();
   const { isMobile } = useResponsive();
+  const { hasRole } = useAuthorization();
+  const canManageCustomers: boolean = hasRole([ROLES.ADMIN, ROLES.MANAGER]);
   usePageBreadcrumbs(title, breadcrumbs);
   const {
     data,
@@ -78,30 +87,53 @@ export const CustomerListing: FC<CustomerListingProps> = ({
   );
 
   const renderActive = useCallback(
-    (val: boolean, row: CustomerRow) => (
-      <AppSwitch
-        checked={val}
-        onChange={(checked) => handleToggle(row.id, checked)}
-      />
-    ),
-    [handleToggle],
+    (val: boolean, row: CustomerRow) => {
+      if (!canManageCustomers) {
+        return (
+          <span
+            className={
+              val ? "font-medium text-green-600" : "font-medium text-red-500"
+            }
+          >
+            {val ? "Active" : "Inactive"}
+          </span>
+        );
+      }
+
+      return (
+        <AppSwitch
+          checked={val}
+          onChange={(checked) => handleToggle(row.id, checked)}
+        />
+      );
+    },
+    [canManageCustomers, handleToggle],
   );
 
   const renderActions = useCallback(
     (_: unknown, row: CustomerRow) => (
       <div className="flex items-center justify-center">
-        <EditOutlined
-          onClick={() => router.push(`/customers/${row.id}`)}
-          className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
-        />
-        <DeleteOutlined
-          disabled={isDeleting}
-          onClick={() => openDeleteModal(row)}
-          className="cursor-pointer text-red-500! hover:bg-red-50! hover:text-red-600! p-2 rounded-full text-lg md:text-xl transition-all"
-        />
+        {canManageCustomers ? (
+          <EditOutlined
+            onClick={() => router.push(`/customers/${row.id}`)}
+            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        ) : (
+          <FileSearchOutlined
+            onClick={() => router.push(`/customers/${row.id}`)}
+            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        )}
+        {canManageCustomers && (
+          <DeleteOutlined
+            disabled={isDeleting}
+            onClick={() => openDeleteModal(row)}
+            className="cursor-pointer text-red-500! hover:bg-red-50! hover:text-red-600! p-2 rounded-full text-lg md:text-xl transition-all"
+          />
+        )}
       </div>
     ),
-    [router, isDeleting, openDeleteModal],
+    [router, canManageCustomers, isDeleting, openDeleteModal],
   );
 
   const columns = useMemo<ColumnsType<CustomerRow>>(
@@ -158,7 +190,7 @@ export const CustomerListing: FC<CustomerListingProps> = ({
         render: formatters.dateTime,
       },
       {
-        title: "Active",
+        title: "Status",
         dataIndex: "isActive",
         key: "isActive",
         width: 180,
@@ -214,14 +246,16 @@ export const CustomerListing: FC<CustomerListingProps> = ({
                   />
                 </div>
               </div>
-              <div className="w-full sm:w-auto sm:ml-auto">
-                <AppButton
-                  icon={<PlusOutlined />}
-                  label="New Customer"
-                  className="w-full sm:w-auto h-10! px-4 shrink-0 whitespace-nowrap"
-                  onClick={() => router.push("/customers/add-customer")}
-                />
-              </div>
+              {canManageCustomers && (
+                <div className="w-full sm:w-auto sm:ml-auto">
+                  <AppButton
+                    icon={<PlusOutlined />}
+                    label="New Customer"
+                    className="w-full sm:w-auto h-10! px-4 shrink-0 whitespace-nowrap"
+                    onClick={() => router.push("/customers/add-customer")}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

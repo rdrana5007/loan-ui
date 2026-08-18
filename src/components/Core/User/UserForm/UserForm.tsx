@@ -13,13 +13,14 @@ import {
   SelectInput,
   TextInput,
 } from "@/components/Common";
+import { ROLES } from "@/config";
 import { roleList } from "@/constants";
-import { usePageBreadcrumbs } from "@/hooks";
+import { useAuthorization, usePageBreadcrumbs } from "@/hooks";
 import { UserFormValues, UserRow } from "@/types";
 import { handleNumericKeyDown, resolveNumericId } from "@/utils";
 import { Col, Form, Row } from "antd";
 import { useParams, useRouter } from "next/navigation";
-import { FC, useEffect, useMemo } from "react";
+import { FC, useCallback, useEffect, useMemo } from "react";
 
 const toFormValues = (user?: UserRow | null): UserFormValues => ({
   userName: user?.userName ?? "",
@@ -48,6 +49,7 @@ export const UserForm: FC<UserFormProps> = ({ breadcrumbs }) => {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const [form] = Form.useForm();
+  const { isAdmin, isManager } = useAuthorization();
 
   const id: string = params?.id;
   const numericId = useMemo(() => resolveNumericId(id), [id]);
@@ -55,6 +57,10 @@ export const UserForm: FC<UserFormProps> = ({ breadcrumbs }) => {
   const isEdit: boolean = !!numericId;
 
   const { data, isLoading } = useUserQuery(numericId!);
+
+  const canEditUser: boolean =
+    isAdmin || (isManager && data?.roles?.name === ROLES.COLLECTOR);
+
   const { mutateAsync: createUser, isPending: isCreating } =
     useCreateUserMutation();
   const { mutateAsync: updateUser, isPending: isUpdating } =
@@ -106,7 +112,11 @@ export const UserForm: FC<UserFormProps> = ({ breadcrumbs }) => {
   return (
     <div className="w-full">
       <h2 className="text-lg md:text-xl font-semibold mb-6">
-        {isEdit ? "Update User" : "Create User"}
+        {isEdit
+          ? canEditUser
+            ? "Update User"
+            : "User Details"
+          : "Create User"}
       </h2>
       <Form
         form={form}
@@ -189,26 +199,28 @@ export const UserForm: FC<UserFormProps> = ({ breadcrumbs }) => {
             </Col>
           )}
         </Row>
-        <Row gutter={[12, 12]} justify="end" className="mt-6">
-          <Col xs={24} sm={8} md={6} lg={4}>
-            <AppButton
-              block
-              label="Reset"
-              onClick={() => form.resetFields()}
-              className="w-full! h-10! md:h-8 lg:h-10"
-            />
-          </Col>
-          <Col xs={24} sm={8} md={6} lg={4}>
-            <AppButton
-              block
-              type="primary"
-              htmlType="submit"
-              label="Save"
-              disabled={isSubmitting}
-              className="w-full! h-10! md:h-8 lg:h-10"
-            />
-          </Col>
-        </Row>
+        {(!isEdit || canEditUser) && (
+          <Row gutter={[12, 12]} justify="end" className="mt-6">
+            <Col xs={24} sm={8} md={6} lg={4}>
+              <AppButton
+                block
+                label="Reset"
+                onClick={() => form.resetFields()}
+                className="w-full! h-10! md:h-8 lg:h-10"
+              />
+            </Col>
+            <Col xs={24} sm={8} md={6} lg={4}>
+              <AppButton
+                block
+                type="primary"
+                htmlType="submit"
+                label="Save"
+                disabled={isSubmitting}
+                className="w-full! h-10! md:h-8 lg:h-10"
+              />
+            </Col>
+          </Row>
+        )}
       </Form>
     </div>
   );

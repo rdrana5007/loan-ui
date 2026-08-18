@@ -21,7 +21,7 @@ const { SEARCH, ROLE, STATUS } = FILTER_KEYS;
 export const useUserListing = () => {
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search, SEARCH_DEBOUNCE_MS);
-  const [roleFilter, setRoleFilter] = useState<RoleFilter>("all");
+  const [roleFilter, setRoleFilter] = useState<RoleFilter>("isManager");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [page, setPage] = useState<number>(DEFAULT_PAGE);
   const [rowsPerPage, setRowsPerPage] = useState<number>(DEFAULT_PAGE_SIZE);
