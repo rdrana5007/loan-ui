@@ -122,23 +122,13 @@ export const EmiScheduleListing = () => {
           className="rounded-md bg-blue-100! text-blue-700! hover:bg-blue-200! border-0!"
           onClick={() => openModal("view", row)}
         />
-        {row?.status !== "paid" && (
-          <>
-            {/* <AppButton
-              size="small"
-              label="Collect"
-              className="rounded-md bg-green-100! text-green-700! hover:bg-green-200! border-0!"
-              onClick={() => openModal("collect", row)}
-            /> */}
-            {!row?.emi_followups && (
-              <AppButton
-                size="small"
-                label="Follow-up"
-                className="rounded-md bg-amber-100! text-amber-700! hover:bg-amber-200! border-0!"
-                onClick={() => openModal("followUp", row)}
-              />
-            )}
-          </>
+        {row?.status !== "paid" && !row?.emi_followups && (
+          <AppButton
+            size="small"
+            label="Follow-up"
+            className="rounded-md bg-amber-100! text-amber-700! hover:bg-amber-200! border-0!"
+            onClick={() => openModal("followUp", row)}
+          />
         )}
       </div>
     ),

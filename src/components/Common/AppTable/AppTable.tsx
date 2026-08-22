@@ -9,6 +9,7 @@ type AppTableProps<T extends object> = TableProps<T> & {
   tableData: T[];
   pagination: TablePaginationConfig;
   onChange?: TableProps<T>["onChange"];
+  onRow?: TableProps<T>["onRow"];
   loading?: boolean;
 };
 
@@ -18,6 +19,7 @@ export const AppTable = <T extends object>({
   tableData,
   pagination,
   onChange,
+  onRow,
   loading,
 }: AppTableProps<T>) => {
   const skeletonColumns = useMemo(
@@ -52,6 +54,7 @@ export const AppTable = <T extends object>({
             : false
       }
       onChange={onChange}
+      onRow={loading ? undefined : onRow}
       scroll={{ x: "max-content" }}
     />
   );

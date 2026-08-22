@@ -115,17 +115,20 @@ export const CustomerListing: FC<CustomerListingProps> = ({
       <div className="flex items-center justify-center">
         {canManageCustomers ? (
           <EditOutlined
+            title="Edit"
             onClick={() => router.push(`/customers/${row.id}`)}
             className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
           />
         ) : (
           <FileSearchOutlined
+            title="View"
             onClick={() => router.push(`/customers/${row.id}`)}
             className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
           />
         )}
         {canManageCustomers && (
           <DeleteOutlined
+            title="Delete"
             disabled={isDeleting}
             onClick={() => openDeleteModal(row)}
             className="cursor-pointer text-red-500! hover:bg-red-50! hover:text-red-600! p-2 rounded-full text-lg md:text-xl transition-all"

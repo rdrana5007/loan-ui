@@ -1,10 +1,9 @@
 "use client";
 import { AppButton, AppTable } from "@/components/Common";
-import { ROLES } from "@/config";
-import { useAuthorization, useDashboard, useResponsive } from "@/hooks";
+import { useDashboard, useResponsive } from "@/hooks";
 import { LoanRow } from "@/types";
 import { formatters } from "@/utils";
-import { EditOutlined, EyeOutlined, FileSearchOutlined } from "@ant-design/icons";
+import { EyeOutlined } from "@ant-design/icons";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
@@ -17,32 +16,19 @@ const renderFullName = (record: LoanRow) =>
 export const RecentLoanTable = () => {
   const router = useRouter();
   const { isMobile } = useResponsive();
-  const { hasRole } = useAuthorization();
   const { loans, isLoading } = useDashboard();
-
-  const canManageLoans: boolean = hasRole([ROLES.ADMIN, ROLES.MANAGER]);
 
   const renderActions = useCallback(
     (_: unknown, row: LoanRow) => (
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-center">
         <EyeOutlined
+          title="View EMIs"
           onClick={() => router.push(`/loans/${row.id}/loan-detail`)}
           className="cursor-pointer text-green-500! hover:bg-green-50! hover:text-green-600! p-2 rounded-full text-lg md:text-xl transition-all"
         />
-        {canManageLoans ? (
-          <EditOutlined
-            onClick={() => router.push(`/loans/${row.id}`)}
-            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
-          />
-        ) : (
-          <FileSearchOutlined
-            onClick={() => router.push(`/loans/${row.id}`)}
-            className="cursor-pointer text-blue-500! hover:bg-blue-50! hover:text-blue-600! p-2 rounded-full text-lg md:text-xl transition-all"
-          />
-        )}
       </div>
     ),
-    [router, canManageLoans],
+    [router],
   );
 
   const columns = useMemo<ColumnsType<LoanRow>>(
@@ -125,7 +111,7 @@ export const RecentLoanTable = () => {
         key: "action",
         align: "center",
         fixed: "right",
-        width: 50,
+        onCell: () => ({ onClick: (e) => e.stopPropagation() }),
         render: renderActions,
       },
     ],
@@ -150,6 +136,10 @@ export const RecentLoanTable = () => {
         tableData={loans}
         pagination={false}
         loading={isLoading}
+        onRow={(record) => ({
+          onClick: () => router.push(`/loans/${record.id}`),
+          className: "cursor-pointer hover:bg-gray-50",
+        })}
       />
     </div>
   );
