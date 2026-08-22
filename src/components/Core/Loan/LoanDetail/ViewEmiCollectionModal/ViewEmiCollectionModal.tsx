@@ -84,15 +84,15 @@ export const ViewEmiCollectionModal: FC<ViewEmiCollectionModalProps> = ({
     () => [
       {
         title: "Installment",
-        dataIndex: "emiScheduleId",
-        key: "emiScheduleId",
+        dataIndex: ["emi_schedules", "installmentNo"],
+        key: "installmentNo",
         width: 50,
         render: formatters.installmentNo,
       },
       {
         title: "Due Date",
         dataIndex: ["emi_schedules", "dueDate"],
-        key: "createdAt",
+        key: "dueDate",
         width: 120,
         render: formatters.date,
       },
