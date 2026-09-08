@@ -35,7 +35,7 @@ import { useRouter } from "next/navigation";
 import { FC, useCallback, useMemo } from "react";
 
 const renderFullName = (record: LoanRow) =>
-  [record.customers.firstName, record.customers.lastName]
+  [record.customers?.firstName, record.customers?.lastName]
     .filter(Boolean)
     .join(" ") || "--";
 

@@ -17,9 +17,9 @@ import {
   useMemo,
   useState,
 } from "react";
-import { CollectEmiModal } from "../CollectEmiModal";
-import { ViewEmiScheduleModal } from "../ViewEmiScheduleModal";
-import { FollowUpModal } from "../FollowUpModal";
+import { CollectEmiModal } from "./CollectEmiModal";
+import { ViewEmiScheduleModal } from "./ViewEmiScheduleModal";
+import { FollowUpModal } from "./FollowUpModal";
 import { EmiScheduleRow, EmiScheduleStatus } from "@/types";
 import { emiScheduleStatus, emiScheduleStatusList } from "@/constants";
 import { PlusOutlined } from "@ant-design/icons";

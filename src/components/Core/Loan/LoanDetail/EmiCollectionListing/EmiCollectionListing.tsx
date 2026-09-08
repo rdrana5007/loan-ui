@@ -7,7 +7,7 @@ import { formatters, getInstallmentDisplay, resolveNumericId } from "@/utils";
 import { ColumnsType } from "antd/es/table";
 import { useParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
-import { ViewEmiCollectionModal } from "../ViewEmiCollectionModal";
+import { ViewEmiCollectionModal } from "./ViewEmiCollectionModal";
 
 type ModalState = {
   open: boolean;

@@ -9,7 +9,7 @@ import Logo from "@/assets/Logo1.png";
 const { Title, Text } = Typography;
 
 export const Login = () => {
-  const { handleLogin, isLoginPending } = useAuthentication();
+  const { handleLogin, isLoginPending, isRedirecting } = useAuthentication();
   const [loginForm] = Form.useForm();
 
   return (
@@ -112,6 +112,26 @@ export const Login = () => {
           </Form>
         </Card>
       </div>
+
+      {/* Redirect Loader */}
+      {isRedirecting && (
+        <div className="fixed inset-0 z-9999 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+          <div className="relative flex h-28 w-28 items-center justify-center">
+            <div className="absolute inset-0 animate-[spin_1.5s_linear_infinite] rounded-full border-4 border-t-indigo-600 border-r-blue-500 border-b-indigo-600 border-l-blue-500" />
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-indigo-500 shadow-lg">
+              <Image
+                src={Logo}
+                alt="Loading"
+                width={65}
+                height={65}
+                priority
+                sizes="100vw"
+                className="object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

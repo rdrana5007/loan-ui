@@ -23,8 +23,8 @@ import {
   useMemo,
   useState,
 } from "react";
-import { ViewEmiFollowUpModal } from "../ViewEmiFollowUpModal";
-import { UpdateFollowUpModal } from "../UpdateFollowUpModal";
+import { ViewEmiFollowUpModal } from "./ViewEmiFollowUpModal";
+import { UpdateFollowUpModal } from "./UpdateFollowUpModal";
 
 type FollowUpModalType = "view" | "update";
 

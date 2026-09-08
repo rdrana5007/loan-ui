@@ -4,11 +4,13 @@ import { AppToast } from "@/components";
 import { AuthService } from "@/services";
 import { LoginFormValue, LoginResponse } from "@/types";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const authService = new AuthService();
 
 export const useAuthentication = () => {
   const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
   const { mutateAsync: login, isPending: isLoginPending } = useLoginMutation();
 
   const handleLogin = async (value: LoginFormValue) => {
@@ -25,9 +27,13 @@ export const useAuthentication = () => {
         if (user) {
           authService.setUserProfile(user);
         }
-        router.push("/");
+        setIsRedirecting(true);
+        setTimeout(() => {
+          router.push("/");
+        }, 1000);
       }
     } catch (error: any) {
+      setIsRedirecting(false);
       const errorMsg = error.response?.data?.message || error.response?.data?.error || "Invalid credentials";
       AppToast.error(errorMsg);
     }
@@ -45,6 +51,7 @@ export const useAuthentication = () => {
   return {
     handleLogin,
     handleLogout,
-    isLoginPending
+    isLoginPending,
+    isRedirecting
   };
 };
