@@ -42,6 +42,7 @@ interface SidebarMenuProps {
 
 interface AppLogoProps {
   collapsed?: boolean;
+  onClose?: () => void;
 }
 
 export const LayoutSidebar = ({
@@ -98,7 +99,7 @@ const MobileDrawer = ({
       // className="shadow-lg bg-black!"
     >
       <div className="flex h-16 items-center justify-between px-4">
-        <AppLogo />
+        <AppLogo onClose={onClose} />
         <AppButton
           type="text"
           icon={<CloseOutlined />}
@@ -129,8 +130,8 @@ const SidebarMenu = ({ selectedKey, mobile, onClose }: SidebarMenuProps) => {
   );
 };
 
-const AppLogo = ({ collapsed }: AppLogoProps) => (
-  <Link href="/">
+const AppLogo = ({ collapsed, onClose }: AppLogoProps) => (
+  <Link href="/" onClick={onClose}>
     <Image
       src={Logo}
       alt="Logo"
