@@ -5,6 +5,7 @@ import Logo from "@/assets/Logo1.png";
 import { AppButton } from "../../Common";
 import { CloseOutlined } from "@ant-design/icons";
 import { useAuthorization } from "@/hooks";
+import Link from "next/link";
 
 const { Sider } = Layout;
 
@@ -129,13 +130,15 @@ const SidebarMenu = ({ selectedKey, mobile, onClose }: SidebarMenuProps) => {
 };
 
 const AppLogo = ({ collapsed }: AppLogoProps) => (
-  <Image
-    src={Logo}
-    alt="Logo"
-    width={collapsed ? 50 : 60}
-    height={collapsed ? 50 : 60}
-    priority
-    sizes="100vw"
-    className="object-cover transition-all duration-300"
-  />
+  <Link href="/">
+    <Image
+      src={Logo}
+      alt="Logo"
+      width={collapsed ? 50 : 60}
+      height={collapsed ? 50 : 60}
+      priority
+      sizes="100vw"
+      className="object-cover transition-all duration-300"
+    />
+  </Link>
 );
